@@ -567,7 +567,7 @@ public partial class _Default : System.Web.UI.Page
     {
         Session["attrListSE"] = attrList;
         Session["fdListSE"] = fdList;
-      //  Response.Redirect("http://ilust.uom.gr:9000/StepsDecompose.aspx");
+        //  Response.Redirect("http://ilust.uom.gr:9000/StepsDecompose.aspx");
         Response.Redirect("StepsDecompose.aspx");
 
     }

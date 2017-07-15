@@ -53,7 +53,7 @@ public partial class StepsDecompose : System.Web.UI.Page
                 // γέμισμα συναρτησιακών εξαρτήσεων.
                 foreach (FD fd in fdList)
                 {
-                    FDsCheckBoxList.Items.Add(fd.ToString());
+                    FDsRadioButtonList.Items.Add(fd.ToString());
                 }
 
                 // γέμισμα υποψήφιων κλειδιών.
@@ -74,7 +74,7 @@ public partial class StepsDecompose : System.Web.UI.Page
                 relInitial.SetKey(keyList[0]);
                 foreach (Relation rel in relList)
                 {
-                    TablesCheckBoxList.Items.Add(rel.ToString());
+                    TablesRadioButtonList.Items.Add(rel.ToString());
                 }
 
             }
@@ -82,8 +82,8 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         }
 
-        setCheckBoxStates(TablesCheckBoxList);
-        setCheckBoxStates(FDsCheckBoxList);
+       // setCheckBoxStates(TablesCheckBoxList);
+       // setCheckBoxStates(FDsCheckBoxList);
 
     }
 
@@ -123,7 +123,7 @@ public partial class StepsDecompose : System.Web.UI.Page
     private bool CheckTick()
     {
         int x = 0; // μετρητής επιλογών. Αν είναι 2 τότε επιλέχθηκε πίνακας και συναρτησιακή εξάρτηση. 
-        foreach (ListItem item in TablesCheckBoxList.Items)
+        foreach (ListItem item in TablesRadioButtonList.Items)
         {
             if (item.Selected)
             {
@@ -132,7 +132,7 @@ public partial class StepsDecompose : System.Web.UI.Page
             }
         }
 
-        foreach (ListItem item in FDsCheckBoxList.Items)
+        foreach (ListItem item in FDsRadioButtonList.Items)
         {
             if (item.Selected)
             {
@@ -143,7 +143,7 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         if (x != 2)
         {
-            resultsArea.InnerText += "Πρέπει να επιλέξετε έναν πίνακα και μια συναρτησιακή εξάρτηση.\n\n";
+            lblPreviewResults.Text = "Πρέπει να επιλέξετε έναν πίνακα και μια συναρτησιακή εξάρτηση.";
             return false;
         }
 
@@ -167,6 +167,10 @@ public partial class StepsDecompose : System.Web.UI.Page
     protected void btnPreview_Click(object sender, EventArgs e)
     {
         if (CheckTick()) DecomposeInSteps(true);
+
+       // ScriptManager.RegisterStartupScript(Page, Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
+        ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
+      
     }
 
     /// <summary>
@@ -175,6 +179,8 @@ public partial class StepsDecompose : System.Web.UI.Page
     protected void btnDecompose_Click(object sender, EventArgs e)
     {
         if (CheckTick()) DecomposeInSteps(false);
+
+        ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
     }
 
     /// <summary>
@@ -183,7 +189,6 @@ public partial class StepsDecompose : System.Web.UI.Page
     /// <param name="isPreview">Αν είναι αληθής τότε εμφανίζονται στο modal τα αποτελέσματα.</param>
     private void DecomposeInSteps(bool isPreview)
     {
-        int i;
         int iRel = 0;
         int iFD = 0;
 
@@ -191,25 +196,25 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         // προσδιορίζεται ο πίνακας που έχει επιλεγεί.
         Relation rel = null;
-        iRel = TablesCheckBoxList.SelectedIndex;
+        iRel = TablesRadioButtonList.SelectedIndex;
         rel = relList[iRel];
 
         // αν ο πίνακας που έχει επιλεγεί δεν μπορεί να διασπαστεί περαιτέρω, βγαίνει σχετικό μήνυμα.
         if (!isPreview && rel.Excluded)
         {
-            resultsArea.InnerText += "\nΟ πίνακας\n\n" + rel.ToString() + "\n\nέχει αποκλειστεί από περαιτέρω διασπάσεις.";
+            lblPreviewResults.Text = "Ο πίνακας" + "<br/>" + "<br/>" + rel.ToString() + "<br/>" + "<br/>" + "έχει αποκλειστεί από περαιτέρω διασπάσεις.";
             return;
         }
 
         // προσδιορίζεται η συναρτησιακή εξάρτηση που έχει επιλεγεί.
         FD fd = null;
-        iFD = FDsCheckBoxList.SelectedIndex;
+        iFD = FDsRadioButtonList.SelectedIndex;
         fd = fdList[iFD];
 
         // εξετάζεται αν η συναρτησιακή εξάρτηση είναι τετριμμένη.
         if (fd.IsTrivial)
         {
-            resultsArea.InnerText += "\nΗ συναρτησιακή εξάρτηση\n\n\"" + fd.ToString() + "\"\n\nείναι τετριμμένη, επομένως δεν χρησιμοποιείται για διάσπαση πινάκων.";
+            lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση" + "<br/>" + "<br/>" + "\"" + fd.ToString() + "\""+ "<br/>" + "<br/>" + "είναι τετριμμένη, επομένως δεν χρησιμοποιείται για διάσπαση πινάκων.";
             return;
         }
 
@@ -219,7 +224,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         {
             if (fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
             {
-                resultsArea.InnerText += "\nΗ συναρτησιακή εξάρτηση\n\n\"" + fd.ToString() + "\"\n\nπεριλαμβάνει υποψήφιο κλειδί στο αριστερό σκέλος της, επομένως δεν παραβιάζει την BCNF μορφή και δεν χρησιμοποιείται για διάσπαση πινάκων.";
+                lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση"+ "<br/>" + "<br/>" + "\"" + fd.ToString() + "\""+ "<br/>" + "<br/>" + "περιλαμβάνει υποψήφιο κλειδί στο αριστερό σκέλος της, επομένως δεν παραβιάζει την BCNF μορφή και δεν χρησιμοποιείται για διάσπαση πινάκων.";
                 return;
             }
         }
@@ -233,7 +238,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         {
             if (fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
             {
-                resultsArea.InnerText += "\nΗ συναρτησιακή εξάρτηση\n\n\"" + fd.ToString() + "\"\n\nπεριλαμβάνει υποψήφιο κλειδί του πίνακα " + rel.Name + ", επομένως δεν μπορεί να τον διασπάσει.";
+                lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση"+ "<br/>"  + "<br/>"  + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "περιλαμβάνει υποψήφιο κλειδί του πίνακα " + rel.Name + ", επομένως δεν μπορεί να τον διασπάσει.";
                 return;
             }
         }
@@ -301,23 +306,26 @@ public partial class StepsDecompose : System.Web.UI.Page
 
 
                 //προστίθενται οι δύο νέοι πίνακας στο CheckboxList
-                TablesCheckBoxList.Items.Add(rel1.ToString());
-                TablesCheckBoxList.Items.Add(rel2.ToString());
+                TablesRadioButtonList.Items.Add(rel1.ToString());
+                TablesRadioButtonList.Items.Add(rel2.ToString());
+
+                rel.IsBCNF = false;
+                rel.Excluded = true;
 
                 //CheckBCNF();
 
-                resultsArea.InnerText += "Έγινε διάσπαση σε δύο νέους πίνακες, τον " + rel1.Name + " και τον " + rel2.Name + ".";
+                lblPreviewResults.Text = "Έγινε διάσπαση σε δύο νέους πίνακες, τον " + rel1.Name + " και τον " + rel2.Name + ".";
             }
             else
             {
-                resultsArea.InnerText = "\nΜε την \"" + fd.ToString() + "\" ο " + rel.ToString() + " διασπάται σε:\n\n" + rel1.ToString() + RelBCNF(rel1) + "\n\n" + rel2.ToString() + RelBCNF(rel2) + "\n\n";
-                resultsArea.InnerText += "==============================\n\n";
+                lblPreviewResults.Text = "Με την \"" + fd.ToString() + "\" ο " + rel.ToString() + " διασπάται σε:" + "<br/>" + "<br/>" + rel1.ToString() + RelBCNF(rel1) + "<br/>" + "<br/>" + rel2.ToString() + RelBCNF(rel2) + "<br/>" + "<br/>";
+                lblPreviewResults.Text += "==============================";
             }
             
         }
         else // σε διαφορετική περίπτωση η BCNF δεν παραβιάζεται και εμφανίζεται σχετικό μήνυμα
         {
-            resultsArea.InnerText = "\n\nΗ συναρτησιακή εξάρτηση\n\n\"" + fd.ToString() + "\"\n\nδεν σχετίζεται με τον πίνακα\n\n" + rel.ToString() + "\n\nκαι επομένως δεν γίνεται διάσπαση.";
+            lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση" + "<br/>" + "<br/>" + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "δεν σχετίζεται με τον πίνακα" + "<br/>" + "<br/>" + rel.ToString() + "<br/>" + "<br/>" + "και επομένως δεν γίνεται διάσπαση.";
         }
 
     
