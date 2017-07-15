@@ -2,7 +2,7 @@
 ![Flyme logo](N.jpg) <br/><br/>
 ### My graduation thesis <br/><br/>
 
-###Theme: web application for Normalization with BCNF.<br/>
+### Theme: web application for Normalization with BCNF.<br/>
 
 This is an academic Tool. It's purpose is to help students understand Normalization with BCNF. I started having given the code of a
 windows application of Normalization, created by [Xristos Stefanidis](mailto:chstefanides@yahoo.gr).
