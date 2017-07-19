@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,14 +61,14 @@ namespace Normalization
                 Msg += "Εξετάζουμε τις συναρτησιακές εξαρτήσεις για να υπολογίσουμε τον συνολικό εγκλεισμό του X\x207A\n\n";
                 Msg += "==============================\n\n";
             }
-
+            Stopwatch sw1, sw2, sw3, sw4, sw5;sw5 = Stopwatch.StartNew();
         //η RepeatLoop χρησιμοποιείται ως σημείο επανεκκίνησης του βρόχου σε περίπτωση που πρέπει να ελεγχθούν από την αρχή οι συναρτησιακές εξαρτήσεις
         RepeatLoop:
-
+            sw4 = Stopwatch.StartNew();
             //ελέγχω μία προς μία τις συναρτησιακές εξαρτήσεις
             foreach (FD fd in FDList)
             {
-
+                sw3 = Stopwatch.StartNew();
                 //ελέγχεται με την τομή αν τα γνωρίσματα του αριστερού σκέλους της συναρτησιακής εξάρτησης περιλαμβάνονται στον ως τώρα εγκλεισμό
                 if (fd.GetLeft().Intersect(closure, Global.comparer).Count() >= fd.GetLeft().Count)
                 {
@@ -81,11 +82,11 @@ namespace Normalization
                             toAdd.Add(attR);
                         }
                     }
-
+                    sw2 = Stopwatch.StartNew();
                     if (toAdd.Count > 0)
                     {
                         closure.AddRange(toAdd);
-
+                        sw1 = Stopwatch.StartNew();
                         if (showOut)
                         {
                             if (toAdd.Count == 1)
@@ -101,11 +102,11 @@ namespace Normalization
                             Relation rel = new Relation(closure);
                             Msg += "Έχουμε X\x207A = " + rel.ToString() + "\n\n";
                             Msg += "==============================\n\n";
-                        }
+                        }sw1.Stop();
                         goto RepeatLoop;
-                    }
-                }
-            }
+                    }sw2.Stop();
+                }sw3.Stop();
+            }sw4.Stop();sw5.Stop();
             return closure;
 
         }
@@ -195,7 +196,7 @@ namespace Normalization
             Msg2 += "Διαδικασία εύρεσης κλειδιών\n\n";
             Msg2 += "Αν ο εγκλεισμός ενός γνωρίσματος ή συνδυασμός αυτών περιλαμβάνει το σύνολο όλων των γνωρισμάτων του σχήματος, τότε το γνώρισμα αυτό, ή ο συνδυασμός των γνωρισμάτων, αποτελεί υποψήφιο κλειδί.\n\n";
             Msg2 += "Υποψήφια κλειδιά:\n\n";
-
+            
             //ελέγχονται ένα προς ένα όλα τα γνωρίσματα για το κατά πόσον μπορεί να συμμετέχουν σε κλειδί
             //αν ένα γνώρισμα δεν βρίσκεται σε κανένα αριστερό σκέλος κάποιας FD τότε αποκλείεται από τον έλεγχο
             foreach (Attr attr in newAttrList)
@@ -222,19 +223,19 @@ namespace Normalization
                     attrAll = null;
                 }
             }
-
+        
             int n, k;
             n = newAttrList.Count;
             k = 1;
             int ss = 0;
+            
             for (k = 1; k < n; k++)
             {
                 // point of disaster!!!! //TODO:change!
                 AttrBinarySelection(FDList, newAttrList, ref keyList, k, Msg2, showOut); 
                 ss++; // for debugging only
             }
-
-            System.Diagnostics.Debug.WriteLine("ss = " + ss);
+            
             //αφού ολοκληρώθηκε η διαδικασία, ελέγχεται αν βρέθηκε έστω και ένα κλειδί, κι αν όχι, επιστρέφεται ως κλειδί του σχήματος ένα νέο κλειδί με όλα τα γνωρίσματα, αλλιώς μόνο τα κλειδιά που καταχωρήθηκαν στην keyList
             if (keyList.Count == 0)
             {
@@ -259,7 +260,7 @@ namespace Normalization
             string sBin = "";
             int i;
             int x;
-
+           
             //δημιουργείται μια καθαρή λίστα γνωρισμάτων, χωρίς αυτά που είναι excluded
             List<Attr> cleanList = new List<Attr>();
             foreach (Attr attr in newAttrList)
@@ -269,7 +270,7 @@ namespace Normalization
                     cleanList.Add(attr);
                 }
             }
-
+            
             //αν όλα τα γνωρίσματα είναι excluded ή το πλήθος των συνδυασμών k είναι μεγαλύτερο του μεγέθους της λίστας, επιστρέφεται κενή λίστα
             if (cleanList.Count == 0 | k > cleanList.Count)
             {
@@ -292,11 +293,11 @@ namespace Normalization
                     }
                 }
             }
-
+            
             //προσδιορίζεται το πλήθος των δυνητικών συνδυασμών.
             int maxComb;
             maxComb = Factorial((ulong)cleanList.Count) / (Factorial((ulong)k) * Factorial((ulong)(cleanList.Count - k)));
-
+            
             //η αναζήτηση των συνδυασμών ξεκινά από τον πρώτο δυαδικό αριθμό που δίνει πλήρη συνδυασμό k γνωρισμάτων, κι αυτός δίνεται από τον τύπο (2^k)-1 
             i = (int)Math.Pow(2, k) - 1;
             x = 0;
@@ -317,7 +318,7 @@ namespace Normalization
                     char[] ch = sBin.ToCharArray();
                     Array.Reverse(ch);
                     sBin = new string(ch);
-
+                    
                     //ελέγχεται η θέση των ψηφίων 1 στον δυαδικό αριθμό και προστίθενται στο κλειδί key τα αντίστοιχα γνωρίσματα
                     for (int j = 0; j < sBin.Length; j++)
                     {
@@ -326,13 +327,15 @@ namespace Normalization
                             key.AddToKey(cleanList[j]);
                         }
                     }
-
+                    
                     //ελέγχεται αν το νέο κλειδί δεν περιλαμβάνεται ήδη στην λίστα με τα κλειδιά
                     if (key != null && !key.KeyExists(keyList))
                     {
+                        
                         //επίσης ελέγχεται αν ο εγκλεισμός του νέου κλειδιού περιλαμβάνει όλα τα γνωρίσματα του σχήματος, κι αν ναι, τότε προστίθεται στη λίστα των υποψήφιων κλειδιών
                         Closure frm = new Closure(key.GetAttrs(), tempFDList);
                         if (frm.attrClosure(key.GetAttrs(), FDList, false).Intersect(newAttrList, Global.comparer).Count() == newAttrList.Count)
+                       // if (true)
                         {
                             keyList.Add(key);
 
@@ -342,10 +345,10 @@ namespace Normalization
                             }
                         }
                     }
-
                 }
                 i++;
             }
+           
             System.Diagnostics.Debug.WriteLine("i = " + i);
         }
 
