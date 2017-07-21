@@ -243,8 +243,10 @@
                     </div>
                     <div>
                         <asp:Button ID="btnLoadSchema" class="btn btn-success btn-lg" runat="server" Text="Φόρτωση Σχήματος" OnClick="btnLoadSchema_Click"  />
+                        <asp:Button ID="btnSaveSchema" class="btn btn-success btn-lg" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  />
                      <%--   <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#loadSchema">Φόρτωση Σχήματος</button>
-                    --%>    <br />
+                    --%>    
+                        
 
                         <!-- Modal φόρτωση σχήματος-->
                         <div class="modal fade" id="loadSchemaModal" role="dialog">
