@@ -68,7 +68,7 @@
                 <div class="col-md-2 col-sm-2"></div>
                 <div class="col-md-6 col-sm-6">
 
-                    <asp:Button ID="btnPreview" runat="server" Text="Προεπισκόπηση" OnClick="btnPreview_Click" />
+                    <asp:Button ID="btnPreview" class="btn btn-info btn-lg" runat="server" Text="Προεπισκόπηση" OnClick="btnPreview_Click" />
                     <!--  <button type="button"  class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalPreview">Προεπισκόπηση</button> -->
 
                     <!-- Modal Προεπισκόπησης-->

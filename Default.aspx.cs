@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Normalization;
+using System.IO;
 
 /// <summary>
 /// Default: Περιλαμβάνει όλες τις λειτουργίες της Εφαρμογής.
@@ -16,7 +17,8 @@ public partial class _Default : System.Web.UI.Page
     private List<Attr> attrList = new List<Attr>(); // Λίστα με αντικείμενα Attr, για τα γνωρίσματα.
     private List<FD> fdList = new List<FD>(); // Λίστα με αντικείμενα FD, για τις συναρτησιακές εξαρτήσεις.
     private string msg = ""; // Μεταβλητή που τυπώνει στην Logging Console. (βοηθητική) // TODO: άλλος σχεδιασμός.
-    private List<string> schemasForLoad = new List<string>(); // Λίστα από string για τα ονόματα των έτοιμων παραδειγμάτων.
+  //  private List<string> schemasForLoad = new List<string>(); // Λίστα από string για τα ονόματα των έτοιμων παραδειγμάτων.
+  //  private List<string> savedSchemas = new List<string>();
     private bool isOnLoad = false;
 
     protected void Page_Load(object sender, EventArgs e)
@@ -59,7 +61,7 @@ public partial class _Default : System.Web.UI.Page
             // Ονόματα έτοιμων παραδειγμάτων που θα φαίνονται στην DropdownList. 
             #region Load Schemas
             // TODO: Μήπως να την κάνω απλή List?
-            schemasForLoad.Add("f.nor");
+          /*  schemasForLoad.Add("f.nor");
             schemasForLoad.Add("sc_StockExchange.nor");
             schemasForLoad.Add("sc1_01.nor");
             schemasForLoad.Add("sc1_02.nor");
@@ -73,9 +75,9 @@ public partial class _Default : System.Web.UI.Page
             schemasForLoad.Add("sc3.nor");
             schemasForLoad.Add("ΖΑΧΑΡΟΠΛΑΣΤΕΙΟ.nor");
             schemasForLoad.Add("ΙΑΤΡΕΙΟ.nor");
-
+            
             loadSchemsDropDownList(schemasForLoad);
-
+            */
             #endregion
 
         }
@@ -90,8 +92,8 @@ public partial class _Default : System.Web.UI.Page
         if (ViewState["logVS"] != null)
             msg = (string)ViewState["logVS"];
 
-        if (ViewState["loadSchemasVS"] != null)
-            schemasForLoad = (List<string>)ViewState["loadSchemasVS"];
+       /* if (ViewState["loadSchemasVS"] != null)
+            schemasForLoad = (List<string>)ViewState["loadSchemasVS"];*/
 
         #endregion
 
@@ -106,7 +108,7 @@ public partial class _Default : System.Web.UI.Page
         ViewState.Add("attrListVS", attrList);
         ViewState.Add("fdListVS", fdList);
         ViewState.Add("logVS", msg);
-        ViewState.Add("loadSchemasVS", schemasForLoad);
+    //    ViewState.Add("loadSchemasVS", schemasForLoad);
       
     }
 
@@ -649,6 +651,8 @@ public partial class _Default : System.Web.UI.Page
             schemaLoadDropDownList.Items.Add(schema);
     }
 
+    
+
     /// <summary>
     /// Ελέγχεται ποιό παράδειγμα επιλέχθηκε και φορτώνεται το αντίστοιχο.
     /// </summary>
@@ -1087,7 +1091,7 @@ public partial class _Default : System.Web.UI.Page
         }
         #endregion
 
-        lblSchemaName.Text = schemasForLoad[index];
+    //    lblSchemaName.Text = schemasForLoad[index];
     }
 
     protected void SchemaLoaderMethod(string[] attrNames)
@@ -1159,4 +1163,44 @@ public partial class _Default : System.Web.UI.Page
 
         updateCheckBoxLists();
     }
+
+    /// <summary>
+    /// Μέθοδος που διαβάζει και εμφανίζει τα διαθέσιμα παραδείγματα στην λίστα για επιλογή.
+    /// </summary>
+    protected void btnLoadSchema_Click(object sender, EventArgs e)
+    {
+        // Ανάγνωση ονομάτων αρχείων με αποθηκευμένα παραδείγματα.
+        string s = Directory.GetCurrentDirectory() + "/Schemas";
+        string[] txtFiles = GetFileNames(s, "*.txt"); // Μέσω της μεθόδου αποθηκεύονται τα ονόματα των αρχείων χωρίς την επέκτασή τους.
+
+        // Φόρτωση στην λίστα.
+        foreach (string st in txtFiles)
+        {
+            schemaLoadDropDownList.Items.Add(st); 
+        }
+
+        // Εμφάνιση modal με έτοιμα παραδείγματα.
+        ClientScript.RegisterStartupScript(Page.GetType(), "loadSchemaModal", "$('#loadSchemaModal').modal();", true);
+
+    }
+
+    /// <summary>
+    /// Μέθοδος που διαβάζει τα ονόματα όλων των αρχείων που περιέχουν το filter σε 
+    /// έναν φάκελο και τα επιστρέφει χωρίς την επέκτασή τους.
+    /// </summary>
+    /// <param name="path">Ο φάκελος από τον οποίο διαβάζει όλα τα αρχεία.</param>
+    /// <param name="filter">Φίλτρο αναζήτησης. Μπορεί να είναι και τύπος αρχείου.</param>
+    /// <returns>Τα ονόματα των αρχείων χωρίς την επέκταση.</returns>
+    private string[] GetFileNames(string path, string filter)
+    {
+        string[] files = Directory.GetFiles(path, filter); // παίρνει όλα τα διαθέσιμα αρχεία με βάση το filter.
+
+        for (int i = 0; i < files.Length; i++)
+        {
+            files[i] = Path.GetFileName(files[i]); // αποθηκεύει μόνο τα ονόματα χωρίς τις επεκτάσεις.
+        }
+
+        return files;
+    }
+    
 }

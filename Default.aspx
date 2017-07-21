@@ -11,6 +11,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
+
 <body>
     <form id="form1" runat="server">
         <div class="container">
@@ -241,11 +242,12 @@
                         <%--Modal--%>
                     </div>
                     <div>
-                        <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#loadSchema">Φόρτωση Σχήματος</button>
-                        <br />
+                        <asp:Button ID="btnLoadSchema" class="btn btn-success btn-lg" runat="server" Text="Φόρτωση Σχήματος" OnClick="btnLoadSchema_Click"  />
+                     <%--   <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#loadSchema">Φόρτωση Σχήματος</button>
+                    --%>    <br />
 
                         <!-- Modal φόρτωση σχήματος-->
-                        <div class="modal fade" id="loadSchema" role="dialog">
+                        <div class="modal fade" id="loadSchemaModal" role="dialog">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
