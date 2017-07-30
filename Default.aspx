@@ -278,5 +278,19 @@
 
         </div>
     </form>
+
+    <script>/*
+        $("#lblSchemaName").dblclick(function () {
+            var txt = $("#lblSchemaName").text();
+            $("#lblSchemaName").replaceWith("<input id='lblSchemaName'/>");
+            $("#lblSchemaName").val(txt);
+        });
+
+        $("#lblSchemaName1").blur(function () {
+            var txt = $(this).val();
+            $(this).replaceWith("<asp:Label ID='lblSchemaName' runat='server'></asp:Label>");
+            $("#lblSchemaName").text(txt);
+        });*/
+    </script>
 </body>
 </html>

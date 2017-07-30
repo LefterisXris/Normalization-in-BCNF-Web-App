@@ -801,14 +801,14 @@ public partial class _Default : System.Web.UI.Page
         // Εγγραφή των δεδομένων σε αρχείο.
         string filename = lblSchemaName.Text + ".txt"; // όνομα αρχείου
 
-        System.IO.StreamWriter file = new System.IO.StreamWriter(Directory.GetCurrentDirectory() + "/Schemas/" + filename);
+        System.IO.StreamWriter file = new System.IO.StreamWriter(Directory.GetCurrentDirectory() + "/Schemas/Students/" + filename);
         file.WriteLine(dataForFile); // εγγραφή
         file.Close();
 
         // Διαδικασία για download αρχείου που αποθηκεύτηκε.σ
         Response.ContentType = "application/octet-stream";
         Response.AppendHeader("content-disposition", "attachment; filename=" + filename);
-        Response.TransmitFile(Server.MapPath("~/Schemas/" + filename));
+        Response.TransmitFile(Server.MapPath("~/Schemas/Students/" + filename));
         Response.End();
 
     }
