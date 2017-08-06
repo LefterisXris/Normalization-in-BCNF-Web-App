@@ -35,7 +35,7 @@
                         <p><b>Πίνακες</b></p>
                    
                         <asp:RadioButtonList ID="TablesRadioButtonList" runat="server"></asp:RadioButtonList>
-                        <asp:Button ID="btnShowBCNFtables" runat="server" Text="Προβολή BCNF πινάκων" Style="float: right;" />
+                        <asp:Button ID="btnShowBCNFtables" class="btn btn-info btn-lg" runat="server" Text="Προβολή BCNF πινάκων" Style="float: right;" />
 
                     </div>
                     <div style="margin-top: 35px;">
@@ -92,12 +92,12 @@
                     <!-- Modal -->
 
 
-                    <asp:Button ID="Button3" runat="server" Text="Διάσπαση" OnClick="btnDecompose_Click" />
-                    <asp:Button ID="btnClearResults" runat="server" Text="Καθαρισμός" OnClick="btnClearResults_Click" />
+                    <asp:Button ID="Button3" class="btn btn-info btn-lg" runat="server" Text="Διάσπαση" OnClick="btnDecompose_Click" />
+                    <asp:Button ID="btnClearResults" class="btn btn-info btn-lg" runat="server" Text="Καθαρισμός" OnClick="btnClearResults_Click" />
                 </div>
                 <div class="col-md-2 col-sm-2"></div>
                 <div class="col-md-2 col-sm-2">
-                    <asp:Button ID="btnCloseStepsDecompose" runat="server" Text="Κλείσιμο" Style="width: 100%;" />
+                    <asp:Button ID="btnCloseStepsDecompose" class="btn btn-danger btn-lg" runat="server" Text="Κλείσιμο" Style="width: 100%;" />
                 </div>
 
             </div>
