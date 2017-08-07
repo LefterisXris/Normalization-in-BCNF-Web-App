@@ -46,6 +46,7 @@ public partial class _Default : System.Web.UI.Page
         // Καλείται η μέθοδος αυτή για να κρατηθούν οι επιλογές στα checkboxlists.
         setCheckBoxStates(LeftFDCheckBoxListAttrSelection);
         setCheckBoxStates(RightFDCheckBoxListAttrSelection);
+        setCheckBoxStates(ClosureCheckBoxList);
     }
 
     protected void Page_PreRender(object sender, EventArgs e)
@@ -232,20 +233,27 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnCalculateClosureClick(object sender, EventArgs e)
     {
-        List<Attr> attrListSelected = new List<Attr>();
+         List<Attr> attrListSelected = new List<Attr>();
 
-        // Τα επιλεγμένα γνωρίσματα εισάγωνται στην λίστα attrListSelected.
-        foreach (ListItem item in ClosureCheckBoxList.Items)
-            if (item.Selected)
-            {
-                int index = ClosureCheckBoxList.Items.IndexOf(item);
-                attrListSelected.Add(attrList[index]);
-            }
+         // Τα επιλεγμένα γνωρίσματα εισάγωνται στην λίστα attrListSelected.
+         foreach (ListItem item in ClosureCheckBoxList.Items)
+             if (item.Selected)
+             {
+                 int index = ClosureCheckBoxList.Items.IndexOf(item);
+                 attrListSelected.Add(attrList[index]);
+             }
 
         // Δημιουργείται αντικείμενο της κλάσης Closure όπου καλείται η μέθοδος υπολογισμού του εγκλεισμού.
         // TODO: Πρέπει να γίνει κάπως αλλιώς. Πιο αποδοτικά.
-        Closure closure = new Closure(attrList, fdList);
-        msg = closure.btnOK_Click(attrListSelected);
+        /* Closure closure = new Closure(attrList, fdList);
+         msg = closure.btnOK_Click(attrListSelected);*/
+        msg = "";
+        List<Attr> atr1 = Global.findClosure(attrListSelected, fdList);
+
+        foreach (Attr attr in atr1)
+        {
+            msg += attr.Name + ", ";
+        }
         log.InnerText = msg;
     }
 
@@ -269,6 +277,7 @@ public partial class _Default : System.Web.UI.Page
 
         List<Key> keyList = new List<Key>();
         keyList = Global.findKeys(attrList, fdList);
+        msg = "";
 
         foreach (Key key in keyList)
         {
@@ -345,7 +354,7 @@ public partial class _Default : System.Web.UI.Page
         // ο έλεγχος γίνεται με τη βοήθεια της τομής.
         foreach (FD fd in fdList)
             foreach (Key key in keyList)
-                if (!fd.Excluded && fd.GetLeft().Intersect(key.GetAttrs()).Count() >= key.GetAttrs().Count)
+                if (!fd.Excluded && fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
                 {
                     fd.Excluded = true;
                     break;
@@ -361,7 +370,7 @@ public partial class _Default : System.Web.UI.Page
                     continue;
                 int x = 0;
                 foreach (Attr attr in fdList[i].GetRight())
-                    if (fdList[j].GetLeft().Contains(attr))
+                    if (fdList[j].GetLeft().Contains(attr, Global.comparer))
                         x++;
                 if (x >= fdList[j].GetLeft().Count)
                 {
@@ -408,7 +417,7 @@ public partial class _Default : System.Web.UI.Page
                     if (fd.Excluded)
                         continue;
                     //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
-                    int x = fd.GetAll().Intersect(RelList[i].GetList()).Count();
+                    int x = fd.GetAll().Intersect(RelList[i].GetList(), Global.comparer).Count();
                     if (x < RelList[i].GetList().Count && x == fd.GetAll().Count)
                     {
                         //παρακάτω δημιουργούνται δύο νέοι πίνακες, ο rel1 και ο rel2
@@ -419,7 +428,7 @@ public partial class _Default : System.Web.UI.Page
                         //ο rel2 πίνακας παίρνει τα γνωρίσματα από το αριστερό σκέλος της συναρτησιακής εξάρτησης, συν τα γνωρίσματα του πίνακα που διασπάστηκε, πλην αυτών που βρίσκονται στο δεξί σκέλος της συναρτησιακής εξάρτησης
                         List<Attr> temp = new List<Attr>();
                         temp.AddRange(fd.GetLeft());
-                        temp.AddRange(RelList[i].GetList().Except(fd.GetRight()));
+                        temp.AddRange(RelList[i].GetList().Except(fd.GetRight(), Global.comparer));
                         Relation rel2 = new Relation(temp);
 
                         //δημιουργούνται δύο κλειδιά, ένα για τον καθένα πίνακα
@@ -537,7 +546,7 @@ public partial class _Default : System.Web.UI.Page
             if (fd.Excluded) continue;
             //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
             //σε διαφορετική περίπτωση ο πίνακας είναι BCNF
-            int x = fd.GetAll().Intersect(rel.GetList()).Count();
+            int x = fd.GetAll().Intersect(rel.GetList(), Global.comparer).Count();
             if (x < rel.GetList().Count && x == fd.GetAll().Count)
                 return "";
         }

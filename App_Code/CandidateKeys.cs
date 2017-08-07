@@ -58,7 +58,7 @@ namespace Normalization
             {
                 attr.Exclude = true;
                 foreach (FD fd in FDList)
-                    if (fd.GetLeft().Contains(attr))
+                    if (fd.GetLeft().Contains(attr, Global.comparer))
                         attr.Exclude = false;
 
                 //για να οριστικοποιηθεί ο αποκλεισμός του γνωρίσματος, πρέπει να μην συμμετέχει όμως και σε κανένα δεξί
@@ -71,7 +71,7 @@ namespace Normalization
                         attrall.AddRange(fd.GetRight());
 
                     //αν το γνώρισμα attr υπάρχει στην τοπική λίστα με τα γνωρίσματα των δεξιών σκελών, ο αποκλεισμός του γνωρίσματος αίρεται
-                    if (attrall.Contains(attr)) attr.Exclude = true;
+                    if (attrall.Contains(attr, Global.comparer)) attr.Exclude = true;
                     else attr.Exclude = false;
                     attrall = null;
                 }
@@ -129,7 +129,7 @@ namespace Normalization
                     FD newfd = new FD();
                     newfd.AddLeft(fd.GetLeft());
                     newfd.AddRight(attr);
-                    if (newfd.GetAll().Intersect(newAttrList).Count() == newfd.GetAll().Count) tempofdlist.Add(newfd);
+                    if (newfd.GetAll().Intersect(newAttrList, Global.comparer).Count() == newfd.GetAll().Count) tempofdlist.Add(newfd);
                 }
             }
 
@@ -170,7 +170,7 @@ namespace Normalization
                         //επίσης ελέγχεται αν ο εγκλεισμός του νέου κλειδιού περιλαμβάνει όλα τα γνωρίσματα του σχήματος, κι αν ναι, τότε προστίθεται στη λίστα των υποψήφιων κλειδιών
                       //  frmClosure frm = new frmClosure(key.GetAttrs(), tempofdlist, null);
                         Closure cl = new Closure(key.GetAttrs(), tempofdlist);
-                        if (cl.attrClosure(key.GetAttrs(), false).Intersect(newAttrList).Count() == newAttrList.Count)
+                        if (cl.attrClosure(key.GetAttrs(), false).Intersect(newAttrList, Global.comparer).Count() == newAttrList.Count)
                         {
                             keyList.Add(key);
 

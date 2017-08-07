@@ -17,12 +17,22 @@ namespace Normalization
         public static List<byte> bin = new List<byte>(); //βοηθητικός πίνακας για το δυαδικό σύστημα, μετρά το πλήθος του ψηφίου 1
         public static bool anyFDUsed; //προσδιορίζει αν χρησιμοποιήθηκε έστω και μια συναρτησιακή εξάρτηση κατά τη διαδικασία του εγκλεισμού
 
+        public static List<Attr> findClosure(List<Attr> attrList, List<FD> fdList)
+        {
+           return attrClosure(attrList, fdList, false);
+            /*
+            closure.Sort();
+            string s = string.Join(", ", closure);
+
+            return s;*/
+        }
 
         public static List<Key> findKeys(List<Attr> attrList, List<FD> fdList)
         {
             binLoader();
             return KeysGet(fdList, attrList, false);
         }
+        
 
         private static void binLoader()
         {
@@ -42,7 +52,6 @@ namespace Normalization
             #endregion
         }
 
-
         private static List<Key> KeysGet(List<FD> FDList, List<Attr> newAttrList, bool showOut)
         {
             //δημιουργείται πίνακας με τα υποψήφια κλειδιά του σχήματος
@@ -59,7 +68,7 @@ namespace Normalization
             {
                 attr.Exclude = true;
                 foreach (FD fd in FDList)
-                    if (fd.GetLeft().Contains(attr))
+                    if (fd.GetLeft().Contains(attr, Global.comparer))
                         attr.Exclude = false;
 
                 //για να οριστικοποιηθεί ο αποκλεισμός του γνωρίσματος, πρέπει να μην συμμετέχει όμως και σε κανένα δεξί
@@ -72,7 +81,7 @@ namespace Normalization
                         attrall.AddRange(fd.GetRight());
 
                     //αν το γνώρισμα attr υπάρχει στην τοπική λίστα με τα γνωρίσματα των δεξιών σκελών, ο αποκλεισμός του γνωρίσματος αίρεται
-                    if (attrall.Contains(attr)) attr.Exclude = true;
+                    if (attrall.Contains(attr, Global.comparer)) attr.Exclude = true;
                     else attr.Exclude = false;
                     attrall = null;
                 }
@@ -134,7 +143,7 @@ namespace Normalization
                     FD newfd = new FD();
                     newfd.AddLeft(fd.GetLeft());
                     newfd.AddRight(attr);
-                    if (newfd.GetAll().Intersect(newAttrList).Count() == newfd.GetAll().Count)
+                    if (newfd.GetAll().Intersect(newAttrList, Global.comparer).Count() == newfd.GetAll().Count)
                     {
                         tempFDList.Add(newfd);
                     }
@@ -181,7 +190,7 @@ namespace Normalization
 
                         //επίσης ελέγχεται αν ο εγκλεισμός του νέου κλειδιού περιλαμβάνει όλα τα γνωρίσματα του σχήματος, κι αν ναι, τότε προστίθεται στη λίστα των υποψήφιων κλειδιών
 
-                        if (attrClosure(key.GetAttrs(), FDList, false).Intersect(newAttrList).Count() == newAttrList.Count)
+                        if (attrClosure(key.GetAttrs(), FDList, false).Intersect(newAttrList, Global.comparer).Count() == newAttrList.Count)
                         // if (true)
                         {
                             keyList.Add(key);
@@ -212,13 +221,13 @@ namespace Normalization
             foreach (FD fd in fdList)
             {
                 //ελέγχεται με την τομή αν τα γνωρίσματα του αριστερού σκέλους της συναρτησιακής εξάρτησης περιλαμβάνονται στον ως τώρα εγκλεισμό
-                if (fd.GetLeft().Intersect(closure).Count() >= fd.GetLeft().Count)
+                if (fd.GetLeft().Intersect(closure, Global.comparer).Count() >= fd.GetLeft().Count)
                 {
                     //αν ναι, τότε προστίθενται τα γνωρίσματα του δεξιού σκέλους στην συναρτησιακή εξάρτηση, με την προϋπόθεση να μην έχουν ήδη προστεθεί, κι αν αυτό γίνει τότε η διαδικασία αρχίζει ξανά από την RepeatLoop
                     List<Attr> toAdd = new List<Attr>();
                     foreach (Attr attR in fd.GetRight())
                     {
-                        if (!closure.Contains(attR))
+                        if (!closure.Contains(attR, Global.comparer))
                         {
                             anyFDUsed = true;
                             toAdd.Add(attR);
