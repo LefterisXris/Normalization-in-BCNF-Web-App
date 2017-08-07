@@ -35,7 +35,7 @@
                         <p><b>Πίνακες</b></p>
                    
                         <asp:RadioButtonList ID="TablesRadioButtonList" runat="server"></asp:RadioButtonList>
-                        <asp:Button ID="btnShowBCNFtables" class="btn btn-info btn-lg" runat="server" Text="Προβολή BCNF πινάκων" Style="float: right;" />
+                        <asp:Button ID="btnShowBCNFtables" class="btn btn-info btn-lg" runat="server" Text="Προβολή BCNF πινάκων" Style="float: right;" OnClick="btnShowBCNFtables_Click" />
 
                     </div>
                     <div style="margin-top: 35px;">

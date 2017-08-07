@@ -46,7 +46,7 @@ namespace Normalization
         }
 
 
-        public List<Attr> attrClosure(List<Attr> attrS, List<FD> fdListS, bool showOut)
+        public List<Attr> attrClosure(List<Attr> attrS, bool showOut)
         {
             //ο πίνακας closure περιλαμβάνει τον εγκλεισμό των γνωρισμάτων attrS
             List<Attr> closure = new List<Attr>();
@@ -128,7 +128,7 @@ namespace Normalization
             //αλλιώς εκτελείται η διαδικασία του εγκλεισμού και εμφανίζονται τα αποτελέσματά του
             else
             {
-                attrS = attrClosure(attrS, FDList, true);
+                attrS = attrClosure(attrS, true);
 
                 //δημιουργείται τοπικός πίνακας με τα ονόματα των γνωρισμάτων που περιλαμβάνονται στον εγκλεισμό
                 List<string> names = new List<string>();
@@ -334,7 +334,7 @@ namespace Normalization
                         
                         //επίσης ελέγχεται αν ο εγκλεισμός του νέου κλειδιού περιλαμβάνει όλα τα γνωρίσματα του σχήματος, κι αν ναι, τότε προστίθεται στη λίστα των υποψήφιων κλειδιών
                         Closure frm = new Closure(key.GetAttrs(), tempFDList);
-                        if (frm.attrClosure(key.GetAttrs(), FDList, false).Intersect(newAttrList, Global.comparer).Count() == newAttrList.Count)
+                        if (frm.attrClosure(key.GetAttrs(), false).Intersect(newAttrList, Global.comparer).Count() == newAttrList.Count)
                        // if (true)
                         {
                             keyList.Add(key);

@@ -279,7 +279,7 @@
         </div>
     </form>
 
-    <script>/*
+    <script>/* <%--
         $("#lblSchemaName").dblclick(function () {
             var txt = $("#lblSchemaName").text();
             $("#lblSchemaName").replaceWith("<input id='lblSchemaName'/>");
@@ -290,7 +290,7 @@
             var txt = $(this).val();
             $(this).replaceWith("<asp:Label ID='lblSchemaName' runat='server'></asp:Label>");
             $("#lblSchemaName").text(txt);
-        });*/
+        });*/--%>
     </script>
 </body>
 </html>

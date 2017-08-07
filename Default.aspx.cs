@@ -254,18 +254,22 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnCalculateKeysClick(object sender, EventArgs e)
     {
-        Closure closure = new Closure(attrList, fdList);
-        List<Key> keyList = new List<Key>();
+        /* Closure closure = new Closure(attrList, fdList);
+         List<Key> keyList = new List<Key>();
 
-        // Τα υποψήφια κλειδιά υπολογίζονται στην μέθοδο KeysGet().
-        keyList = closure.KeysGet(fdList, attrList, true);
+         // Τα υποψήφια κλειδιά υπολογίζονται στην μέθοδο KeysGet().
+         keyList = closure.KeysGet(fdList, attrList, true);
 
-        msg = "";
-        msg += "Υποψήφια κλειδιά Που βρέθηκαν: \n";
+         msg = "";
+         msg += "Υποψήφια κλειδιά Που βρέθηκαν: \n";
 
-        foreach (Key key in keyList)
-            msg += key.ToString() + "\n";
+         foreach (Key key in keyList)
+             msg += key.ToString() + "\n";
+             */
 
+        CandidateKeys cKeys = new CandidateKeys();
+        cKeys.KeysGet(fdList, attrList, true);
+        msg = "done";
         log.InnerText = msg;
     }
 
@@ -359,7 +363,7 @@ public partial class _Default : System.Web.UI.Page
                     // αν όλα τα γνωρίσματα του δεξιού σκέλους βρέθηκαν στο αριστερό, τότε η συναρτησιακή εξάρτηση τροποποιείται,
                     // με τα ίδια γνωρίσματα στα αριστερά και τον εγκλεισμό του αριστερού σκέλους στα δεξιά.
                     Closure newClosure = new Closure(attrList, fdList);
-                    fdList[i].AddRight(newClosure.attrClosure(fdList[i].GetLeft(), fdList, false));
+                    fdList[i].AddRight(newClosure.attrClosure(fdList[i].GetLeft(), false));
                     fdList[i].RemoveRight(fdList[i].GetLeft());
                 }
             }

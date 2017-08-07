@@ -379,4 +379,12 @@ public partial class StepsDecompose : System.Web.UI.Page
         resultsArea.InnerText = "";
     }
 
+
+    protected void btnShowBCNFtables_Click(object sender, EventArgs e)
+    {
+        Session["attrListSE"] = attrList;
+        Session["fdListSE"] = fdList;
+        //  Response.Redirect("http://ilust.uom.gr:9000/CandidateKeysGet.aspx");
+        Response.Redirect("CandidateKeysGet.aspx");
+    }
 }
