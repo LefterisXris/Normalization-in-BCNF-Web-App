@@ -102,7 +102,7 @@ namespace Normalization
               // Υπολογισμός hash code για το όνομα του αντικειμένου, αν αυτό ΔΕΝ είναι null.
               int hashAttrName = attr.Name == null ? 0 : attr.Name.GetHashCode();
 
-              return hashAttrName;*/
+              return hashAttrName; <------------------ Comment here ------------>*/
             return 0;
         }
     }

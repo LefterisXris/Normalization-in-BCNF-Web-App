@@ -267,9 +267,14 @@ public partial class _Default : System.Web.UI.Page
              msg += key.ToString() + "\n";
              */
 
-        CandidateKeys cKeys = new CandidateKeys();
-        cKeys.KeysGet(fdList, attrList, true);
-        msg = "done";
+        List<Key> keyList = new List<Key>();
+        keyList = Global.findKeys(attrList, fdList);
+
+        foreach (Key key in keyList)
+        {
+            msg += key.ToString() + ", ";
+        }
+
         log.InnerText = msg;
     }
 
@@ -340,7 +345,7 @@ public partial class _Default : System.Web.UI.Page
         // ο έλεγχος γίνεται με τη βοήθεια της τομής.
         foreach (FD fd in fdList)
             foreach (Key key in keyList)
-                if (!fd.Excluded && fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
+                if (!fd.Excluded && fd.GetLeft().Intersect(key.GetAttrs()).Count() >= key.GetAttrs().Count)
                 {
                     fd.Excluded = true;
                     break;
@@ -356,7 +361,7 @@ public partial class _Default : System.Web.UI.Page
                     continue;
                 int x = 0;
                 foreach (Attr attr in fdList[i].GetRight())
-                    if (fdList[j].GetLeft().Contains(attr, Global.comparer))
+                    if (fdList[j].GetLeft().Contains(attr))
                         x++;
                 if (x >= fdList[j].GetLeft().Count)
                 {
@@ -403,7 +408,7 @@ public partial class _Default : System.Web.UI.Page
                     if (fd.Excluded)
                         continue;
                     //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
-                    int x = fd.GetAll().Intersect(RelList[i].GetList(), Global.comparer).Count();
+                    int x = fd.GetAll().Intersect(RelList[i].GetList()).Count();
                     if (x < RelList[i].GetList().Count && x == fd.GetAll().Count)
                     {
                         //παρακάτω δημιουργούνται δύο νέοι πίνακες, ο rel1 και ο rel2
@@ -414,7 +419,7 @@ public partial class _Default : System.Web.UI.Page
                         //ο rel2 πίνακας παίρνει τα γνωρίσματα από το αριστερό σκέλος της συναρτησιακής εξάρτησης, συν τα γνωρίσματα του πίνακα που διασπάστηκε, πλην αυτών που βρίσκονται στο δεξί σκέλος της συναρτησιακής εξάρτησης
                         List<Attr> temp = new List<Attr>();
                         temp.AddRange(fd.GetLeft());
-                        temp.AddRange(RelList[i].GetList().Except(fd.GetRight(), Global.comparer));
+                        temp.AddRange(RelList[i].GetList().Except(fd.GetRight()));
                         Relation rel2 = new Relation(temp);
 
                         //δημιουργούνται δύο κλειδιά, ένα για τον καθένα πίνακα

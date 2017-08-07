@@ -61,7 +61,7 @@ namespace Normalization
         public void AttrAdd(Attr attr)
         {
             // ελέγχεται αν το γνώρισμα υπάρχει ήδη στη λίστα, κι αν όχι, τότε καταχωρείται.
-            if (!attrList.Contains(attr, Global.comparer)) attrList.Add(attr);
+            if (!attrList.Contains(attr)) attrList.Add(attr);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Normalization
             List<string> names = new List<string>();
             foreach (Attr attr in attrList)
             {
-                if (key.GetAttrs().Contains(attr, Global.comparer))
+                if (key.GetAttrs().Contains(attr))
                     names.Add("\u2660" + attr.Name);
                 //names.Add("#" + attr.Name);
                 else

@@ -222,7 +222,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         //ο έλεγχος γίνεται με τη βοήθεια της τομής.
         foreach (Key key in keyList)
         {
-            if (fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
+            if (fd.GetLeft().Intersect(key.GetAttrs()).Count() >= key.GetAttrs().Count)
             {
                 lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση"+ "<br/>" + "<br/>" + "\"" + fd.ToString() + "\""+ "<br/>" + "<br/>" + "περιλαμβάνει υποψήφιο κλειδί στο αριστερό σκέλος της, επομένως δεν παραβιάζει την BCNF μορφή και δεν χρησιμοποιείται για διάσπαση πινάκων.";
                 return;
@@ -236,7 +236,7 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         foreach (Key key in tempoRelKey)
         {
-            if (fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
+            if (fd.GetLeft().Intersect(key.GetAttrs()).Count() >= key.GetAttrs().Count)
             {
                 lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση"+ "<br/>"  + "<br/>"  + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "περιλαμβάνει υποψήφιο κλειδί του πίνακα " + rel.Name + ", επομένως δεν μπορεί να τον διασπάσει.";
                 return;
@@ -244,7 +244,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         }
 
         // αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί.
-        int x = fd.GetAll().Intersect(rel.GetList(), Global.comparer).Count();
+        int x = fd.GetAll().Intersect(rel.GetList()).Count();
 
         if (x < rel.GetList().Count && x == fd.GetAll().Count)
         {
@@ -257,7 +257,7 @@ public partial class StepsDecompose : System.Web.UI.Page
             // ο rel2 πίνακας παίρνει τα γνωρίσματα από το αριστερό σκέλος της συναρτησιακής εξάρτησης, συν τα γνωρίσματα του πίνακα που διασπάστηκε, πλην αυτών που βρίσκονται στο δεξί σκέλος της συναρτησιακής εξάρτησης.
             List<Attr> tempo = new List<Attr>();
             tempo.AddRange(fd.GetLeft());
-            tempo.AddRange(rel.GetList().Except(fd.GetRight(), Global.comparer));
+            tempo.AddRange(rel.GetList().Except(fd.GetRight()));
             Relation rel2 = new Relation(tempo);
 
             // δημιουργούνται δύο κλειδιά, ένα για τον καθένα πίνακα.
@@ -346,7 +346,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         //ο έλεγχος γίνεται με τη βοήθεια της τομής
         foreach (FD fd in fdList)
             foreach (Key key in keyList)
-                if (!fd.Excluded && fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
+                if (!fd.Excluded && fd.GetLeft().Intersect(key.GetAttrs()).Count() >= key.GetAttrs().Count)
                 {
                     fd.Excluded = true;
                     break;
@@ -363,7 +363,7 @@ public partial class StepsDecompose : System.Web.UI.Page
             if (fd.Excluded) continue;
             //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
             //σε διαφορετική περίπτωση ο πίνακας είναι BCNF
-            int x = fd.GetAll().Intersect(rel.GetList(), Global.comparer).Count();
+            int x = fd.GetAll().Intersect(rel.GetList()).Count();
             if (x < rel.GetList().Count && x == fd.GetAll().Count)
                 return "";
         }
