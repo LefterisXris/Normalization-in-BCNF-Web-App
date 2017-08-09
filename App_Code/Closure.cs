@@ -45,7 +45,12 @@ namespace Normalization
             }
         }
 
-
+        /// <summary>
+        /// Μέθοδος που υπολογίζει την closure.
+        /// </summary>
+        /// <param name="attrS"></param>
+        /// <param name="showOut"></param>
+        /// <returns></returns>
         public List<Attr> attrClosure(List<Attr> attrS, bool showOut)
         {
             //ο πίνακας closure περιλαμβάνει τον εγκλεισμό των γνωρισμάτων attrS

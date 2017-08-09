@@ -320,8 +320,9 @@ public partial class _Default : System.Web.UI.Page
 
         // ορίζεται η λίστα που παίρνει τα κλειδιά του πίνακα.
         List<Key> keyList = new List<Key>();
-        Closure closure = new Closure(attrList, fdList);
-        keyList = closure.KeysGet(fdList, attrList, false);
+        // Closure closure = new Closure(attrList, fdList);
+        // keyList = closure.KeysGet(fdList, attrList, false);
+        keyList = Global.findKeys(attrList, fdList);
 
         if (keyList.Count > 0)
         {
@@ -377,7 +378,8 @@ public partial class _Default : System.Web.UI.Page
                     // αν όλα τα γνωρίσματα του δεξιού σκέλους βρέθηκαν στο αριστερό, τότε η συναρτησιακή εξάρτηση τροποποιείται,
                     // με τα ίδια γνωρίσματα στα αριστερά και τον εγκλεισμό του αριστερού σκέλους στα δεξιά.
                     Closure newClosure = new Closure(attrList, fdList);
-                    fdList[i].AddRight(newClosure.attrClosure(fdList[i].GetLeft(), false));
+                    fdList[i].AddRight(Global.findClosure(fdList[i].GetLeft(), fdList));
+                    //  fdList[i].AddRight(newClosure.attrClosure(fdList[i].GetLeft(), false));
                     fdList[i].RemoveRight(fdList[i].GetLeft());
                 }
             }
@@ -442,8 +444,9 @@ public partial class _Default : System.Web.UI.Page
                         //προσδιορίζουμε το κλειδί του δεύτερου πίνακα (αυτό που δίνει όλα τα γνωρίσματά του)
                         //δημιουργούμε μια τοπική λίστα κλειδιών και ως κλειδί του δεύτερου πίνακα ορίζεται το πρώτο κλειδί της λίστας
                         List<Key> tempoKeyList = new List<Key>();
-                        Closure cl = new Closure(attrList, fdList);
-                        tempoKeyList = cl.KeysGet(fdList, rel2.GetList(), false);
+                        // Closure cl = new Closure(attrList, fdList);
+                        // tempoKeyList = cl.KeysGet(fdList, rel2.GetList(), false);
+                        tempoKeyList = Global.findKeys(rel2.GetList(), fdList);
                         key2.AddToKey(tempoKeyList[0].GetAttrs());
                         rel2.SetKey(key2);
 
