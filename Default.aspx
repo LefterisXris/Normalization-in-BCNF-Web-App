@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" EnableEventValidation="false" %>
 
 <!DOCTYPE html>
 
@@ -126,7 +126,19 @@
                 <div class="col-md-6">
                     <p>Γνωρίσματα </p>
 
-                    <asp:ListBox ID="lboxAttr" runat="server" Rows="10" Width="100%"></asp:ListBox>
+                 <%--   <asp:ListBox ID="lboxAttr" runat="server" Rows="10" Width="100%"></asp:ListBox> --%>
+                    
+                    <asp:GridView ID="gridViewAttr" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+                        runat="server" AutoGenerateColumns="false"  Width="100%"
+                        OnRowDataBound="OnRowDataBoundAttr" OnSelectedIndexChanged="OnSelectedIndexChangedAttr">
+
+                        <Columns>
+                            <asp:BoundField DataField="Name" HeaderText=" Όνομα" ItemStyle-Width="55%"/>
+                            <asp:BoundField DataField="Description" HeaderText=" Τύπος \ Περιγραφή" ItemStyle-Width="35%" ItemStyle-HorizontalAlign="Center"/>
+                        </Columns>
+
+                        </asp:GridView>
+
                     <div style="text-align: right; width: 100%;">
                         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalNewAttribute">+</button>
                         <asp:Button class="btn btn-info btn-lg" ID="Button2" runat="server" Text="-" OnClick="btnDeleteAttrClick" />
@@ -160,7 +172,18 @@
                 <div class="col-md-6">
                     <p>Συναρτησιακές εξαρτήσεις </p>
 
-                    <asp:ListBox ID="lboxFD" runat="server" Rows="10" Width="100%"></asp:ListBox>
+                   <%--  <asp:ListBox ID="lboxFD" runat="server" Rows="10" Width="100%"></asp:ListBox> --%>
+
+                    <asp:GridView ID="gridViewFD" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+                        runat="server" AutoGenerateColumns="false" Width="100%"
+                        OnRowDataBound="OnRowDataBoundFD" OnSelectedIndexChanged="OnSelectedIndexChangedFD">
+                       
+                         <Columns>
+                            <asp:BoundField DataField="Description" HeaderText=" Περιγραφή" ItemStyle-Width="80%" />
+                            <asp:BoundField DataField="Trivial" HeaderText=" Τετ" ItemStyle-Width="10%" ItemStyle-HorizontalAlign="Center"/>
+                        </Columns>
+
+                        </asp:GridView>
 
                     <div style="text-align: right; width: 100%;">
                         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalNewFD">+</button>

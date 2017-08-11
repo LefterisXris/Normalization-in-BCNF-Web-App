@@ -6,6 +6,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Normalization;
 using System.IO;
+using System.Data;
+using System.Drawing;
 
 /// <summary>
 /// Default: Περιλαμβάνει όλες τις λειτουργίες της Εφαρμογής.
@@ -87,7 +89,7 @@ public partial class _Default : System.Web.UI.Page
         // TODO: Διαγραφή?  attrList.Add(new Attr(tbxNewAttrName.Text.Trim(),tbxNewAttrType.Text.Trim()));
         if (AttrCreate(tbxNewAttrName.Text.Trim(), tbxNewAttrType.Text.Trim()))
         {
-            loadListBox(lboxAttr, 0);
+         //   loadListBox(lboxAttr, 0);
             // TODO: Διαγραφή?  tbxNewAttrName.Text = "";
             updateCheckBoxLists();
             msg += "\nNew attribute inserted.";
@@ -127,7 +129,7 @@ public partial class _Default : System.Web.UI.Page
         // Αν μπορεί να δημιουργηθεί η συναρτησιακή εξάρτηση καλώς.
         if (FDCreate(fd))
         {
-            loadListBox(lboxFD, 1);
+          //  loadListBox(lboxFD, 1);
             msg += "\nNew FD inserted." + fd.ToString();
         }
         else
@@ -209,10 +211,10 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnDeleteAttrClick(object sender, EventArgs e)
     {
-        int index = lboxAttr.SelectedIndex;
-        attrList.RemoveAt(index);
+       // int index = lboxAttr.SelectedIndex;
+       // attrList.RemoveAt(index);
 
-        loadListBox(lboxAttr, 0);
+       // loadListBox(lboxAttr, 0);
     }
 
     /// <summary>
@@ -220,10 +222,10 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnDeleteFDClick(object sender, EventArgs e)
     {
-        int index = lboxFD.SelectedIndex;
-        fdList.RemoveAt(index);
+        //int index = lboxFD.SelectedIndex;
+       // fdList.RemoveAt(index);
 
-        loadListBox(lboxFD, 1);
+       // loadListBox(lboxFD, 1);
     }
     #endregion
 
@@ -689,8 +691,13 @@ public partial class _Default : System.Web.UI.Page
 
         }
 
+        // Φόρτωση γνωρισμάτων στον πίνακα γνωρισμάτων.
+        populateAttrGridView(attrList);
+        populateFdGridView(fdList);
+        //TODO: ανανέωση λιστών για επιλογή (κλειστότητας, κλειδιών κλπ).
+        
         // Ανανεώνονται οι λίστες και το περιεχόμενο της σελίδας.
-        loadListBox(lboxAttr, 0); loadListBox(lboxFD, 1); updateCheckBoxLists();
+       // loadListBox(lboxAttr, 0); loadListBox(lboxFD, 1); updateCheckBoxLists();
         lblSchemaName.Text = selectedSchema;
     }
 
@@ -704,6 +711,113 @@ public partial class _Default : System.Web.UI.Page
             if (attrList[i].Name == name) return attrList[i];
         return null;
     }
+
+    /// <summary>
+    /// Μέθοδος που φορτώνει τον πίνακα με τα γνωρίσματα.
+    /// </summary>
+    /// <param name="attrList">Τα γνωρίσματα που θα φορτώσει.</param>
+    private void populateAttrGridView(List<Attr> attrList)
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("Name", typeof(string)));
+        dataTable.Columns.Add(new DataColumn("Description", typeof(string)));
+
+        foreach (Attr attr in attrList)
+        {
+            dataTable.Rows.Add(attr.Name, attr.Type);
+        }
+        
+        gridViewAttr.DataSource = dataTable;
+        gridViewAttr.DataBind();
+
+    }
+
+    private void populateFdGridView(List<FD> fdList)
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("Description", typeof(string)));
+        dataTable.Columns.Add(new DataColumn("Trivial", typeof(string)));
+
+        foreach (FD fd in fdList)
+        {
+            string trivial = "";
+            if (fd.IsTrivial)
+                trivial = true.ToString();
+            
+            dataTable.Rows.Add(fd.ToString(), trivial);
+        }
+
+        gridViewFD.DataSource = dataTable;
+        gridViewFD.DataBind();
+    }
+
+    #region  Διαχείριση GridViews
+
+    /// <summary>
+    /// Προσθέτει λειτουργικότητα στις γραμμές του gridViewAttr μόλις προστεθεί περιεχόμενο.
+    /// </summary>
+    protected void OnRowDataBoundAttr(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gridViewAttr, "Select$" + e.Row.RowIndex);
+            e.Row.ToolTip = "Click to select this row.";
+        }
+    }
+
+    /// <summary>
+    /// Ενημερώνει την επιλεγμένη γραμμή για το gridViewAttr.
+    /// </summary>
+    protected void OnSelectedIndexChangedAttr(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in gridViewAttr.Rows)
+        {
+            if (row.RowIndex == gridViewAttr.SelectedIndex)
+            {
+                row.BackColor = ColorTranslator.FromHtml("#A1DCF2");
+                row.ToolTip = string.Empty;
+            }
+            else
+            {
+                row.BackColor = ColorTranslator.FromHtml("#FFFFFF");
+                row.ToolTip = "Click to select this row.";
+            }
+        }
+    }
+
+    /// <summary>
+    /// Προσθέτει λειτουργικότητα στις γραμμές του gridViewFD μόλις προστεθεί περιεχόμενο.
+    /// </summary>
+    protected void OnRowDataBoundFD(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gridViewFD, "Select$" + e.Row.RowIndex);
+            e.Row.ToolTip = "Click to select this row.";
+        }
+    }
+
+    /// <summary>
+    /// Ενημερώνει την επιλεγμένη γραμμή για το gridViewFD.
+    /// </summary>
+    protected void OnSelectedIndexChangedFD(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in gridViewFD.Rows)
+        {
+            if (row.RowIndex == gridViewFD.SelectedIndex)
+            {
+                row.BackColor = ColorTranslator.FromHtml("#A1DCF2");
+                row.ToolTip = string.Empty;
+            }
+            else
+            {
+                row.BackColor = ColorTranslator.FromHtml("#FFFFFF");
+                row.ToolTip = "Click to select this row.";
+            }
+        }
+    }
+
+    #endregion
 
     // TODO: Υλοποίηση.
     protected void UploadFile(object sender, EventArgs e)
@@ -735,8 +849,8 @@ public partial class _Default : System.Web.UI.Page
 
         loadListBox(null, 0);
         loadListBox(null, 1);
-        lboxAttr.Items.Clear();
-        lboxFD.Items.Clear();
+        //lboxAttr.Items.Clear();
+       // lboxFD.Items.Clear();
 
         updateCheckBoxLists();
     }
