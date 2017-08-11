@@ -15,7 +15,6 @@ using System.Drawing;
 /// </summary>
 public partial class _Default : System.Web.UI.Page
 {
-
     private List<Attr> attrList = new List<Attr>(); // Λίστα με αντικείμενα Attr, για τα γνωρίσματα.
     private List<FD> fdList = new List<FD>(); // Λίστα με αντικείμενα FD, για τις συναρτησιακές εξαρτήσεις.
     private string msg = ""; // Μεταβλητή που τυπώνει στην Logging Console. (βοηθητική) // TODO: άλλος σχεδιασμός.
@@ -33,6 +32,18 @@ public partial class _Default : System.Web.UI.Page
             LoadSelectedSchema("Default.txt");
         }
 
+        if (gridViewAttr.Rows.Count <= 0)
+        {
+            Image1.Visible = true;
+            Image2.Visible = true;
+        }
+        else
+        {
+            Image1.Visible = false;
+            Image2.Visible = false;
+        }
+        log.InnerText = "rows count = " + gridViewAttr.Rows.Count;
+
         #region ViewStates Load
         if (ViewState["attrListVS"] != null)
             attrList = (List<Attr>)ViewState["attrListVS"];
@@ -48,7 +59,7 @@ public partial class _Default : System.Web.UI.Page
         // Καλείται η μέθοδος αυτή για να κρατηθούν οι επιλογές στα checkboxlists.
       //  setCheckBoxStates(LeftFDCheckBoxListAttrSelection);
       //  setCheckBoxStates(RightFDCheckBoxListAttrSelection);
-        setCheckBoxStates(ClosureCheckBoxList);
+      //  setCheckBoxStates(ClosureCheckBoxList);
     }
 
     protected void Page_PreRender(object sender, EventArgs e)
@@ -427,31 +438,42 @@ public partial class _Default : System.Web.UI.Page
             log.InnerText = "You must select an FD first.";
         }
     }
-    
+
     #endregion
 
     #endregion
 
     #region ACTIONS
+
+    // Μένει να εμφανίζω τα ενδιάμεσα αποτελέσματα και πληροφορίες κατά τον υπολογισμό.
+    #region Closure
+
+    /// <summary>
+    /// Φορτώνει τα γνωρίσματα και εμφανίζει το Modal για την εύρεση του Εγκλεισμού.
+    /// </summary>
+    protected void btnFindClosureClick(object sender, EventArgs e)
+    {
+        populateFindClosureGridView(); // Φόρτωση γνωρισμάτων για επιλογή
+        
+        ClientScript.RegisterStartupScript(Page.GetType(), "modalClosure", "$('#modalClosure').modal();", true);
+    }
+    
     /// <summary>
     /// Υπολογίζει τον εγλεισμό των επιλεγμένων γνωρισμάτων.
     /// </summary>
     protected void btnCalculateClosureClick(object sender, EventArgs e)
     {
-         List<Attr> attrListSelected = new List<Attr>();
+        List<Attr> attrListSelected = new List<Attr>();
 
-         // Τα επιλεγμένα γνωρίσματα εισάγωνται στην λίστα attrListSelected.
-         foreach (ListItem item in ClosureCheckBoxList.Items)
-             if (item.Selected)
-             {
-                 int index = ClosureCheckBoxList.Items.IndexOf(item);
-                 attrListSelected.Add(attrList[index]);
-             }
-
-        // Δημιουργείται αντικείμενο της κλάσης Closure όπου καλείται η μέθοδος υπολογισμού του εγκλεισμού.
-        // TODO: Πρέπει να γίνει κάπως αλλιώς. Πιο αποδοτικά.
-        /* Closure closure = new Closure(attrList, fdList);
-         msg = closure.btnOK_Click(attrListSelected);*/
+        // Τα επιλεγμένα γνωρίσματα εισάγωνται στην λίστα attrListSelected.
+        foreach (GridViewRow item in gridViewFindClosure.Rows)
+        {
+            if ((item.Cells[0].FindControl("checkBoxFindClosure") as CheckBox).Checked)
+            {
+                attrListSelected.Add(attrList[item.RowIndex]);
+            }
+        }
+        
         msg = "";
         List<Attr> atr1 = Global.findClosure(attrListSelected, fdList);
 
@@ -459,27 +481,19 @@ public partial class _Default : System.Web.UI.Page
         {
             msg += attr.Name + ", ";
         }
-        log.InnerText = msg;
+        log.InnerText = "Closure is: " + msg;
     }
+
+    #endregion
+
+    // Μένει να εμφανίζω τα ενδιάμεσα αποτελέσματα και πληροφορίες κατά τον υπολογισμό.
+    #region CalculateKeys
 
     /// <summary>
     /// Υπολογίζει τα υποψήφια κλειδιά του σχήματος.
     /// </summary>
     protected void btnCalculateKeysClick(object sender, EventArgs e)
     {
-        /* Closure closure = new Closure(attrList, fdList);
-         List<Key> keyList = new List<Key>();
-
-         // Τα υποψήφια κλειδιά υπολογίζονται στην μέθοδο KeysGet().
-         keyList = closure.KeysGet(fdList, attrList, true);
-
-         msg = "";
-         msg += "Υποψήφια κλειδιά Που βρέθηκαν: \n";
-
-         foreach (Key key in keyList)
-             msg += key.ToString() + "\n";
-             */
-
         List<Key> keyList = new List<Key>();
         keyList = Global.findKeys(attrList, fdList);
         msg = "";
@@ -489,8 +503,12 @@ public partial class _Default : System.Web.UI.Page
             msg += key.ToString() + ", ";
         }
 
-        log.InnerText = msg;
+        log.InnerText = "Υποψήφια κλειδιά: " + msg;
     }
+
+    #endregion
+
+    #region Decompose
 
     /// <summary>
     /// Μέθοδος διάσπασης σε πίνακες BCNF
@@ -731,6 +749,10 @@ public partial class _Default : System.Web.UI.Page
         log.InnerText = msg;
     }
 
+    #endregion
+
+    #region StepsDecompose
+
     /// <summary>
     /// Ανοίγει νέα σελίδα όπου γίνεται η υλοποίηση της σταδιακής διάσπασης.
     /// </summary>
@@ -742,6 +764,9 @@ public partial class _Default : System.Web.UI.Page
         Response.Redirect("StepsDecompose.aspx");
 
     }
+
+    #endregion
+
 
     #region Helping Methods for Actions
     /// <summary>
@@ -774,13 +799,13 @@ public partial class _Default : System.Web.UI.Page
         // TODO: Αλλαγή τρόπου για αποδοτικότητα.
       //  LeftFDCheckBoxListAttrSelection.Items.Clear();
       //  RightFDCheckBoxListAttrSelection.Items.Clear();
-        ClosureCheckBoxList.Items.Clear();
+       // ClosureCheckBoxList.Items.Clear();
 
         foreach (Attr attr in attrList)
         {
         //    LeftFDCheckBoxListAttrSelection.Items.Add(attr.Name);
          //   RightFDCheckBoxListAttrSelection.Items.Add(attr.Name);
-            ClosureCheckBoxList.Items.Add(attr.Name);
+      //      ClosureCheckBoxList.Items.Add(attr.Name);
         }
     }
 
@@ -809,7 +834,75 @@ public partial class _Default : System.Web.UI.Page
         }
     }
     #endregion
- 
+
+    #region Schemas Management
+
+    #region New
+
+    /// <summary>
+    /// Φορτώνει το Modal νέου σχήματος.
+    /// </summary>
+    protected void btnNewSchemaClick(object sender, EventArgs e)
+    {
+        ClientScript.RegisterStartupScript(Page.GetType(), "modalNewSchema", "$('#modalNewSchema').modal();", true);
+    }
+
+    /// <summary>
+    /// Για νέο σχήμα, ουσιαστικά κάνει reset τα δεδομένα μας.
+    /// </summary>
+    protected void btnNewSchemaOKClick(object sender, EventArgs e)
+    {
+        lblSchemaName.Text = tbxNewSchemaName.Text.Trim();
+
+        attrList.Clear();
+        fdList.Clear();
+        msg = "";
+        log.InnerText = msg;
+
+        ResetGridViews();
+    }
+
+    /// <summary>
+    /// Αδειάζει τα GridViews και εμφανίζει εικόνες στη θέση των 2 βασικών.
+    /// </summary>
+    private void ResetGridViews()
+    {
+        gridViewAttr.DataSource = null;
+        gridViewAttr.DataBind();
+
+        gridViewFD.DataSource = null;
+        gridViewFD.DataBind();
+
+        gridViewLeftFD.DataSource = null;
+        gridViewLeftFD.DataBind();
+
+        gridViewRightFD.DataSource = null;
+        gridViewRightFD.DataBind();
+
+        gridViewEditLeftFD.DataSource = null;
+        gridViewEditLeftFD.DataBind();
+
+        gridViewEditRightFD.DataSource = null;
+        gridViewEditRightFD.DataBind();
+
+        gridViewFindClosure.DataSource = null;
+        gridViewFindClosure.DataBind();
+
+        Image1.Visible = true;
+        Image2.Visible = true;
+    }
+
+
+    #endregion
+
+    #region Load
+
+    #endregion
+
+    #region Save
+
+    #endregion
+
 
     /// <summary>
     /// Ελέγχεται ποιό παράδειγμα επιλέχθηκε και φορτώνεται το αντίστοιχο.
@@ -895,15 +988,15 @@ public partial class _Default : System.Web.UI.Page
 
         }
 
-        // Φόρτωση γνωρισμάτων στον πίνακα γνωρισμάτων.
+        // Φόρτωση γνωρισμάτων στον πίνακα γνωρισμάτων και των συναρτησιακών εξαρτήσεων.
         populateAttrGridView(attrList);
         populateFdGridView(fdList);
-        //TODO: ανανέωση λιστών για επιλογή (κλειστότητας, κλειδιών κλπ).
-        
-        // Ανανεώνονται οι λίστες και το περιεχόμενο της σελίδας.
-       // loadListBox(lboxAttr, 0); loadListBox(lboxFD, 1); updateCheckBoxLists();
+
         lblSchemaName.Text = selectedSchema;
     }
+
+    #endregion
+
 
     /// <summary>
     /// Επιστρέφει το αντικείμενο Attr στο οποίο αντιστοιχεί το όνομα name.
@@ -915,6 +1008,8 @@ public partial class _Default : System.Web.UI.Page
             if (attrList[i].Name == name) return attrList[i];
         return null;
     }
+
+    #region Populate GridViews
 
     /// <summary>
     /// Μέθοδος που φορτώνει τον πίνακα με τα γνωρίσματα.
@@ -930,10 +1025,12 @@ public partial class _Default : System.Web.UI.Page
         {
             dataTable.Rows.Add(attr.Name, attr.Type);
         }
-        
+
         gridViewAttr.DataSource = dataTable;
         gridViewAttr.DataBind();
 
+        // Σε περίπτωση που κάνω νέο σχήμα, καλό θα είναι να σιγουρευτώ ότι οι εικόνες θα φύγουν.
+        Image1.Visible = false;
     }
 
     /// <summary>
@@ -951,14 +1048,20 @@ public partial class _Default : System.Web.UI.Page
             string trivial = "";
             if (fd.IsTrivial)
                 trivial = true.ToString();
-            
+
             dataTable.Rows.Add(fd.ToString(), trivial);
         }
 
         gridViewFD.DataSource = dataTable;
         gridViewFD.DataBind();
+
+        // Σε περίπτωση που κάνω νέο σχήμα, καλό θα είναι να σιγουρευτώ ότι οι εικόνες θα φύγουν.
+        Image2.Visible = false;
     }
 
+    /// <summary>
+    /// Μέθοδος που φορτώνει τον πίνακα με τις συναρτησιακές εξαρτήσεις αριστερού και δεξιού σκέλους.
+    /// </summary>
     private void populateLeftAndRightFDGridView()
     {
         DataTable dataTable = new DataTable();
@@ -979,11 +1082,15 @@ public partial class _Default : System.Web.UI.Page
         {
             dataTable2.Rows.Add(attr.Name);
         }
-        
+
         gridViewRightFD.DataSource = dataTable2;
         gridViewRightFD.DataBind();
     }
 
+    /// <summary>
+    /// Μέθοδος που φορτώνει τον πίνακα με τις συναρτησιακές εξαρτήσεις αριστερού και δεξιού σκέλους για επεξεργασία.
+    /// </summary>
+    /// <param name="fdList">Οι συναρτησιακές εξαρτήσεις που θα φορτώσει.</param>
     private void populateLeftAndRightEditFDGridView()
     {
         DataTable dataTable = new DataTable();
@@ -1009,7 +1116,26 @@ public partial class _Default : System.Web.UI.Page
         gridViewEditRightFD.DataBind();
     }
 
-    #region  Διαχείριση GridViews
+    /// <summary>
+    /// Μέθοδος που φορτώνει τον πίνακα με τα γνωρίσματα για εύρεση εγκλεισμού.
+    /// </summary>
+    private void populateFindClosureGridView()
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("Name", typeof(string)));
+
+        foreach (Attr attr in attrList)
+        {
+            dataTable.Rows.Add(attr.Name);
+        }
+
+        gridViewFindClosure.DataSource = dataTable;
+        gridViewFindClosure.DataBind();
+    }
+
+    #endregion
+
+    #region GridViews Management
 
     /// <summary>
     /// Προσθέτει λειτουργικότητα στις γραμμές του gridViewAttr μόλις προστεθεί περιεχόμενο.
@@ -1077,42 +1203,7 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    // TODO: Υλοποίηση.
-    protected void UploadFile(object sender, EventArgs e)
-    {
-        /*  String uriString = "ftp://localhost/Files";
-
-
-          // Create a new WebClient instance.
-          WebClient myWebClient = new WebClient();
-          string fileName = FileUpload1.FileName.ToString();
-
-          // Upload the file to the URI.
-          // The 'UploadFile(uriString,fileName)' method implicitly uses HTTP POST method.
-          byte[] responseArray = myWebClient.UploadFile(uriString, fileName);
-
-          // Decode and display the response.
-          msg = System.Text.Encoding.ASCII.GetString(responseArray);
-          log.InnerText = msg;*/
-    }
-
-    protected void btnNewSchemaClick(object sender, EventArgs e)
-    {
-        lblSchemaName.Text = tbxNewSchemaName.Text.Trim();
-
-        attrList.Clear();
-        fdList.Clear();
-        msg = "";
-        log.InnerText = msg;
-
-        loadListBox(null, 0);
-        loadListBox(null, 1);
-        //lboxAttr.Items.Clear();
-       // lboxFD.Items.Clear();
-
-        updateCheckBoxLists();
-    }
-
+    
     /// <summary>
     /// Μέθοδος που διαβάζει και εμφανίζει τα διαθέσιμα παραδείγματα στην λίστα για επιλογή.
     /// </summary>

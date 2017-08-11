@@ -29,84 +29,60 @@
 
                 <%--Εγκλεισμός (Επιλογή)--%>
                 <div class="col-md-3">
-                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalEglismos">Εγκλεισμός</button>
 
-                    <!-- Modal εγκλεισμός-->
-                    <div class="modal fade" id="modalEglismos" role="dialog">
+                    <asp:Button class="btn btn-info btn-lg" ID="btnFindClosure" runat="server" Text="Εγκλεισμός" OnClick="btnFindClosureClick" />
+
+                    <!-- Modal εύρεσης εγκλεισμού -->
+                    <div class="modal fade" id="modalClosure" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Εγκλεισμός γνωρισμάτων</h4>
+                                    <h4 class="modal-title">Υπολογισμός Εγκλεισμού</h4>
                                 </div>
                                 <div class="modal-body">
 
-                                    <p>Επιλογή γνωρισμάτων</p>
-                                    <asp:CheckBoxList ID="ClosureCheckBoxList" runat="server"></asp:CheckBoxList>
+                                   <h2>Επιλογή γνωρισμάτων</h2>
+                                   
+                                    <div class="form-horizontal">
+                                        <div class="col-md-10">
+                                            <asp:GridView ID="gridViewFindClosure" runat="server" AutoGenerateColumns="false" Width="100%">
+                       
+                                                 <Columns>
+                                                     <asp:templatefield HeaderText="Επιλογή" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
+                                                        <itemtemplate>
+                                                            <asp:checkbox ID="checkBoxFindClosure" runat="server"></asp:checkbox>
+                                                        </itemtemplate>
+                                                    </asp:templatefield>
+                                                    <asp:BoundField DataField="Name" HeaderText="Όνομα" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80%"/>
+                                                </Columns>
+
+                                            </asp:GridView>
+                                        </div>
+                                    </div>
+
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="Button4" Text="OK" class="btn btn-default" OnClick="btnCalculateClosureClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnCalculateClosure" Text="OK" class="btn btn-default" OnClick="btnCalculateClosureClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <%--Modal--%>
+                    <!--Modal -->
                 </div>
 
                 <%--Υποψήφια κλειδιά (Επιλογή)--%>
                 <div class="col-md-3">
-                    <!--   <button type="button"  class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalKeys">Υποψήφια κλειδιά</button> -->
-                    <asp:Button class="btn btn-info btn-lg" ID="Button10" runat="server" Text="Υποψήφια κλειδιά" OnClick="btnCalculateKeysClick" />
 
-                    <!-- Modal Υποψήφια κλειδιά-->
-                    <%--TODO: Διαγραφή?? --%>
-                    <div class="modal fade" id="modalKeys" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Υποψήφια κλειδιά</h4>
-                                </div>
-                                <div class="modal-body">
+                    <asp:Button class="btn btn-info btn-lg" ID="btnCalculateKeys" runat="server" Text="Υποψήφια κλειδιά" OnClick="btnCalculateKeysClick" />
 
-                                    <p>Click OK για υποψήφια κλειδιά. </p>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <asp:Button runat="server" ID="Button5" Text="OK" class="btn btn-default" OnClick="btnCalculateKeysClick" UseSubmitBehavior="false" data-dismiss="modal" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <%--Modal--%>
                 </div>
 
                 <%--Διάσπαση BCNF (Επιλογή)--%>
                 <div class="col-md-3">
-                    <!--  <button type="button"  class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalDecompose">Διάσπαση BCNF</button> -->
+
                     <asp:Button class="btn btn-info btn-lg" ID="Button11" runat="server" Text="Διάσπαση BCNF" OnClick="btnDecomposeClick" />
 
-                    <!-- Modal Διάσπαση BCNF-->
-                    <%--TODO: Διαγραφή?? --%>
-                    <div class="modal fade" id="modalDecompose" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Διάσπαση BCNF</h4>
-                                </div>
-                                <div class="modal-body">
-
-                                    <p>Click OK για Διάσπαση BCNF. </p>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <asp:Button runat="server" ID="Button8" Text="OK" class="btn btn-default" OnClick="btnDecomposeClick" UseSubmitBehavior="false" data-dismiss="modal" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <%--Modal--%>
                 </div>
 
                 <%--Σταδιακή διάσπαση BCNF (Επιλογή)--%>
@@ -136,6 +112,8 @@
                         </Columns>
 
                         </asp:GridView>
+
+                    <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/add new.jpg" Visible="False" />
 
                     <!-- Buttons -->
                     <div style="text-align: right; width: 100%;">
@@ -225,6 +203,8 @@
                         </Columns>
 
                     </asp:GridView>
+
+                    <asp:Image ID="Image2" runat="server" ImageUrl="~/Images/add new.jpg" Visible="False" />
 
                     <!-- Buttons -->
                     <div style="text-align: right; width: 100%;">
@@ -373,10 +353,11 @@
                 <%-- Load Button --%>
                 <div class="col-md-6">
                     <div>
-                        <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#modalNew">Νέο Σχήμα</button>
-
-                        <!-- Modal νέο σχήμα-->
-                        <div class="modal fade" id="modalNew" role="dialog">
+                       
+                         <asp:Button ID="btnNewSchema" class="btn btn-success btn-lg" runat="server" Text="Νέο Σχήμα" OnClick="btnNewSchemaClick"/>
+                        
+                        <!-- Modal νέο σχήμα -->
+                        <div class="modal fade" id="modalNewSchema" role="dialog">
                             <div class="modal-dialog">
 
                                 <!-- Modal content-->
@@ -386,16 +367,17 @@
                                         <h4 class="modal-title">Νέο σχήμα</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Εισάγετε όνομα για το νέο σχήμα.</p>
+                                        <p>Εισάγετε όνομα για το νέο σχήμα:</p>
                                         <asp:TextBox ID="tbxNewSchemaName" runat="server" placeholder="Όνομα σχήματος"></asp:TextBox>
                                     </div>
                                     <div class="modal-footer">
-                                        <asp:Button runat="server" ID="Button7" Text="Δημιουργία" class="btn btn-default" OnClick="btnNewSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                        <asp:Button runat="server" ID="btnNewSchemaOK" Text="Δημιουργία" class="btn btn-default" OnClick="btnNewSchemaOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <%--Modal--%>
+                        <!-- Modal -->
+
                     </div>
                     <div>
                         <asp:Button ID="btnLoadSchema" class="btn btn-success btn-lg" runat="server" Text="Φόρτωση Σχήματος" OnClick="btnLoadSchema_Click"  />
