@@ -46,8 +46,8 @@ public partial class _Default : System.Web.UI.Page
         #endregion
 
         // Καλείται η μέθοδος αυτή για να κρατηθούν οι επιλογές στα checkboxlists.
-        setCheckBoxStates(LeftFDCheckBoxListAttrSelection);
-        setCheckBoxStates(RightFDCheckBoxListAttrSelection);
+      //  setCheckBoxStates(LeftFDCheckBoxListAttrSelection);
+      //  setCheckBoxStates(RightFDCheckBoxListAttrSelection);
         setCheckBoxStates(ClosureCheckBoxList);
     }
 
@@ -80,16 +80,26 @@ public partial class _Default : System.Web.UI.Page
     }
 
     #region ADD NEW
+
+    // Μένει η δυνατότητα πολλαπλής εισαγωγής γνωρισμάτων.
+    #region Attr
+
     /// <summary>
-    /// Καλείται όταν πατηθεί το ΟΚ από το Modal Γνωρίσματος.
+    /// Εμφανίζει το Modal για την προσθήκη νέου γνωρίσματος.
     /// </summary>
     protected void btnNewAttrClick(object sender, EventArgs e)
     {
-        // Δημιουργείται ένα γνώρισμα με όνομα και τύπο που δόθηκε.
-        // TODO: Διαγραφή?  attrList.Add(new Attr(tbxNewAttrName.Text.Trim(),tbxNewAttrType.Text.Trim()));
+        ClientScript.RegisterStartupScript(Page.GetType(), "modalNewAttribute", "$('#modalNewAttribute').modal();", true);
+    }
+
+    /// <summary>
+    /// Καλείται όταν πατηθεί το ΟΚ από το Modal νέου Γνωρίσματος.
+    /// </summary>
+    protected void btnNewAttrOKClick(object sender, EventArgs e)
+    {
         if (AttrCreate(tbxNewAttrName.Text.Trim(), tbxNewAttrType.Text.Trim()))
         {
-            populateAttrGridView(attrList);    
+            populateAttrGridView(attrList);
             msg += "\nNew attribute inserted.";
         }
         else
@@ -102,52 +112,11 @@ public partial class _Default : System.Web.UI.Page
     }
 
     /// <summary>
-    /// Καλείται όταν πατηθεί ΟΚ από το Modal Συναρτησιακής Εξάρτησης.
-    /// </summary>
-    protected void btnNewFDClick(object sender, EventArgs e)
-    {
-        FD fd = new FD();
-
-        // Προστίθενται τα γνωρίσματα για το αριστερό σκέλος.
-        foreach (ListItem item in LeftFDCheckBoxListAttrSelection.Items)
-            if (item.Selected)
-            {
-                int i = LeftFDCheckBoxListAttrSelection.Items.IndexOf(item);
-                fd.AddLeft(attrList[i]);
-            }
-
-        // Προστίθενται τα γνωρίσματα για το δεξί σκέλος.
-        foreach (ListItem item in RightFDCheckBoxListAttrSelection.Items)
-            if (item.Selected)
-            {
-                int i = RightFDCheckBoxListAttrSelection.Items.IndexOf(item);
-                fd.AddRight(attrList[i]);
-            }
-
-        // Αν μπορεί να δημιουργηθεί η συναρτησιακή εξάρτηση καλώς.
-        if (FDCreate(fd))
-        {
-          //  loadListBox(lboxFD, 1);
-            msg += "\nNew FD inserted." + fd.ToString();
-        }
-        else
-        {
-            msg += "\nCannot insert FD: FD already exists.";
-        }
-        //TODO: Διαγραφή ? fdList.Add(fd);
-
-        LeftFDCheckBoxListAttrSelection.ClearSelection();
-        RightFDCheckBoxListAttrSelection.ClearSelection();
-
-        log.InnerText = msg;
-    }
-
-    /// <summary>
     /// Μέθοδος δημιουργίας νέου γνωρίσματος και προσθήκης του στην attrList. Επιστρέφει false αν το όνομα χρησιμοποιείται ήδη για άλλο αντικείμενο
     /// </summary>
     /// <param name="name">Ονομασία του γνωρίσματος</param>
     /// <param name="type">Τύπος του γνωρίσματος</param>
-    protected bool AttrCreate(string name, string type)
+    private bool AttrCreate(string name, string type)
     {
         //ελέγχεται αν το όνομα του νέου γνωρίσματος χρησιμοποιείται ήδη, κι αν ναι, επιστρέφεται η ένδειξη false
         if (AttrExists(name, null)) return false;
@@ -158,7 +127,7 @@ public partial class _Default : System.Web.UI.Page
         //δημιουργείται αντικείμενο τύπου Attr και προστίθεται στην attrList
         Attr attr = new Attr(name, type);
         attrList.Add(attr);
-        
+
         //επιστρέφεται η ένδειξη true
         return true;
     }
@@ -168,11 +137,60 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     /// <param name="name">Η ονομασία του γνωρίσματος που ελέγχουμε</param>
     /// <param name="attr">Η αναφορά στο αντικείμενο του γνωρίσματος</param>
-    public bool AttrExists(string name, Attr attr)
+    private bool AttrExists(string name, Attr attr)
     {
         for (int i = 0; i < attrList.Count; i++)
             if (attrList[i].Name == name && attr != attrList[i]) return true; //το όνομα χρησιμοποιείται ήδη
         return false; //το όνομα δεν χρησιμοποιείται
+    }
+
+    #endregion
+
+    // Mένει η εμφάνιση της συναρτησιακής κατά την επιλογή γνωρισμάτων.
+    #region FD
+
+    /// <summary>
+    /// Ανοίγει το Modal για προσθήκη νέας συναρτησιακής εξάρτησης.
+    /// </summary>
+    protected void btnNewFDClick(object sender, EventArgs e)
+    {
+        populateLeftAndRightFDGridView();
+        ClientScript.RegisterStartupScript(Page.GetType(), "modalNewFD", "$('#modalNewFD').modal();", true);
+    }
+
+    /// <summary>
+    /// Καλείται όταν πατηθεί ΟΚ από το Modal Συναρτησιακής Εξάρτησης.
+    /// </summary>
+    protected void btnNewFDOKClick(object sender, EventArgs e)
+    {
+        FD fd = new FD();
+
+        foreach (GridViewRow item in gridViewLeftFD.Rows)
+        {
+            if ((item.Cells[0].FindControl("checkBoxLeftFD") as CheckBox).Checked)
+            {
+                fd.AddLeft(attrList[item.RowIndex]);
+            }
+        }
+
+        foreach (GridViewRow item in gridViewRightFD.Rows)
+        {
+            if ((item.Cells[0].FindControl("checkBoxRightFD") as CheckBox).Checked)
+            {
+                fd.AddRight(attrList[item.RowIndex]);
+            }
+        }
+
+        if (FDCreate(fd))
+        {
+            populateFdGridView(fdList);
+            log.InnerText = "FD inserted: " + fd.ToString();
+        }
+        else
+        {
+            log.InnerText = "Cannot insert FD: FD already exists";
+        }
+        
     }
 
     /// <summary>
@@ -202,11 +220,177 @@ public partial class _Default : System.Web.UI.Page
             if (fdList[i].ToString() == fd.ToString() && i != id) return true; //βρέθηκε παρόμοια συναρτησιακή εξάρτηση
         return false; //δεν υπάρχει παρόμοια συναρτησιακή εξάρτηση
     }
+
+    #endregion
+
+    #endregion
+
+    #region EDIT
+
+    #region Attr
+
+    /// <summary>
+    /// Αν έχει επιλεχθεί κάποιο γνώρισμα, τότε φορτώνεται προς επεξεργασία.
+    /// </summary>
+    protected void btnEditAttrClick(object sender, EventArgs e)
+    {
+        int index = gridViewAttr.SelectedIndex;
+        if (index >= 0)
+        {
+            tbxEditAttrName.Text = attrList[index].Name;
+            tbxEditAttrType.Text = attrList[index].Type;
+
+            ClientScript.RegisterStartupScript(Page.GetType(), "modalEditAttribute", "$('#modalEditAttribute').modal();", true);
+        }
+        else
+        {
+            log.InnerText = "You must select an attribute first.";
+            return;
+        }
+
+    }
+
+    /// <summary>
+    /// Όταν τελειώσει η επεξεργασία του γνωρίσματος, αποθηκεύω το γνώρισμα στην λίστα.
+    /// </summary>
+    protected void btnEditAttrΟΚClick(object sender, EventArgs e)
+    {
+        string name = tbxEditAttrName.Text.Trim();
+        string type = tbxEditAttrType.Text.Trim();
+
+        int index = gridViewAttr.SelectedIndex;
+        if (index >= 0)
+        {
+            string prevName = attrList[index].Name;
+            attrList[index].Name = ""; // για να μην βγάλει διπλότυπο.
+
+            if (!AttrExists(name, (new Attr(name, type))))
+            {
+                attrList[index].Name = name;
+                attrList[index].Type = type;
+
+                populateAttrGridView(attrList);
+                msg += "\nAttribute Edited!.";
+            }
+            else
+            {
+                msg += "\nCannot create attribute: Attribute already exists..";
+                attrList[index].Name = prevName;
+            }
+        }
+        else
+        {
+            log.InnerText = "You must select an attribute first.";
+            return;
+        }
+        log.InnerText = msg;
+    }
+
+    #endregion
+
+    #region FD
+    
+    /// <summary>
+    /// Ελέγχει αν έχει επιλεγεί μια συναρτησιακή εξάρτηση και την φορτώνει για επεξεργασία.
+    /// </summary>
+    protected void btnEditFDClick(object sender, EventArgs e)
+    {
+        int index = gridViewFD.SelectedIndex;
+        if (index >= 0)
+        {
+            populateLeftAndRightEditFDGridView();
+
+            // Τσεκάρω το αριστερό μέρος της fd.
+            foreach (GridViewRow item in gridViewEditLeftFD.Rows)
+            {
+                foreach (Attr attr in fdList[index].GetLeft())
+                {
+                    if ((item.Cells[1].Text.Equals(attr.Name)))
+                    {
+                        CheckBox c = (CheckBox)item.Cells[0].FindControl("checkBoxEditLeftFD");
+                        c.Checked = true;
+                    }
+                }
+            }
+
+            // Τσεκάρω το δεξί μέρος της fd.
+            foreach (GridViewRow item in gridViewEditRightFD.Rows)
+            {
+                foreach (Attr attr in fdList[index].GetRight())
+                {
+                    if ((item.Cells[1].Text.Equals(attr.Name)))
+                    {
+                        CheckBox c = (CheckBox)item.Cells[0].FindControl("checkBoxEditRightFD");
+                        c.Checked = true;
+                    }
+                }
+            }
+
+            ClientScript.RegisterStartupScript(Page.GetType(), "modalEditFD", "$('#modalEditFD').modal();", true);
+        }
+        else
+        {
+            log.InnerText = "You must select an FD first.";
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Η επεξεργασμένη πλέον συναρτησιακή εξάρτηση προστίθεται στην λίστα fdList.
+    /// </summary>
+    protected void btnEditFDΟΚClick(object sender, EventArgs e)
+    {
+        int index = gridViewFD.SelectedIndex;
+        if (index >= 0)
+        {
+            FD fd = new FD(); // Η προσωρινή.
+
+            foreach (GridViewRow item in gridViewEditLeftFD.Rows)
+            {
+                if ((item.Cells[0].FindControl("checkBoxEditLeftFD") as CheckBox).Checked)
+                {
+                    fd.AddLeft(attrList[item.RowIndex]);
+                }
+            }
+
+            foreach (GridViewRow item in gridViewEditRightFD.Rows)
+            {
+                if ((item.Cells[0].FindControl("checkBoxEditRightFD") as CheckBox).Checked)
+                {
+                    fd.AddRight(attrList[item.RowIndex]);
+                }
+            }
+
+            if (!FDExists(fd, index))
+            {
+                fdList[index] = fd;
+                
+                populateFdGridView(fdList);
+                log.InnerText = "FD Updated: " + fd.ToString();
+            }
+            else
+            {
+                log.InnerText = "Cannot insert FD: FD already exists";
+            }
+        }
+        else
+        {
+            log.InnerText = "You must select an attribute first.";
+            return;
+        }
+        
+    }
+
+    #endregion
+
     #endregion
 
     #region DELETE
+
+    #region Attr
+
     /// <summary>
-    /// Διαγράφει το επιλεγμένο γνώρισμα από την λίστα γνωρισμάτων.
+    /// Διαγράφει το επιλεγμένο γνώρισμα από τον πίνακα γνωρισμάτων.
     /// </summary>
     protected void btnDeleteAttrClick(object sender, EventArgs e)
     {
@@ -223,67 +407,29 @@ public partial class _Default : System.Web.UI.Page
                 
     }
 
-    protected void btnEditAttrClick(object sender, EventArgs e)
-    {
-        int index = gridViewAttr.SelectedIndex;
-        if (index >= 0)
-        {
-            tbxEditAttrName.Text = attrList[index].Name;
-            tbxEditAttrType.Text = attrList[index].Type;
+    #endregion
 
-            ClientScript.RegisterStartupScript(Page.GetType(), "modalEditAttribute", "$('#modalEditAttribute').modal();", true);
-        }
-        else
-        {
-            log.InnerText = "You must select an attribute first.";
-            return;
-        }
-        
-    }
-
-    protected void btnEditAttrΟΚClick(object sender, EventArgs e)
-    {
-        string name = tbxEditAttrName.Text.Trim();
-        string type = tbxEditAttrType.Text.Trim();
-
-        int index = gridViewAttr.SelectedIndex;
-        if (index >= 0)
-        {
-            string prevName = attrList[index].Name;
-            attrList[index].Name = ""; // για να μην βγάλει διπλότυπο.
-
-            if (!AttrExists(name, (new Attr(name, type)))) 
-            {
-                attrList[index].Name = name;
-                attrList[index].Type = type;
-                
-                populateAttrGridView(attrList);
-                msg += "\nAttribute Edited!.";
-            }
-            else
-            {
-                msg += "\nCannot create attribute: Attribute already exists..";
-                attrList[index].Name = prevName;
-            }            
-        }
-        else
-        {
-            log.InnerText = "You must select an attribute first.";
-            return;
-        }
-        log.InnerText = msg;
-    }
+    #region FD
 
     /// <summary>
-    /// Διαγράφει την επιλεγμένη συναρτησιακή εξάρτηση από την λίστα.
+    /// Διαγράφει την επιλεγμένη συναρτησιακή εξάρτηση από τον πίνακα.
     /// </summary>
     protected void btnDeleteFDClick(object sender, EventArgs e)
     {
-        //int index = lboxFD.SelectedIndex;
-       // fdList.RemoveAt(index);
-
-       // loadListBox(lboxFD, 1);
+        int index = gridViewFD.SelectedIndex;
+        if (index >= 0)
+        {
+            fdList.RemoveAt(index);
+            populateFdGridView(fdList);
+        }
+        else
+        {
+            log.InnerText = "You must select an FD first.";
+        }
     }
+    
+    #endregion
+
     #endregion
 
     #region ACTIONS
@@ -626,14 +772,14 @@ public partial class _Default : System.Web.UI.Page
     protected void updateCheckBoxLists()
     {
         // TODO: Αλλαγή τρόπου για αποδοτικότητα.
-        LeftFDCheckBoxListAttrSelection.Items.Clear();
-        RightFDCheckBoxListAttrSelection.Items.Clear();
+      //  LeftFDCheckBoxListAttrSelection.Items.Clear();
+      //  RightFDCheckBoxListAttrSelection.Items.Clear();
         ClosureCheckBoxList.Items.Clear();
 
         foreach (Attr attr in attrList)
         {
-            LeftFDCheckBoxListAttrSelection.Items.Add(attr.Name);
-            RightFDCheckBoxListAttrSelection.Items.Add(attr.Name);
+        //    LeftFDCheckBoxListAttrSelection.Items.Add(attr.Name);
+         //   RightFDCheckBoxListAttrSelection.Items.Add(attr.Name);
             ClosureCheckBoxList.Items.Add(attr.Name);
         }
     }
@@ -811,6 +957,56 @@ public partial class _Default : System.Web.UI.Page
 
         gridViewFD.DataSource = dataTable;
         gridViewFD.DataBind();
+    }
+
+    private void populateLeftAndRightFDGridView()
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("Orizouses", typeof(string)));
+
+        foreach (Attr attr in attrList)
+        {
+            dataTable.Rows.Add(attr.Name);
+        }
+
+        gridViewLeftFD.DataSource = dataTable;
+        gridViewLeftFD.DataBind();
+
+        DataTable dataTable2 = new DataTable();
+        dataTable2.Columns.Add(new DataColumn("Eksartimenes", typeof(string)));
+
+        foreach (Attr attr in attrList)
+        {
+            dataTable2.Rows.Add(attr.Name);
+        }
+        
+        gridViewRightFD.DataSource = dataTable2;
+        gridViewRightFD.DataBind();
+    }
+
+    private void populateLeftAndRightEditFDGridView()
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("Orizouses", typeof(string)));
+
+        foreach (Attr attr in attrList)
+        {
+            dataTable.Rows.Add(attr.Name);
+        }
+
+        gridViewEditLeftFD.DataSource = dataTable;
+        gridViewEditLeftFD.DataBind();
+
+        DataTable dataTable2 = new DataTable();
+        dataTable2.Columns.Add(new DataColumn("Eksartimenes", typeof(string)));
+
+        foreach (Attr attr in attrList)
+        {
+            dataTable2.Rows.Add(attr.Name);
+        }
+
+        gridViewEditRightFD.DataSource = dataTable2;
+        gridViewEditRightFD.DataBind();
     }
 
     #region  Διαχείριση GridViews

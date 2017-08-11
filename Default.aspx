@@ -126,21 +126,20 @@
                 <div class="col-md-6">
                     <p>Γνωρίσματα </p>
 
-                 <%--   <asp:ListBox ID="lboxAttr" runat="server" Rows="10" Width="100%"></asp:ListBox> --%>
-                    
                     <asp:GridView ID="gridViewAttr" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
                         runat="server" AutoGenerateColumns="false"  Width="100%"
                         OnRowDataBound="OnRowDataBoundAttr" OnSelectedIndexChanged="OnSelectedIndexChangedAttr">
 
                         <Columns>
                             <asp:BoundField DataField="Name" HeaderText=" Όνομα" ItemStyle-Width="55%"/>
-                            <asp:BoundField DataField="Description" HeaderText=" Τύπος \ Περιγραφή" ItemStyle-Width="35%" ItemStyle-HorizontalAlign="Center"/>
+                            <asp:BoundField DataField="Description" HeaderText=" Τύπος \ Περιγραφή" HeaderStyle-CssClass="text-center" ItemStyle-Width="35%" ItemStyle-HorizontalAlign="Center"/>
                         </Columns>
 
                         </asp:GridView>
 
+                    <!-- Buttons -->
                     <div style="text-align: right; width: 100%;">
-                        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" id="btnAddAttr" data-target="#modalNewAttribute">Προσθήκη</button>
+                        <asp:Button class="btn btn-info btn-lg" ID="btnAddAttr" runat="server" Text="Προσθήκη" OnClick="btnNewAttrClick" />
                         <asp:Button class="btn btn-info btn-lg" ID="btnEditAttr" runat="server" Text="Επεξεργασία" OnClick="btnEditAttrClick" />
                         <asp:Button class="btn btn-info btn-lg" ID="btnDeleteAttr" runat="server" Text="Διαγραφή" OnClick="btnDeleteAttrClick" />
                     </div>
@@ -170,14 +169,14 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnSaveAttr" Text="OK" class="btn btn-default" OnClick="btnNewAttrClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnSaveAttr" Text="OK" class="btn btn-default" OnClick="btnNewAttrOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <%--Modal--%>
+                    <!-- Modal -->
 
-                     <!-- Modal επεξεργασία γνωρίσματος -->
+                    <!-- Modal επεξεργασία γνωρίσματος -->
                     <div class="modal fade" id="modalEditAttribute" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -207,7 +206,7 @@
                             </div>
                         </div>
                     </div>
-                    <%--Modal--%>
+                    <!-- Modal -->
                 </div>
 
                 <%--Συναρτησιακές εξαρτήσεις--%>
@@ -222,17 +221,22 @@
                        
                          <Columns>
                             <asp:BoundField DataField="Description" HeaderText=" Περιγραφή" ItemStyle-Width="80%" />
-                            <asp:BoundField DataField="Trivial" HeaderText=" Τετ" ItemStyle-Width="10%" ItemStyle-HorizontalAlign="Center"/>
+                            <asp:BoundField DataField="Trivial" HeaderText=" Τετ" HeaderStyle-CssClass="text-center" ItemStyle-Width="10%" ItemStyle-HorizontalAlign="Center"/>
                         </Columns>
 
-                        </asp:GridView>
+                    </asp:GridView>
 
+                    <!-- Buttons -->
                     <div style="text-align: right; width: 100%;">
-                        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalNewFD">+</button>
-                        <asp:Button class="btn btn-info btn-lg" ID="Button3" runat="server" Text="-" OnClick="btnDeleteFDClick" />
+                       <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalNewFD">+</button> -->
+                       <!-- <asp:Button class="btn btn-info btn-lg" ID="Button3" runat="server" Text="-" OnClick="btnDeleteFDClick" /> -->
+
+                        <asp:Button class="btn btn-info btn-lg" ID="btnNewFD" runat="server" Text="Προσθήκη" OnClick="btnNewFDClick" />
+                        <asp:Button class="btn btn-info btn-lg" ID="btnEditFD" runat="server" Text="Επεξεργασία" OnClick="btnEditFDClick" />
+                        <asp:Button class="btn btn-info btn-lg" ID="btnDeleteFD" runat="server" Text="Διαγραφή" OnClick="btnDeleteFDClick" />
                     </div>
 
-                    <!-- Modal νέα συναρτησιακή εξάρτηση-->
+                    <!-- Modal νέας συναρτησιακής εξάρτησης -->
                     <div class="modal fade" id="modalNewFD" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -242,30 +246,117 @@
                                 </div>
                                 <div class="modal-body">
 
-                                    <p>Δομή συναρτησιακής εξάρτησης</p>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <p>Ορίζουσες</p>
-                                            <asp:CheckBoxList ID="LeftFDCheckBoxListAttrSelection" runat="server"></asp:CheckBoxList>
+                                   <p>Δομή συναρτησιακής εξάρτησης</p>
+                                   
+                                    <div class="form-horizontal">
+                                        <div class="col-md-6">
+                                            <asp:GridView ID="gridViewLeftFD" runat="server" AutoGenerateColumns="false" Width="100%">
+                       
+                                                 <Columns>
+                                                     <asp:templatefield HeaderText="Επιλογή" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
+                                                        <itemtemplate>
+                                                            <asp:checkbox ID="checkBoxLeftFD" runat="server"></asp:checkbox>
+                                                        </itemtemplate>
+                                                    </asp:templatefield>
+                                                    <asp:BoundField DataField="Orizouses" HeaderText="Ορίζουσες" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80%"/>
+                                                </Columns>
 
+                                            </asp:GridView>
                                         </div>
-                                        <div class="col-md-4">
-                                            <p>Εξαρτημένες</p>
-                                            <asp:CheckBoxList ID="RightFDCheckBoxListAttrSelection" runat="server"></asp:CheckBoxList>
+                                        <div class="col-md-6">
+                                            <asp:GridView ID="gridViewRightFD" runat="server" AutoGenerateColumns="false" Width="100%" >
+                       
+                                                 <Columns>
+                                                     <asp:templatefield HeaderText="Επιλογή" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
+                                                        <itemtemplate>
+                                                            <asp:checkbox ID="checkBoxRightFD" runat="server"></asp:checkbox>
+                                                        </itemtemplate>
+                                                    </asp:templatefield>
+                                                    <asp:BoundField DataField="Eksartimenes" HeaderText="Εξαρτημένες" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80%" />
+                                                </Columns>
+
+                                                
+
+                                            </asp:GridView>
                                         </div>
                                     </div>
+
                                     <div class="row">
-                                        <%-- TODO: για διαγραφή λογικά, εκτός κι αν δουλέψει κάπως. --%>
-                                        <p>Τελική μορφή συναρτησιακής εξάρτησης</p>
+                                        <div class="col-md-10">
+                                            Τελική μορφή συναρτησιακής εξάρτησης
+                                        </div>
                                     </div>
+
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="Button1" Text="OK" class="btn btn-default" OnClick="btnNewFDClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnNewFDOK" Text="OK" class="btn btn-default" OnClick="btnNewFDOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <%--Modal--%>
+                    <!--Modal -->
+
+                    <!-- Modal επεξεργασίας συναρτησιακής εξάρτησης -->
+                    <div class="modal fade" id="modalEditFD" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Επεξεργασία συναρτησιακής εξάρτησης</h4>
+                                </div>
+                                <div class="modal-body">
+
+                                   <p>Δομή συναρτησιακής εξάρτησης</p>
+                                   
+                                    <div class="form-horizontal">
+                                        <div class="col-md-6">
+                                            <asp:GridView ID="gridViewEditLeftFD" runat="server" AutoGenerateColumns="false" Width="100%">
+                       
+                                                 <Columns>
+                                                     <asp:templatefield HeaderText="Επιλογή" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
+                                                        <itemtemplate>
+                                                            <asp:checkbox ID="checkBoxEditLeftFD" runat="server"></asp:checkbox>
+                                                        </itemtemplate>
+                                                    </asp:templatefield>
+                                                    <asp:BoundField DataField="Orizouses" HeaderText="Ορίζουσες" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80%"/>
+                                                </Columns>
+
+                                            </asp:GridView>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <asp:GridView ID="gridViewEditRightFD" runat="server" AutoGenerateColumns="false" Width="100%" >
+                       
+                                                 <Columns>
+                                                     <asp:templatefield HeaderText="Επιλογή" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
+                                                        <itemtemplate>
+                                                            <asp:checkbox ID="checkBoxEditRightFD" runat="server"></asp:checkbox>
+                                                        </itemtemplate>
+                                                    </asp:templatefield>
+                                                    <asp:BoundField DataField="Eksartimenes" HeaderText="Εξαρτημένες" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80%" />
+                                                </Columns>
+
+                                                
+
+                                            </asp:GridView>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            Τελική μορφή συναρτησιακής εξάρτησης
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <asp:Button runat="server" ID="btnEditFDOK" Text="Ενημέρωση" class="btn btn-default" OnClick="btnEditFDΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Modal -->
+
+
                 </div>
 
             </div>
