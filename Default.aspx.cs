@@ -89,9 +89,7 @@ public partial class _Default : System.Web.UI.Page
         // TODO: Διαγραφή?  attrList.Add(new Attr(tbxNewAttrName.Text.Trim(),tbxNewAttrType.Text.Trim()));
         if (AttrCreate(tbxNewAttrName.Text.Trim(), tbxNewAttrType.Text.Trim()))
         {
-         //   loadListBox(lboxAttr, 0);
-            // TODO: Διαγραφή?  tbxNewAttrName.Text = "";
-            updateCheckBoxLists();
+            populateAttrGridView(attrList);    
             msg += "\nNew attribute inserted.";
         }
         else
@@ -156,10 +154,11 @@ public partial class _Default : System.Web.UI.Page
 
         // ελέγχεται αν δεν έχει όνομα.
         if (name.Equals("")) return false;
+
         //δημιουργείται αντικείμενο τύπου Attr και προστίθεται στην attrList
         Attr attr = new Attr(name, type);
         attrList.Add(attr);
-
+        
         //επιστρέφεται η ένδειξη true
         return true;
     }
@@ -211,10 +210,68 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnDeleteAttrClick(object sender, EventArgs e)
     {
-       // int index = lboxAttr.SelectedIndex;
-       // attrList.RemoveAt(index);
+        int index = gridViewAttr.SelectedIndex;
+        if (index >= 0)
+        {
+            attrList.RemoveAt(index);
+            populateAttrGridView(attrList);
+        }
+        else
+        {
+            log.InnerText = "You must select an attribute first.";
+        }
+                
+    }
 
-       // loadListBox(lboxAttr, 0);
+    protected void btnEditAttrClick(object sender, EventArgs e)
+    {
+        int index = gridViewAttr.SelectedIndex;
+        if (index >= 0)
+        {
+            tbxEditAttrName.Text = attrList[index].Name;
+            tbxEditAttrType.Text = attrList[index].Type;
+
+            ClientScript.RegisterStartupScript(Page.GetType(), "modalEditAttribute", "$('#modalEditAttribute').modal();", true);
+        }
+        else
+        {
+            log.InnerText = "You must select an attribute first.";
+            return;
+        }
+        
+    }
+
+    protected void btnEditAttrΟΚClick(object sender, EventArgs e)
+    {
+        string name = tbxEditAttrName.Text.Trim();
+        string type = tbxEditAttrType.Text.Trim();
+
+        int index = gridViewAttr.SelectedIndex;
+        if (index >= 0)
+        {
+            string prevName = attrList[index].Name;
+            attrList[index].Name = ""; // για να μην βγάλει διπλότυπο.
+
+            if (!AttrExists(name, (new Attr(name, type)))) 
+            {
+                attrList[index].Name = name;
+                attrList[index].Type = type;
+                
+                populateAttrGridView(attrList);
+                msg += "\nAttribute Edited!.";
+            }
+            else
+            {
+                msg += "\nCannot create attribute: Attribute already exists..";
+                attrList[index].Name = prevName;
+            }            
+        }
+        else
+        {
+            log.InnerText = "You must select an attribute first.";
+            return;
+        }
+        log.InnerText = msg;
     }
 
     /// <summary>
@@ -581,6 +638,7 @@ public partial class _Default : System.Web.UI.Page
         }
     }
 
+   
     /// <summary>
     /// Φορτώνονται τα αντικείμενα στις αντίστοιχες λίστες και εμφανίζονται στα panel.
     /// </summary>
@@ -732,6 +790,10 @@ public partial class _Default : System.Web.UI.Page
 
     }
 
+    /// <summary>
+    /// Μέθοδος που φορτώνει τον πίνακα με τις συναρτησιακές εξαρτήσεις.
+    /// </summary>
+    /// <param name="fdList">Οι συναρτησιακές εξαρτήσεις που θα φορτώσει.</param>
     private void populateFdGridView(List<FD> fdList)
     {
         DataTable dataTable = new DataTable();
