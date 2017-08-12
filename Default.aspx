@@ -392,22 +392,23 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title">Load</h4>
+                                        <h4 class="modal-title">Φόρτωση σχήματος</h4>
                                     </div>
                                     <div class="modal-body">
-
-                                        <%--<p>Επιλέξτε αρχείο </p>
-                                    <asp:FileUpload ID="FileUpload1" runat="server" />--%>
-                                        <p>Επιλέξτε παράδειγμα για φόρτωση</p>
-                                        <asp:DropDownList ID="schemaLoadDropDownList" runat="server"></asp:DropDownList>
+                                        <div class="col-md-8">
+                                            <%--<p>Επιλέξτε αρχείο </p>
+                                             <asp:FileUpload ID="FileUpload1" runat="server" />--%>
+                                            <h3>Επιλέξτε παράδειγμα για φόρτωση</h3>
+                                            <asp:DropDownList ID="schemaLoadDropDownList" runat="server"></asp:DropDownList>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <asp:Button runat="server" ID="Button6" Text="OK" class="btn btn-default" OnClick="btnLoadSelectedSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                        <asp:Button runat="server" ID="btnLoadSchemaClick" Text="OK" class="btn btn-default" OnClick="btnLoadSelectedSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <%--Modal--%>
+                        <!-- Modal -->
                     </div>
                 </div>
 

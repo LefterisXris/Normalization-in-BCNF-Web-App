@@ -31,19 +31,7 @@ public partial class _Default : System.Web.UI.Page
         {
             LoadSelectedSchema("Default.txt");
         }
-
-        if (gridViewAttr.Rows.Count <= 0)
-        {
-            Image1.Visible = true;
-            Image2.Visible = true;
-        }
-        else
-        {
-            Image1.Visible = false;
-            Image2.Visible = false;
-        }
-        log.InnerText = "rows count = " + gridViewAttr.Rows.Count;
-
+        
         #region ViewStates Load
         if (ViewState["attrListVS"] != null)
             attrList = (List<Attr>)ViewState["attrListVS"];
@@ -62,6 +50,9 @@ public partial class _Default : System.Web.UI.Page
       //  setCheckBoxStates(ClosureCheckBoxList);
     }
 
+    /// <summary>
+    /// Εκτελείται λίγο πριν ανανεωθεί η σελίδα.
+    /// </summary
     protected void Page_PreRender(object sender, EventArgs e)
     {
         // Φορτώνονται οι μεταβλητές που αποθηκεύω μέσω ViewState.
@@ -90,7 +81,7 @@ public partial class _Default : System.Web.UI.Page
         }
     }
 
-    #region ADD NEW
+    #region ADD NEW (Attr & Fd)
 
     // Μένει η δυνατότητα πολλαπλής εισαγωγής γνωρισμάτων.
     #region Attr
@@ -236,7 +227,7 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    #region EDIT
+    #region EDIT (Attr & Fd)
 
     #region Attr
 
@@ -396,7 +387,7 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    #region DELETE
+    #region DELETE (Attr & Fd)
 
     #region Attr
 
@@ -443,7 +434,7 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    #region ACTIONS
+    #region ACTIONS (Closure, Keys, Decompose, StepsDecompose)
 
     // Μένει να εμφανίζω τα ενδιάμεσα αποτελέσματα και πληροφορίες κατά τον υπολογισμό.
     #region Closure
@@ -790,52 +781,7 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    #region UPDATE CONTENT
-    /// <summary>
-    /// Φορτώνονται τα γνωρίσματα στις Λίστες επιλογής για δημιουργία FD και και επιλογή για αναζήτηση Εγκλεισμού.
-    /// </summary>
-    protected void updateCheckBoxLists()
-    {
-        // TODO: Αλλαγή τρόπου για αποδοτικότητα.
-      //  LeftFDCheckBoxListAttrSelection.Items.Clear();
-      //  RightFDCheckBoxListAttrSelection.Items.Clear();
-       // ClosureCheckBoxList.Items.Clear();
-
-        foreach (Attr attr in attrList)
-        {
-        //    LeftFDCheckBoxListAttrSelection.Items.Add(attr.Name);
-         //   RightFDCheckBoxListAttrSelection.Items.Add(attr.Name);
-      //      ClosureCheckBoxList.Items.Add(attr.Name);
-        }
-    }
-
-   
-    /// <summary>
-    /// Φορτώνονται τα αντικείμενα στις αντίστοιχες λίστες και εμφανίζονται στα panel.
-    /// </summary>
-    /// <param name="lbox">Η λίστα στην οποία θα προστεθούν αντικείμενα με βάση το i.</param>
-    /// <param name="i">0 προσθέτει γνωρίσματα και 1 συναρτησιακές εξαρτήσεις.</param>
-    protected void loadListBox(ListBox lbox, int i)
-    {
-        if (lbox != null)
-        {
-            // TODO: Αλλαγή λειτουργίας για πιο αποδοτικό τρόπο ενημέρωσης της λίστας.
-            lbox.Items.Clear();
-            if (i == 0)
-                foreach (Attr attr in attrList)
-                {
-                    lbox.Items.Add(attr.Name);
-                }
-            else if (i == 1)
-                foreach (FD fd in fdList)
-                {
-                    lbox.Items.Add(fd.ToString());
-                }
-        }
-    }
-    #endregion
-
-    #region Schemas Management
+    #region Schemas Management (New, Load, Save Schema)
 
     #region New
 
@@ -897,15 +843,30 @@ public partial class _Default : System.Web.UI.Page
 
     #region Load
 
-    #endregion
+    /// <summary>
+    /// Μέθοδος που διαβάζει και εμφανίζει τα διαθέσιμα παραδείγματα στην λίστα για επιλογή.
+    /// </summary>
+    protected void btnLoadSchema_Click(object sender, EventArgs e)
+    {
+        // Ανάγνωση ονομάτων αρχείων με αποθηκευμένα παραδείγματα.
+        string s = Directory.GetCurrentDirectory() + "/Schemas";
+        string[] txtFiles = GetFileNames(s, "*.txt", false); // Μέσω της μεθόδου αποθηκεύονται τα ονόματα των αρχείων χωρίς την επέκτασή τους.
 
-    #region Save
+        schemaLoadDropDownList.Items.Clear(); // σβήνονται τα προηγούμενα δεδομένα (για τυχόν ανανεώσεις).
 
-    #endregion
+        // Φόρτωση στην λίστα.
+        foreach (string st in txtFiles)
+        {
+            schemaLoadDropDownList.Items.Add(st);
+        }
 
+        // Εμφάνιση modal με έτοιμα παραδείγματα.
+        ClientScript.RegisterStartupScript(Page.GetType(), "loadSchemaModal", "$('#loadSchemaModal').modal();", true);
+
+    }
 
     /// <summary>
-    /// Ελέγχεται ποιό παράδειγμα επιλέχθηκε και φορτώνεται το αντίστοιχο.
+    /// Ελέγχεται ποιό παράδειγμα επιλέχθηκε και φορτώνεται το αντίστοιχο αρχείο.
     /// </summary>
     protected void btnLoadSelectedSchemaClick(object sender, EventArgs e)
     {
@@ -995,8 +956,28 @@ public partial class _Default : System.Web.UI.Page
         lblSchemaName.Text = selectedSchema;
     }
 
-    #endregion
+    /// <summary>
+    /// Μέθοδος που διαβάζει τα ονόματα όλων των αρχείων που περιέχουν το filter σε 
+    /// έναν φάκελο και τα επιστρέφει χωρίς την επέκτασή τους.
+    /// </summary>
+    /// <param name="path">Ο φάκελος από τον οποίο διαβάζει όλα τα αρχεία.</param>
+    /// <param name="filter">Φίλτρο αναζήτησης. Μπορεί να είναι και τύπος αρχείου.</param>
+    /// <param name="extension">Λογική μεταβλητή true επιστροφή με επεκτάσεις, false χωρίς.
+    /// <returns>Τα ονόματα των αρχείων χωρίς την επέκταση.</returns>
+    private string[] GetFileNames(string path, string filter, bool extension)
+    {
+        string[] files = Directory.GetFiles(path, filter); // παίρνει όλα τα διαθέσιμα αρχεία με βάση το filter.
 
+        if (extension)
+            return files;
+
+        for (int i = 0; i < files.Length; i++)
+        {
+            files[i] = Path.GetFileName(files[i]); // αποθηκεύει μόνο τα ονόματα χωρίς τις επεκτάσεις.
+        }
+
+        return files;
+    }
 
     /// <summary>
     /// Επιστρέφει το αντικείμενο Attr στο οποίο αντιστοιχεί το όνομα name.
@@ -1009,7 +990,63 @@ public partial class _Default : System.Web.UI.Page
         return null;
     }
 
-    #region Populate GridViews
+    #endregion
+
+    #region Save
+
+    /// <summary>
+    /// Μέθοδος που αποθηκεύει και κατεβάζει στον χρήστη το τρέχων σχήμα.
+    /// </summary>
+    protected void btnSaveSchema_Click(object sender, EventArgs e)
+    {
+        // Εδώ προστίθεται το περιεχόμενο.
+
+        string dataForFile = "NOR\n101\n"; // αναγνωριστικό, έκδοση.
+        dataForFile += schemaDescription + "\n"; // περιγραφή σχήματος.
+        dataForFile += attrList.Count().ToString() + "\n"; // αριθμός γνωρισμάτων.
+
+        foreach (Attr attr in attrList)
+        {
+            dataForFile += attr.Name + "\n\n"; // γνωρίσματα.
+        }
+
+        dataForFile += fdList.Count().ToString() + "\n"; // αριθμών συναρτησιακών εξαρτήσεων.
+
+        foreach (FD fd in fdList)
+        {
+            dataForFile += fd.Excluded.ToString() + "\n"; // αν είναι excluded ή όχι.
+            dataForFile += fd.GetLeft().Count().ToString() + "\n"; // αριθμός γνωρισμάτων στο αριστερό σκέλος.
+            dataForFile += fd.GetRight().Count().ToString() + "\n"; // αριθμός γνωρισμάτων στο δεξί σκέλος.
+            foreach (Attr attr in fd.GetLeft())
+            {
+                dataForFile += attr.Name + "\n"; // γνωρίσματα στο αριστερό σκέλος.
+            }
+            foreach (Attr attr in fd.GetRight())
+            {
+                dataForFile += attr.Name + "\n"; // γνωρίσματα στο δεξί σκέλος.
+            }
+        }
+
+        // Εγγραφή των δεδομένων σε αρχείο.
+        string filename = lblSchemaName.Text + ".txt"; // όνομα αρχείου
+
+        System.IO.StreamWriter file = new System.IO.StreamWriter(Directory.GetCurrentDirectory() + "/Schemas/Students/" + filename);
+        file.WriteLine(dataForFile); // εγγραφή
+        file.Close();
+
+        // Διαδικασία για download αρχείου που αποθηκεύτηκε.
+        Response.ContentType = "application/octet-stream";
+        Response.AppendHeader("content-disposition", "attachment; filename=" + filename);
+        Response.TransmitFile(Server.MapPath("~/Schemas/Students/" + filename));
+        Response.End();
+
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Populate GridViews (Attr, Fd, leftFd, rightFd, editLeftFd, editRightFd, Closure)
 
     /// <summary>
     /// Μέθοδος που φορτώνει τον πίνακα με τα γνωρίσματα.
@@ -1135,7 +1172,7 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    #region GridViews Management
+    #region GridViews Management (Update selected rows: Attr & Fd)
 
     /// <summary>
     /// Προσθέτει λειτουργικότητα στις γραμμές του gridViewAttr μόλις προστεθεί περιεχόμενο.
@@ -1203,98 +1240,50 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    
-    /// <summary>
-    /// Μέθοδος που διαβάζει και εμφανίζει τα διαθέσιμα παραδείγματα στην λίστα για επιλογή.
-    /// </summary>
-    protected void btnLoadSchema_Click(object sender, EventArgs e)
-    {
-        // Ανάγνωση ονομάτων αρχείων με αποθηκευμένα παραδείγματα.
-        string s = Directory.GetCurrentDirectory() + "/Schemas";
-        string[] txtFiles = GetFileNames(s, "*.txt", false); // Μέσω της μεθόδου αποθηκεύονται τα ονόματα των αρχείων χωρίς την επέκτασή τους.
-
-        schemaLoadDropDownList.Items.Clear(); // σβήνονται τα προηγούμενα δεδομένα (για τυχόν ανανεώσεις).
-
-        // Φόρτωση στην λίστα.
-        foreach (string st in txtFiles)
-        {
-            schemaLoadDropDownList.Items.Add(st); 
-        }
-
-        // Εμφάνιση modal με έτοιμα παραδείγματα.
-        ClientScript.RegisterStartupScript(Page.GetType(), "loadSchemaModal", "$('#loadSchemaModal').modal();", true);
-
-    }
+    #region FOR DELETE???
 
     /// <summary>
-    /// Μέθοδος που διαβάζει τα ονόματα όλων των αρχείων που περιέχουν το filter σε 
-    /// έναν φάκελο και τα επιστρέφει χωρίς την επέκτασή τους.
+    /// Φορτώνονται τα γνωρίσματα στις Λίστες επιλογής για δημιουργία FD και και επιλογή για αναζήτηση Εγκλεισμού.
     /// </summary>
-    /// <param name="path">Ο φάκελος από τον οποίο διαβάζει όλα τα αρχεία.</param>
-    /// <param name="filter">Φίλτρο αναζήτησης. Μπορεί να είναι και τύπος αρχείου.</param>
-    /// <param name="extension">Λογική μεταβλητή true επιστροφή με επεκτάσεις, false χωρίς.
-    /// <returns>Τα ονόματα των αρχείων χωρίς την επέκταση.</returns>
-    private string[] GetFileNames(string path, string filter, bool extension)
+    protected void updateCheckBoxLists()
     {
-        string[] files = Directory.GetFiles(path, filter); // παίρνει όλα τα διαθέσιμα αρχεία με βάση το filter.
-
-        if (extension)
-            return files;
-       
-        for (int i = 0; i < files.Length; i++)
-        {
-            files[i] = Path.GetFileName(files[i]); // αποθηκεύει μόνο τα ονόματα χωρίς τις επεκτάσεις.
-        }
-        
-        return files;
-    }
-
-    /// <summary>
-    /// Μέθοδος που αποθηκεύει και κατεβάζει στον χρήστη το τρέχων σχήμα.
-    /// </summary>
-    protected void btnSaveSchema_Click(object sender, EventArgs e)
-    {
-        // Εδώ προστίθεται το περιεχόμενο.
-
-        string dataForFile = "NOR\n101\n"; // αναγνωριστικό, έκδοση.
-        dataForFile += schemaDescription + "\n"; // περιγραφή σχήματος.
-        dataForFile += attrList.Count().ToString() + "\n"; // αριθμός γνωρισμάτων.
+        // TODO: Αλλαγή τρόπου για αποδοτικότητα.
+        //  LeftFDCheckBoxListAttrSelection.Items.Clear();
+        //  RightFDCheckBoxListAttrSelection.Items.Clear();
+        // ClosureCheckBoxList.Items.Clear();
 
         foreach (Attr attr in attrList)
         {
-            dataForFile += attr.Name + "\n\n"; // γνωρίσματα.
+            //    LeftFDCheckBoxListAttrSelection.Items.Add(attr.Name);
+            //   RightFDCheckBoxListAttrSelection.Items.Add(attr.Name);
+            //      ClosureCheckBoxList.Items.Add(attr.Name);
         }
-
-        dataForFile += fdList.Count().ToString() + "\n"; // αριθμών συναρτησιακών εξαρτήσεων.
-
-        foreach (FD fd in fdList)
-        {
-            dataForFile += fd.Excluded.ToString() + "\n"; // αν είναι excluded ή όχι.
-            dataForFile += fd.GetLeft().Count().ToString() + "\n"; // αριθμός γνωρισμάτων στο αριστερό σκέλος.
-            dataForFile += fd.GetRight().Count().ToString() + "\n"; // αριθμός γνωρισμάτων στο δεξί σκέλος.
-            foreach (Attr attr in fd.GetLeft())
-            {
-                dataForFile += attr.Name + "\n"; // γνωρίσματα στο αριστερό σκέλος.
-            }
-            foreach (Attr attr in fd.GetRight())
-            {
-                dataForFile += attr.Name + "\n"; // γνωρίσματα στο δεξί σκέλος.
-            }
-        }
-        
-        // Εγγραφή των δεδομένων σε αρχείο.
-        string filename = lblSchemaName.Text + ".txt"; // όνομα αρχείου
-
-        System.IO.StreamWriter file = new System.IO.StreamWriter(Directory.GetCurrentDirectory() + "/Schemas/Students/" + filename);
-        file.WriteLine(dataForFile); // εγγραφή
-        file.Close();
-
-        // Διαδικασία για download αρχείου που αποθηκεύτηκε.σ
-        Response.ContentType = "application/octet-stream";
-        Response.AppendHeader("content-disposition", "attachment; filename=" + filename);
-        Response.TransmitFile(Server.MapPath("~/Schemas/Students/" + filename));
-        Response.End();
-
     }
+
+    /// <summary>
+    /// Φορτώνονται τα αντικείμενα στις αντίστοιχες λίστες και εμφανίζονται στα panel.
+    /// </summary>
+    /// <param name="lbox">Η λίστα στην οποία θα προστεθούν αντικείμενα με βάση το i.</param>
+    /// <param name="i">0 προσθέτει γνωρίσματα και 1 συναρτησιακές εξαρτήσεις.</param>
+    protected void loadListBox(ListBox lbox, int i)
+    {
+        if (lbox != null)
+        {
+            // TODO: Αλλαγή λειτουργίας για πιο αποδοτικό τρόπο ενημέρωσης της λίστας.
+            lbox.Items.Clear();
+            if (i == 0)
+                foreach (Attr attr in attrList)
+                {
+                    lbox.Items.Add(attr.Name);
+                }
+            else if (i == 1)
+                foreach (FD fd in fdList)
+                {
+                    lbox.Items.Add(fd.ToString());
+                }
+        }
+    }
+
+    #endregion
 
 }
