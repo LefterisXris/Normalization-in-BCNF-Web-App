@@ -407,18 +407,29 @@
         </div>
     </form>
 
-    <script>/* <%--
-        $("#lblSchemaName").dblclick(function () {
-            var txt = $("#lblSchemaName").text();
-            $("#lblSchemaName").replaceWith("<input id='lblSchemaName'/>");
-            $("#lblSchemaName").val(txt);
+    <script>
+        $(document).ready(function() {
+            InitTheChecks()
         });
+        
 
-        $("#lblSchemaName1").blur(function () {
-            var txt = $(this).val();
-            $(this).replaceWith("<asp:Label ID='lblSchemaName' runat='server'></asp:Label>");
-            $("#lblSchemaName").text(txt);
-        });*/--%>
-    </script>
+        function InitTheChecks() {
+            var updateButtons = jQuery('#<%=gridViewLeftFD%> input[type=checkbox]');
+
+            updateButtons.each(function () {
+                jQuery(this).attr('onclick', null).click(function () {
+                    var ThisCheckBox = jQuery(this);
+
+                    if (ThisCheckBox.is(':checked')) {
+                        ThisCheckBox.attr('oldBackColor', ThisCheckBox.parents(".row").css("background-color"));
+                        ThisCheckBox.parents(".row").css("background-color", "#FFD8CE");
+                    }
+                    else {
+                        ThisCheckBox.parents(".row").css("background-color", ThisCheckBox.attr('oldBackColor'));
+                    }
+                });
+            });
+        }
+        </script>
 </body>
 </html>

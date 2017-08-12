@@ -38,13 +38,13 @@
                             OnRowDataBound="OnRowDataBoundRelation" OnSelectedIndexChanged="OnSelectedIndexChangedRelation">
 
                             <Columns>
-                                <asp:BoundField DataField="BCNF" HeaderText=" BCNF" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="10%"/>
+                                <asp:BoundField DataField="BCNF" HeaderText=" BCNF" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" ItemStyle-Width="10%"/>
                                 <asp:BoundField DataField="Relation" HeaderText="Πίνακες Γνωρισμάτων" ItemStyle-Width="70%" />
                             </Columns>
 
                         </asp:GridView>
                         
-                        <asp:Button ID="btnShowBCNFtables" class="btn btn-info btn-lg" runat="server" Text="Προβολή BCNF πινάκων" Style="float: right;" OnClick="btnShowBCNFtables_Click" />
+                        <asp:Button ID="btnShowBCNFtables" class="btn btn-info btn-lg" runat="server" Text="Προβολή BCNF πινάκων" Style="float: right;" OnClick="btnShowBCNFTablesClick" />
 
                     </div>
                     <div style="margin-top: 35px;">
@@ -56,7 +56,7 @@
                             OnRowDataBound="OnRowDataBoundFD" OnSelectedIndexChanged="OnSelectedIndexChangedFD">
 
                             <Columns>
-                                <asp:BoundField DataField="Excluded" HeaderText="Χ" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="10%"/>
+                                <asp:BoundField DataField="Excluded" HeaderText="Χ" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" ItemStyle-Width="10%"/>
                                 <asp:BoundField DataField="Description" HeaderText="Περιγραφή" ItemStyle-Width="60%" />
                                 <asp:BoundField DataField="Trivial" HeaderText="Τετ"  HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="10%" />
                             </Columns>
@@ -111,12 +111,14 @@
                     <!-- Modal -->
 
 
-                    <asp:Button ID="Button3" class="btn btn-info btn-lg" runat="server" Text="Διάσπαση" OnClick="btnDecompose_Click" />
+                    <asp:Button ID="btnDecompose" class="btn btn-info btn-lg" runat="server" Text="Διάσπαση" OnClick="btnDecompose_Click" />
                     <asp:Button ID="btnClearResults" class="btn btn-info btn-lg" runat="server" Text="Καθαρισμός" OnClick="btnClearResults_Click" />
                 </div>
-                <div class="col-md-2 col-sm-2"></div>
                 <div class="col-md-2 col-sm-2">
-                    <asp:Button ID="btnCloseStepsDecompose" class="btn btn-danger btn-lg" runat="server" Text="Κλείσιμο" Style="width: 100%;" />
+                    <asp:Button ID="btnReset" class="btn btn-info btn-lg" runat="server" Text="Reset" OnClick="btnResetClick" />
+                </div>
+                <div class="col-md-2 col-sm-2">
+                    <asp:Button ID="btnCloseStepsDecompose" class="btn btn-danger btn-lg" runat="server" Text="Κλείσιμο" Style="width: 100%;" OnClick="btnCloseStepsDecompose_Click" />
                 </div>
 
             </div>

@@ -44,45 +44,18 @@ public partial class StepsDecompose : System.Web.UI.Page
                 attrList = (List<Attr>)Session["attrListSE"];
                 fdList = (List<FD>)Session["fdListSE"];
 
-                // γέμισμα πινάκων.
-
-                // δημιουργείται νέος πίνακας Relation ο οποίος αρχικά περιλαμβάνει όλα τα γνωρίσματα του σχήματος
-                // και προσττίθεται στη λίστα των πινάκων Relation.
-                Relation relInitial = new Relation(attrList);
-                relList.Add(relInitial);
-                relInitial.Name = "R";
-
-                // γέμισμα συναρτησιακών εξαρτήσεων.
-                populateFdGridView(fdList);
-
-                // γέμισμα υποψήφιων κλειδιών.
-                //προσδιορίζονται τα κλειδιά του πίνακα και εμφανίζονται στο txtKeys
-                keyList = Global.findKeys(attrList, fdList);
-
-                List<string> names = new List<string>();
-                foreach (Key key in keyList)
-                {
-                    names.Add(key.ToString());
-                }
-                names.Sort();
-                string str = string.Join("   ", names);
-                tbxKeys.Text = str;
-
-                // Ολοκλήρωση πινάκων
-                relInitial.SetKey(keyList[0]);
-
-                populateRelationGridView(relList);
+                setInitialValues();
 
             }
             #endregion Φόρτωση λιστών
 
         }
 
-       // setCheckBoxStates(TablesCheckBoxList);
-       // setCheckBoxStates(FDsCheckBoxList);
-
     }
 
+    /// <summary>
+    /// Εκτελείται λίγο πριν ανανεωθεί η σελίδα.
+    /// </summary
     protected void Page_PreRender(object sender, EventArgs e)
     {
         // Φορτώνονται οι μεταβλητές που αποθηκεύω μέσω ViewState.
@@ -94,51 +67,41 @@ public partial class StepsDecompose : System.Web.UI.Page
     }
 
     /// <summary>
-    /// mono fix for lost checkboxlist states
+    /// Με βάση τις λίστες attrList και fdList, δημιουργείται ο πίνακας relation και τα υποψήφια κλειδιά του
+    /// ώστε να ξεκινήσει η διαδικασία της σταδιακής διάσπασης.
     /// </summary>
-    private void setCheckBoxStates(CheckBoxList cbl)
+    private void setInitialValues()
     {
-        if (IsPostBack)
+        // δημιουργείται νέος πίνακας Relation ο οποίος αρχικά περιλαμβάνει όλα τα γνωρίσματα του σχήματος
+        // και προσττίθεται στη λίστα των πινάκων Relation.
+        Relation relInitial = new Relation(attrList);
+        relList.Add(relInitial);
+        relInitial.Name = "R";
+
+        // γέμισμα συναρτησιακών εξαρτήσεων.
+        populateFdGridView(fdList);
+
+        // γέμισμα υποψήφιων κλειδιών.
+        //προσδιορίζονται τα κλειδιά του πίνακα και εμφανίζονται στο txtKeys
+        keyList = Global.findKeys(attrList, fdList);
+
+        List<string> names = new List<string>();
+        foreach (Key key in keyList)
         {
-            string cblFormID = cbl.ClientID.Replace("_", "$");
-            int i = 0;
-            foreach (var item in cbl.Items)
-            {
-                string itemSelected = Request.Form[cblFormID + "$" + i];
-                if (itemSelected != null && itemSelected != String.Empty)
-                    ((ListItem)item).Selected = true;
-                i++;
-            }
+            names.Add(key.ToString());
         }
+        names.Sort();
+        string str = string.Join("   ", names);
+        tbxKeys.Text = str;
+
+        // Ολοκλήρωση πινάκων
+        relInitial.SetKey(keyList[0]);
+
+        populateRelationGridView(relList);
     }
 
-    /// <summary>
-    /// Ελέγχει αν έχει επιλεγεί ένας πίνακας και μια συναρτησιακή εξάρτηση.
-    /// </summary>
-    /// <returns></returns>
-    private bool CheckTick()
-    {
-        int indexRel = gridViewRelation.SelectedIndex;
-        int indexFd = gridViewFD.SelectedIndex;
 
-        if (indexRel >= 0 && indexFd >= 0)
-        {
-            return true;
-        }
-       
-        lblPreviewResults.Text = "Πρέπει να επιλέξετε έναν πίνακα και μια συναρτησιακή εξάρτηση.";
-        return false;        
-    }
-
-    /// <summary>
-    /// Μέθοδος που καλέιται με το πάτημα του κουμπιού Κλείσιμο. 
-    /// Επιστρέφει στην αρχική σελίδα.
-    /// </summary>
-    protected void btnCloseStepsDecompose_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("http://ilust.uom.gr:9000/Default.aspx");
-    }
-
+    #region Actions for Decompose (Preview, Decompose, ShowBCNFTables)
 
     /// <summary>
     /// Μέθοδος που εκτελείται με το πάτημα του κουμπιού Προεπισκόπηση.
@@ -148,9 +111,9 @@ public partial class StepsDecompose : System.Web.UI.Page
     {
         if (CheckTick()) DecomposeInSteps(true);
 
-       // ScriptManager.RegisterStartupScript(Page, Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
+        // ScriptManager.RegisterStartupScript(Page, Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
         ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
-      
+
     }
 
     /// <summary>
@@ -194,7 +157,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         // εξετάζεται αν η συναρτησιακή εξάρτηση είναι τετριμμένη.
         if (fd.IsTrivial)
         {
-            lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση" + "<br/>" + "<br/>" + "\"" + fd.ToString() + "\""+ "<br/>" + "<br/>" + "είναι τετριμμένη, επομένως δεν χρησιμοποιείται για διάσπαση πινάκων.";
+            lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση" + "<br/>" + "<br/>" + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "είναι τετριμμένη, επομένως δεν χρησιμοποιείται για διάσπαση πινάκων.";
             return;
         }
 
@@ -204,7 +167,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         {
             if (fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
             {
-                lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση"+ "<br/>" + "<br/>" + "\"" + fd.ToString() + "\""+ "<br/>" + "<br/>" + "περιλαμβάνει υποψήφιο κλειδί στο αριστερό σκέλος της, επομένως δεν παραβιάζει την BCNF μορφή και δεν χρησιμοποιείται για διάσπαση πινάκων.";
+                lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση" + "<br/>" + "<br/>" + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "περιλαμβάνει υποψήφιο κλειδί στο αριστερό σκέλος της, επομένως δεν παραβιάζει την BCNF μορφή και δεν χρησιμοποιείται για διάσπαση πινάκων.";
                 return;
             }
         }
@@ -217,7 +180,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         {
             if (fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
             {
-                lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση"+ "<br/>"  + "<br/>"  + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "περιλαμβάνει υποψήφιο κλειδί του πίνακα " + rel.Name + ", επομένως δεν μπορεί να τον διασπάσει.";
+                lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση" + "<br/>" + "<br/>" + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "περιλαμβάνει υποψήφιο κλειδί του πίνακα " + rel.Name + ", επομένως δεν μπορεί να τον διασπάσει.";
                 return;
             }
         }
@@ -288,9 +251,6 @@ public partial class StepsDecompose : System.Web.UI.Page
                 rel.Excluded = true;
                 fdList[iFD].Excluded = true;
 
-                // Ελέγχονται και ενημερώνονται οι πίνακες που είναι σε BCNF μορφή.
-                CheckBCNF();
-                
                 lblPreviewResults.Text = "Έγινε διάσπαση σε δύο νέους πίνακες, τον " + rel1.Name + " και τον " + rel2.Name + ".";
             }
             else
@@ -299,10 +259,13 @@ public partial class StepsDecompose : System.Web.UI.Page
                 lblPreviewResults.Text += "==============================";
             }
 
+            // Ελέγχονται και ενημερώνονται οι πίνακες που είναι σε BCNF μορφή.
+            CheckBCNF();
             UpdateExcludedFD();
 
             populateRelationGridView(relList);
             populateFdGridView(fdList);
+
         }
         else // σε διαφορετική περίπτωση η BCNF δεν παραβιάζεται και εμφανίζεται σχετικό μήνυμα
         {
@@ -350,6 +313,87 @@ public partial class StepsDecompose : System.Web.UI.Page
     }
 
     /// <summary>
+    /// Ελέγχεται ποιοι πίνακες είναι BCNF
+    /// </summary>
+    private void CheckBCNF()
+    {
+        for (int i = 0; i < relList.Count; i++)
+        {
+            if (relList[i].IsBCNF | relList[i].Excluded) continue;
+            foreach (FD fd in fdList)
+            {
+                if (fd.Excluded) continue;
+                //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
+                //σε διαφορετική περίπτωση ο πίνακας είναι BCNF
+                int x = fd.GetAll().Intersect(relList[i].GetList(), Global.comparer).Count();
+                if (x < relList[i].GetList().Count && x == fd.GetAll().Count)
+                {
+                    relList[i].IsBCNF = false;
+                    break;
+                }
+                else
+                {
+                    relList[i].IsBCNF = true;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Ελέγχει αν έχει επιλεγεί ένας πίνακας και μια συναρτησιακή εξάρτηση.
+    /// </summary>
+    /// <returns></returns>
+    private bool CheckTick()
+    {
+        int indexRel = gridViewRelation.SelectedIndex;
+        int indexFd = gridViewFD.SelectedIndex;
+
+        if (indexRel >= 0 && indexFd >= 0)
+        {
+            return true;
+        }
+
+        lblPreviewResults.Text = "Πρέπει να επιλέξετε έναν πίνακα και μια συναρτησιακή εξάρτηση.";
+        return false;
+    }
+
+    /// <summary>
+    /// Εμφανίζει, αν υπάρχουν, τους πίνακες που είναι σε BCNF.
+    /// </summary>
+    protected void btnShowBCNFTablesClick(object sender, EventArgs e)
+    {
+        //εμφανίζονται στο txtOut οι πίνακες που είναι σε BCNF μορφή
+        bool oneBCNF = false;
+        foreach (Relation rel in relList)
+            if (rel.IsBCNF)
+                oneBCNF = true;
+
+        lblPreviewResults.Text = "==============================" + "<br/>" + "<br/>";
+        if (oneBCNF)
+        {
+            lblPreviewResults.Text += "Οι πίνακες BCNF είναι οι εξής:" + "<br/>" + "<br/>";
+            foreach (Relation rel in relList)
+                if (rel.IsBCNF)
+                {
+                    lblPreviewResults.Text += rel.ToString() + "<br/>" + "<br/>";
+                }
+        }
+        else
+        {
+            lblPreviewResults.Text += "Δεν υπάρχουν πίνακες BCNF" + "<br/>" + "<br/>";
+        }
+        lblPreviewResults.Text += "==============================" + "<br/>" + "<br/>";
+
+        ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
+
+    }
+
+
+    #endregion
+
+    #region Other Actions (Clear, Reset, Exit)
+
+    /// <summary>
     /// Μέθοδος που καλείται με το πάτημα του κουμπιού Καθαρισμός.
     /// Αδειάζει την περιοχή αποτελεσμάτων.
     /// </summary>
@@ -358,17 +402,99 @@ public partial class StepsDecompose : System.Web.UI.Page
         resultsArea.InnerText = "";
     }
 
-
-    protected void btnShowBCNFtables_Click(object sender, EventArgs e)
+    /// <summary>
+    /// Επαναφέρει την αρχική κατάσταση των πινάκων.
+    /// </summary>
+    protected void btnResetClick(object sender, EventArgs e)
     {
-        Session["attrListSE"] = attrList;
-        Session["fdListSE"] = fdList;
-        //  Response.Redirect("http://ilust.uom.gr:9000/CandidateKeysGet.aspx");
-        Response.Redirect("CandidateKeysGet.aspx");
+        resultsArea.InnerText = "";
+
+        relList.Clear();
+        foreach (FD fd in fdList)
+        {
+            fd.Excluded = false;
+        }
+
+        setInitialValues();
     }
 
+    /// <summary>
+    /// Μέθοδος που καλέιται με το πάτημα του κουμπιού Κλείσιμο. 
+    /// Επιστρέφει στην αρχική σελίδα.
+    /// </summary>
+    protected void btnCloseStepsDecompose_Click(object sender, EventArgs e)
+    {
+        //  Response.Redirect("http://ilust.uom.gr:9000/Default.aspx");
+        Response.Redirect("Default.aspx");
+    }
 
-    #region GridView Management (Update selected row)
+    #endregion
+
+    #region GridViews
+
+    #region Populate
+
+    /// <summary>
+    /// Μέθοδος που φορτώνει τον πίνακα με τα Relation.
+    /// </summary>
+    /// <param name="relList">Η λίστα με τα relation τα οποία θα φορτώσει.</param>
+    private void populateRelationGridView(List<Relation> relList)
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("BCNF", typeof(string)));
+        dataTable.Columns.Add(new DataColumn("Relation", typeof(string)));
+
+        foreach (Relation rel in relList)
+        {
+            string bcnf = "";
+            if (rel.IsBCNF)
+            {
+                bcnf = "BCNF";
+            }
+            else if (rel.Excluded)
+            {
+                bcnf = "X";
+            }
+
+            dataTable.Rows.Add(bcnf, rel.ToString());
+        }
+
+        gridViewRelation.DataSource = dataTable;
+        gridViewRelation.DataBind();
+
+    }
+
+    /// <summary>
+    /// Μέθοδος που φορτώνει τον πίνακα με τις συναρτησιακές εξαρτήσεις.
+    /// </summary>
+    /// <param name="fdList">Οι συναρτησιακές εξαρτήσεις που θα φορτώσει.</param>
+    private void populateFdGridView(List<FD> fdList)
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("Excluded", typeof(string)));
+        dataTable.Columns.Add(new DataColumn("Description", typeof(string)));
+        dataTable.Columns.Add(new DataColumn("Trivial", typeof(string)));
+
+        foreach (FD fd in fdList)
+        {
+            string trivial = "";
+            string excluded = "";
+
+            if (fd.IsTrivial)
+                trivial = true.ToString();
+            if (fd.Excluded)
+                excluded = "X";
+
+            dataTable.Rows.Add(excluded, fd.ToString(), trivial);
+        }
+
+        gridViewFD.DataSource = dataTable;
+        gridViewFD.DataBind();
+    }
+
+    #endregion
+
+    #region Management (Update selected row)
 
     /// <summary>
     /// Προσθέτει λειτουργικότητα στις γραμμές του gridViewRelation μόλις προστεθεί περιεχόμενο.
@@ -434,94 +560,34 @@ public partial class StepsDecompose : System.Web.UI.Page
         }
     }
 
+    #endregion
 
     #endregion
 
+    #region FOR DELETE???
 
     /// <summary>
-    /// Μέθοδος που φορτώνει τον πίνακα με τα Relation.
+    /// mono fix for lost checkboxlist states
     /// </summary>
-    /// <param name="relList">Η λίστα με τα relation τα οποία θα φορτώσει.</param>
-    private void populateRelationGridView(List<Relation> relList)
+    private void setCheckBoxStates(CheckBoxList cbl)
     {
-        DataTable dataTable = new DataTable();
-        dataTable.Columns.Add(new DataColumn("BCNF", typeof(string)));
-        dataTable.Columns.Add(new DataColumn("Relation", typeof(string)));
-
-        foreach (Relation rel in relList)
+        if (IsPostBack)
         {
-            string bcnf = "";
-            if (rel.IsBCNF)
+            string cblFormID = cbl.ClientID.Replace("_", "$");
+            int i = 0;
+            foreach (var item in cbl.Items)
             {
-                bcnf = "BCNF";
-            }
-            else if (rel.Excluded)
-            {
-                bcnf = "X";
-            }
-            
-            dataTable.Rows.Add(bcnf, rel.ToString());
-        }
-
-        gridViewRelation.DataSource = dataTable;
-        gridViewRelation.DataBind();
-        
-    }
-
-    /// <summary>
-    /// Μέθοδος που φορτώνει τον πίνακα με τις συναρτησιακές εξαρτήσεις.
-    /// </summary>
-    /// <param name="fdList">Οι συναρτησιακές εξαρτήσεις που θα φορτώσει.</param>
-    private void populateFdGridView(List<FD> fdList)
-    {
-        DataTable dataTable = new DataTable();
-        dataTable.Columns.Add(new DataColumn("Excluded", typeof(string)));
-        dataTable.Columns.Add(new DataColumn("Description", typeof(string)));
-        dataTable.Columns.Add(new DataColumn("Trivial", typeof(string)));
-
-        foreach (FD fd in fdList)
-        {
-            string trivial = "";
-            string excluded = "";
-
-            if (fd.IsTrivial)
-                trivial = true.ToString();
-            if (fd.Excluded)
-                excluded = "X";
-
-            dataTable.Rows.Add(excluded, fd.ToString(), trivial);
-        }
-
-        gridViewFD.DataSource = dataTable;
-        gridViewFD.DataBind();
-    }
-
-
-    /// <summary>
-    /// Ελέγχεται ποιοι πίνακες είναι BCNF
-    /// </summary>
-    private void CheckBCNF()
-    {
-        for (int i = 0; i < relList.Count; i++)
-        {
-            if (relList[i].IsBCNF | relList[i].Excluded) continue;
-            foreach (FD fd in fdList)
-            {
-                if (fd.Excluded) continue;
-                //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
-                //σε διαφορετική περίπτωση ο πίνακας είναι BCNF
-                int x = fd.GetAll().Intersect(relList[i].GetList(), Global.comparer).Count();
-                if (x < relList[i].GetList().Count && x == fd.GetAll().Count)
-                {
-                    relList[i].IsBCNF = false;
-                    break;
-                }
-                else
-                {
-                    relList[i].IsBCNF = true;
-                }
+                string itemSelected = Request.Form[cblFormID + "$" + i];
+                if (itemSelected != null && itemSelected != String.Empty)
+                    ((ListItem)item).Selected = true;
+                i++;
             }
         }
     }
+
+    #endregion
+
+    // TODO: Κατά την φόρτωση, πάρε και τίτλο παραδείγματος-αρχείου.
+    // TODO: Σφάλμα στην εμφάνιση BCNF στο πρώτο παράδειγμα.
 
 }
