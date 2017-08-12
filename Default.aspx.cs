@@ -11,7 +11,6 @@ using System.Drawing;
 
 /// <summary>
 /// Default: Περιλαμβάνει όλες τις λειτουργίες της Εφαρμογής.
-/// // TODO: Αλλαγή ονόματος. 
 /// </summary>
 public partial class _Default : System.Web.UI.Page
 {
@@ -43,11 +42,7 @@ public partial class _Default : System.Web.UI.Page
             msg = (string)ViewState["logVS"];
 
         #endregion
-
-        // Καλείται η μέθοδος αυτή για να κρατηθούν οι επιλογές στα checkboxlists.
-      //  setCheckBoxStates(LeftFDCheckBoxListAttrSelection);
-      //  setCheckBoxStates(RightFDCheckBoxListAttrSelection);
-      //  setCheckBoxStates(ClosureCheckBoxList);
+        
     }
 
     /// <summary>
@@ -62,28 +57,9 @@ public partial class _Default : System.Web.UI.Page
       
     }
 
-    /// <summary>
-    /// mono fix for lost checkboxlist states
-    /// </summary>
-    private void setCheckBoxStates(CheckBoxList cbl)
-    {
-        if (IsPostBack)
-        {
-            string cblFormID = cbl.ClientID.Replace("_", "$");
-            int i = 0;
-            foreach (var item in cbl.Items)
-            {
-                string itemSelected = Request.Form[cblFormID + "$" + i];
-                if (itemSelected != null && itemSelected != String.Empty)
-                    ((ListItem)item).Selected = true;
-                i++;
-            }
-        }
-    }
-
     #region ADD NEW (Attr & Fd)
 
-    // Μένει η δυνατότητα πολλαπλής εισαγωγής γνωρισμάτων.
+    // TODO: Μένει η δυνατότητα πολλαπλής εισαγωγής γνωρισμάτων.
     #region Attr
 
     /// <summary>
@@ -148,7 +124,7 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    // Mένει η εμφάνιση της συναρτησιακής κατά την επιλογή γνωρισμάτων.
+    // TODO: Mένει η εμφάνιση της συναρτησιακής κατά την επιλογή γνωρισμάτων.
     #region FD
 
     /// <summary>
@@ -1241,13 +1217,13 @@ public partial class _Default : System.Web.UI.Page
     #endregion
 
     #region FOR DELETE???
+    // TODO: delete??? 
 
     /// <summary>
     /// Φορτώνονται τα γνωρίσματα στις Λίστες επιλογής για δημιουργία FD και και επιλογή για αναζήτηση Εγκλεισμού.
     /// </summary>
     protected void updateCheckBoxLists()
     {
-        // TODO: Αλλαγή τρόπου για αποδοτικότητα.
         //  LeftFDCheckBoxListAttrSelection.Items.Clear();
         //  RightFDCheckBoxListAttrSelection.Items.Clear();
         // ClosureCheckBoxList.Items.Clear();
@@ -1269,7 +1245,6 @@ public partial class _Default : System.Web.UI.Page
     {
         if (lbox != null)
         {
-            // TODO: Αλλαγή λειτουργίας για πιο αποδοτικό τρόπο ενημέρωσης της λίστας.
             lbox.Items.Clear();
             if (i == 0)
                 foreach (Attr attr in attrList)
@@ -1284,6 +1259,38 @@ public partial class _Default : System.Web.UI.Page
         }
     }
 
+
+    /// <summary>
+    /// mono fix for lost checkboxlist states
+    /// </summary>
+    private void setCheckBoxStates(CheckBoxList cbl)
+    {
+        if (IsPostBack)
+        {
+            string cblFormID = cbl.ClientID.Replace("_", "$");
+            int i = 0;
+            foreach (var item in cbl.Items)
+            {
+                string itemSelected = Request.Form[cblFormID + "$" + i];
+                if (itemSelected != null && itemSelected != String.Empty)
+                    ((ListItem)item).Selected = true;
+                i++;
+            }
+        }
+    }
+
     #endregion
+
+    // TODO: Αναβάθμιση της StepsDecompose.
+    // TODO: Βάλε επιλογή για ανέβασμα αρχείου από τον client για φόρτωση σχήματος.
+    // TODO: Βάλε δυνατότητα login για την καθηγήτρια.
+    // TODO: Βάλε σύνδεση με βάση και στατιστικά στοιχεία.
+    // TODO: Φτιάξε το design.
+    // TODO: Αποφάσισε την μορφή εμφάνισης αποτελεσμάτων (Κινούμενο εξτρά παράθυρο;).
+    // TODO: Άλλαξε τον επιστρεφόμενο τύπο από τις μεθόδους στην Global (βάλε Json για αποτελέσματα και σχόλια).
+    // TODO: Βάλε εμφάνιση λαθών και επιτυχιών σε Animated Alert.
+    // TODO: Βάλε έλεγχο εισαγωγής στα διάφορα inputs.
+    // TODO: Αναίρεση ή ενσωμάτωση enter. 
+    // TODO: Διαγραφή περιτών κομματιών (κλάσσεις, μεθόδους, μεταβλητές).
 
 }

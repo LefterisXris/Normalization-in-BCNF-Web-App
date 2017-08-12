@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Normalization;
+using System.Drawing;
+using System.Data;
 
 public partial class StepsDecompose : System.Web.UI.Page
 {
@@ -45,21 +47,17 @@ public partial class StepsDecompose : System.Web.UI.Page
                 // γέμισμα πινάκων.
 
                 // δημιουργείται νέος πίνακας Relation ο οποίος αρχικά περιλαμβάνει όλα τα γνωρίσματα του σχήματος
-                // και προσττίθεται στη λίστα των πίνάκων Relation.
+                // και προσττίθεται στη λίστα των πινάκων Relation.
                 Relation relInitial = new Relation(attrList);
                 relList.Add(relInitial);
                 relInitial.Name = "R";
 
                 // γέμισμα συναρτησιακών εξαρτήσεων.
-                foreach (FD fd in fdList)
-                {
-                    FDsRadioButtonList.Items.Add(fd.ToString());
-                }
+                populateFdGridView(fdList);
 
                 // γέμισμα υποψήφιων κλειδιών.
-                Closure closure = new Closure(attrList, fdList);
                 //προσδιορίζονται τα κλειδιά του πίνακα και εμφανίζονται στο txtKeys
-                keyList = closure.KeysGet(fdList, attrList, false);
+                keyList = Global.findKeys(attrList, fdList);
 
                 List<string> names = new List<string>();
                 foreach (Key key in keyList)
@@ -72,10 +70,8 @@ public partial class StepsDecompose : System.Web.UI.Page
 
                 // Ολοκλήρωση πινάκων
                 relInitial.SetKey(keyList[0]);
-                foreach (Relation rel in relList)
-                {
-                    TablesRadioButtonList.Items.Add(rel.ToString());
-                }
+
+                populateRelationGridView(relList);
 
             }
             #endregion Φόρτωση λιστών
@@ -122,32 +118,16 @@ public partial class StepsDecompose : System.Web.UI.Page
     /// <returns></returns>
     private bool CheckTick()
     {
-        int x = 0; // μετρητής επιλογών. Αν είναι 2 τότε επιλέχθηκε πίνακας και συναρτησιακή εξάρτηση. 
-        foreach (ListItem item in TablesRadioButtonList.Items)
-        {
-            if (item.Selected)
-            {
-                x++;
-                break;
-            }
-        }
+        int indexRel = gridViewRelation.SelectedIndex;
+        int indexFd = gridViewFD.SelectedIndex;
 
-        foreach (ListItem item in FDsRadioButtonList.Items)
+        if (indexRel >= 0 && indexFd >= 0)
         {
-            if (item.Selected)
-            {
-                x++;
-                break;
-            }
+            return true;
         }
-
-        if (x != 2)
-        {
-            lblPreviewResults.Text = "Πρέπει να επιλέξετε έναν πίνακα και μια συναρτησιακή εξάρτηση.";
-            return false;
-        }
-
-        return true;
+       
+        lblPreviewResults.Text = "Πρέπει να επιλέξετε έναν πίνακα και μια συναρτησιακή εξάρτηση.";
+        return false;        
     }
 
     /// <summary>
@@ -196,7 +176,7 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         // προσδιορίζεται ο πίνακας που έχει επιλεγεί.
         Relation rel = null;
-        iRel = TablesRadioButtonList.SelectedIndex;
+        iRel = gridViewRelation.SelectedIndex;
         rel = relList[iRel];
 
         // αν ο πίνακας που έχει επιλεγεί δεν μπορεί να διασπαστεί περαιτέρω, βγαίνει σχετικό μήνυμα.
@@ -208,7 +188,7 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         // προσδιορίζεται η συναρτησιακή εξάρτηση που έχει επιλεγεί.
         FD fd = null;
-        iFD = FDsRadioButtonList.SelectedIndex;
+        iFD = gridViewFD.SelectedIndex;
         fd = fdList[iFD];
 
         // εξετάζεται αν η συναρτησιακή εξάρτηση είναι τετριμμένη.
@@ -231,8 +211,7 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         // επίσης ελέγχεται αν η συναρτησιακή εξάρτηση έχει ως ορίζουσα υποψήφιο κλειδί του προς διάσπαση πίνακα.
         List<Key> tempoRelKey = new List<Key>();
-        Closure closure = new Closure(attrList, fdList);
-        tempoRelKey = closure.KeysGet(fdList, rel.GetList(), false);
+        tempoRelKey = Global.findKeys(rel.GetList(), fdList);
 
         foreach (Key key in tempoRelKey)
         {
@@ -271,7 +250,8 @@ public partial class StepsDecompose : System.Web.UI.Page
             // προσδιορίζουμε το κλειδί του δεύτερου πίνακα (αυτό που δίνει όλα τα γνωρίσματά του)
             // δημιουργούμε μια τοπική λίστα κλειδιών και ως κλειδί του δεύτερου πίνακα ορίζεται το πρώτο κλειδί της λίστας.
             List<Key> tempoKeyList = new List<Key>();
-            tempoKeyList = closure.KeysGet(fdList, rel2.GetList(), false);
+            tempoKeyList = Global.findKeys(rel2.GetList(), fdList);
+
             key2.AddToKey(tempoKeyList[0].GetAttrs());
             rel2.SetKey(key2);
 
@@ -294,6 +274,7 @@ public partial class StepsDecompose : System.Web.UI.Page
             // οι δύο νέοι πίνακες προστίθενται στη λίστα.
             if (!isPreview)
             {
+                //προστίθενται οι δύο νέοι πίνακας στο CheckboxList
                 relList.Add(rel1);
                 relList.Add(rel2);
 
@@ -303,17 +284,13 @@ public partial class StepsDecompose : System.Web.UI.Page
 
 
                 //μπαίνει Χ στα Grid για τον πίνακα rel και τη συναρτησιακή εξάρτηση fd
-
-
-                //προστίθενται οι δύο νέοι πίνακας στο CheckboxList
-                TablesRadioButtonList.Items.Add(rel1.ToString());
-                TablesRadioButtonList.Items.Add(rel2.ToString());
-
                 rel.IsBCNF = false;
                 rel.Excluded = true;
+                fdList[iFD].Excluded = true;
 
-                //CheckBCNF();
-
+                // Ελέγχονται και ενημερώνονται οι πίνακες που είναι σε BCNF μορφή.
+                CheckBCNF();
+                
                 lblPreviewResults.Text = "Έγινε διάσπαση σε δύο νέους πίνακες, τον " + rel1.Name + " και τον " + rel2.Name + ".";
             }
             else
@@ -321,14 +298,16 @@ public partial class StepsDecompose : System.Web.UI.Page
                 lblPreviewResults.Text = "Με την \"" + fd.ToString() + "\" ο " + rel.ToString() + " διασπάται σε:" + "<br/>" + "<br/>" + rel1.ToString() + RelBCNF(rel1) + "<br/>" + "<br/>" + rel2.ToString() + RelBCNF(rel2) + "<br/>" + "<br/>";
                 lblPreviewResults.Text += "==============================";
             }
-            
+
+            UpdateExcludedFD();
+
+            populateRelationGridView(relList);
+            populateFdGridView(fdList);
         }
         else // σε διαφορετική περίπτωση η BCNF δεν παραβιάζεται και εμφανίζεται σχετικό μήνυμα
         {
             lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση" + "<br/>" + "<br/>" + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "δεν σχετίζεται με τον πίνακα" + "<br/>" + "<br/>" + rel.ToString() + "<br/>" + "<br/>" + "και επομένως δεν γίνεται διάσπαση.";
         }
-
-    
 
 
     }
@@ -387,4 +366,162 @@ public partial class StepsDecompose : System.Web.UI.Page
         //  Response.Redirect("http://ilust.uom.gr:9000/CandidateKeysGet.aspx");
         Response.Redirect("CandidateKeysGet.aspx");
     }
+
+
+    #region GridView Management (Update selected row)
+
+    /// <summary>
+    /// Προσθέτει λειτουργικότητα στις γραμμές του gridViewRelation μόλις προστεθεί περιεχόμενο.
+    /// </summary>
+    protected void OnRowDataBoundRelation(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gridViewRelation, "Select$" + e.Row.RowIndex);
+            e.Row.ToolTip = "Click to select this row.";
+        }
+    }
+
+    /// <summary>
+    /// Ενημερώνει την επιλεγμένη γραμμή για το gridViewRelation.
+    /// </summary>
+    protected void OnSelectedIndexChangedRelation(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in gridViewRelation.Rows)
+        {
+            if (row.RowIndex == gridViewRelation.SelectedIndex)
+            {
+                row.BackColor = ColorTranslator.FromHtml("#A1DCF2");
+                row.ToolTip = string.Empty;
+            }
+            else
+            {
+                row.BackColor = ColorTranslator.FromHtml("#FFFFFF");
+                row.ToolTip = "Click to select this row.";
+            }
+        }
+    }
+
+    /// <summary>
+    /// Προσθέτει λειτουργικότητα στις γραμμές του gridViewFD μόλις προστεθεί περιεχόμενο.
+    /// </summary>
+    protected void OnRowDataBoundFD(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gridViewFD, "Select$" + e.Row.RowIndex);
+            e.Row.ToolTip = "Click to select this row.";
+        }
+    }
+
+    /// <summary>
+    /// Ενημερώνει την επιλεγμένη γραμμή για το gridViewFD.
+    /// </summary>
+    protected void OnSelectedIndexChangedFD(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in gridViewFD.Rows)
+        {
+            if (row.RowIndex == gridViewFD.SelectedIndex)
+            {
+                row.BackColor = ColorTranslator.FromHtml("#A1DCF2");
+                row.ToolTip = string.Empty;
+            }
+            else
+            {
+                row.BackColor = ColorTranslator.FromHtml("#FFFFFF");
+                row.ToolTip = "Click to select this row.";
+            }
+        }
+    }
+
+
+    #endregion
+
+
+    /// <summary>
+    /// Μέθοδος που φορτώνει τον πίνακα με τα Relation.
+    /// </summary>
+    /// <param name="relList">Η λίστα με τα relation τα οποία θα φορτώσει.</param>
+    private void populateRelationGridView(List<Relation> relList)
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("BCNF", typeof(string)));
+        dataTable.Columns.Add(new DataColumn("Relation", typeof(string)));
+
+        foreach (Relation rel in relList)
+        {
+            string bcnf = "";
+            if (rel.IsBCNF)
+            {
+                bcnf = "BCNF";
+            }
+            else if (rel.Excluded)
+            {
+                bcnf = "X";
+            }
+            
+            dataTable.Rows.Add(bcnf, rel.ToString());
+        }
+
+        gridViewRelation.DataSource = dataTable;
+        gridViewRelation.DataBind();
+        
+    }
+
+    /// <summary>
+    /// Μέθοδος που φορτώνει τον πίνακα με τις συναρτησιακές εξαρτήσεις.
+    /// </summary>
+    /// <param name="fdList">Οι συναρτησιακές εξαρτήσεις που θα φορτώσει.</param>
+    private void populateFdGridView(List<FD> fdList)
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("Excluded", typeof(string)));
+        dataTable.Columns.Add(new DataColumn("Description", typeof(string)));
+        dataTable.Columns.Add(new DataColumn("Trivial", typeof(string)));
+
+        foreach (FD fd in fdList)
+        {
+            string trivial = "";
+            string excluded = "";
+
+            if (fd.IsTrivial)
+                trivial = true.ToString();
+            if (fd.Excluded)
+                excluded = "X";
+
+            dataTable.Rows.Add(excluded, fd.ToString(), trivial);
+        }
+
+        gridViewFD.DataSource = dataTable;
+        gridViewFD.DataBind();
+    }
+
+
+    /// <summary>
+    /// Ελέγχεται ποιοι πίνακες είναι BCNF
+    /// </summary>
+    private void CheckBCNF()
+    {
+        for (int i = 0; i < relList.Count; i++)
+        {
+            if (relList[i].IsBCNF | relList[i].Excluded) continue;
+            foreach (FD fd in fdList)
+            {
+                if (fd.Excluded) continue;
+                //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
+                //σε διαφορετική περίπτωση ο πίνακας είναι BCNF
+                int x = fd.GetAll().Intersect(relList[i].GetList(), Global.comparer).Count();
+                if (x < relList[i].GetList().Count && x == fd.GetAll().Count)
+                {
+                    relList[i].IsBCNF = false;
+                    break;
+                }
+                else
+                {
+                    relList[i].IsBCNF = true;
+                }
+            }
+        }
+    }
+
 }

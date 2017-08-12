@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="StepsDecompose.aspx.cs" Inherits="StepsDecompose" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="StepsDecompose.aspx.cs" Inherits="StepsDecompose" EnableEventValidation="false"  %>
 
 <!DOCTYPE html>
 
@@ -15,7 +15,6 @@
 <body>
     <form id="form1" runat="server">
         <div class="container">
-
 
             <%-- HEADER (τίτλο, όνομα κλπ) --%>
             <div class="page-header">
@@ -34,7 +33,17 @@
 
                         <p><b>Πίνακες</b></p>
                    
-                        <asp:RadioButtonList ID="TablesRadioButtonList" runat="server"></asp:RadioButtonList>
+                        <asp:GridView ID="gridViewRelation" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+                            runat="server" AutoGenerateColumns="false"  Width="100%"
+                            OnRowDataBound="OnRowDataBoundRelation" OnSelectedIndexChanged="OnSelectedIndexChangedRelation">
+
+                            <Columns>
+                                <asp:BoundField DataField="BCNF" HeaderText=" BCNF" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="10%"/>
+                                <asp:BoundField DataField="Relation" HeaderText="Πίνακες Γνωρισμάτων" ItemStyle-Width="70%" />
+                            </Columns>
+
+                        </asp:GridView>
+                        
                         <asp:Button ID="btnShowBCNFtables" class="btn btn-info btn-lg" runat="server" Text="Προβολή BCNF πινάκων" Style="float: right;" OnClick="btnShowBCNFtables_Click" />
 
                     </div>
@@ -42,7 +51,17 @@
 
                         <p><b>Συναρτησιακές εξαρτήσεις</b></p>
 
-                        <asp:RadioButtonList ID="FDsRadioButtonList" runat="server"></asp:RadioButtonList>
+                        <asp:GridView ID="gridViewFD" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+                            runat="server" AutoGenerateColumns="false"  Width="100%"
+                            OnRowDataBound="OnRowDataBoundFD" OnSelectedIndexChanged="OnSelectedIndexChangedFD">
+
+                            <Columns>
+                                <asp:BoundField DataField="Excluded" HeaderText="Χ" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="10%"/>
+                                <asp:BoundField DataField="Description" HeaderText="Περιγραφή" ItemStyle-Width="60%" />
+                                <asp:BoundField DataField="Trivial" HeaderText="Τετ"  HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="10%" />
+                            </Columns>
+
+                        </asp:GridView>
 
                     </div>
                     <div style="margin-top: 20px;">

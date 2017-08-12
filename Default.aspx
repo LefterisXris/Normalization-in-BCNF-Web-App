@@ -18,7 +18,6 @@
 
             <%-- HEADER (τίτλο, όνομα κλπ) --%>
             <div class="page-header">
-                <%--TODO: Στην δημιουργία σχήματος να περνάς το όνομα εδώ στο label --%>
                 <h1>Νέο σχήμα:
                     <asp:Label ID="lblSchemaName" runat="server" Text="Default"></asp:Label>
                     <small>γνωρίσματα και συναρτησιακές εξαρτήσεις. </small></h1>
@@ -100,7 +99,7 @@
 
                 <%--Γνωρίσματα--%>
                 <div class="col-md-6">
-                    <p>Γνωρίσματα </p>
+                    <p><b>Γνωρίσματα </b></p>
 
                     <asp:GridView ID="gridViewAttr" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
                         runat="server" AutoGenerateColumns="false"  Width="100%"
@@ -111,7 +110,7 @@
                             <asp:BoundField DataField="Description" HeaderText=" Τύπος \ Περιγραφή" HeaderStyle-CssClass="text-center" ItemStyle-Width="35%" ItemStyle-HorizontalAlign="Center"/>
                         </Columns>
 
-                        </asp:GridView>
+                    </asp:GridView>
 
                     <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/add new.jpg" Visible="False" />
 
@@ -189,7 +188,7 @@
 
                 <%--Συναρτησιακές εξαρτήσεις--%>
                 <div class="col-md-6">
-                    <p>Συναρτησιακές εξαρτήσεις </p>
+                    <p><b>Συναρτησιακές εξαρτήσεις </b></p>
 
                    <%--  <asp:ListBox ID="lboxFD" runat="server" Rows="10" Width="100%"></asp:ListBox> --%>
 
@@ -359,8 +358,6 @@
                         <!-- Modal νέο σχήμα -->
                         <div class="modal fade" id="modalNewSchema" role="dialog">
                             <div class="modal-dialog">
-
-                                <!-- Modal content-->
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -382,10 +379,7 @@
                     <div>
                         <asp:Button ID="btnLoadSchema" class="btn btn-success btn-lg" runat="server" Text="Φόρτωση Σχήματος" OnClick="btnLoadSchema_Click"  />
                         <asp:Button ID="btnSaveSchema" class="btn btn-success btn-lg" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  />
-                     <%--   <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#loadSchema">Φόρτωση Σχήματος</button>
-                    --%>    
-                        
-
+                    
                         <!-- Modal φόρτωση σχήματος-->
                         <div class="modal fade" id="loadSchemaModal" role="dialog">
                             <div class="modal-dialog">
@@ -395,12 +389,8 @@
                                         <h4 class="modal-title">Φόρτωση σχήματος</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <div class="col-md-8">
-                                            <%--<p>Επιλέξτε αρχείο </p>
-                                             <asp:FileUpload ID="FileUpload1" runat="server" />--%>
-                                            <h3>Επιλέξτε παράδειγμα για φόρτωση</h3>
-                                            <asp:DropDownList ID="schemaLoadDropDownList" runat="server"></asp:DropDownList>
-                                        </div>
+                                        <p>Επιλέξτε παράδειγμα για φόρτωση</p>
+                                        <asp:DropDownList ID="schemaLoadDropDownList" runat="server"></asp:DropDownList>
                                     </div>
                                     <div class="modal-footer">
                                         <asp:Button runat="server" ID="btnLoadSchemaClick" Text="OK" class="btn btn-default" OnClick="btnLoadSelectedSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
@@ -412,7 +402,6 @@
                     </div>
                 </div>
 
-                <%-- // TODO: Προσθήκη δυνατότητας αποθήκευσης σχήματος σε αρχείο στον client. --%>
             </div>
 
         </div>
