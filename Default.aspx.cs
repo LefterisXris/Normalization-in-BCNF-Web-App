@@ -75,18 +75,31 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnNewAttrOKClick(object sender, EventArgs e)
     {
-        if (AttrCreate(tbxNewAttrName.Text.Trim(), tbxNewAttrType.Text.Trim()))
+        int nAttrs = 1;
+        string attrName = tbxNewAttrName.Text.Trim();
+        if (attrName.Contains(","))
         {
-            populateAttrGridView(attrList);
-            msg += "\nNew attribute inserted.";
-        }
-        else
-        {
-            msg += "\nCannot create attribute: Attribute already exists..";
+            nAttrs = attrName.Where(x => x == ',').Count();
         }
 
-        log.InnerText = msg;
+        log.InnerText = "";
+        string[] attrss = attrName.Split(',');
+        
+        for (int i = 0; i < attrss.Length; i++)
+        {
+            
+            if (AttrCreate(attrss[i].Trim(), tbxNewAttrType.Text.Trim()))
+            {
+                populateAttrGridView(attrList);
+                msg += "\nNew attribute inserted.";
+            }
+            else
+            {
+                msg += "\nCannot create attribute: Attribute already exists..";
+            }
 
+            log.InnerText += msg;
+        }
     }
 
     /// <summary>

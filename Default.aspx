@@ -41,7 +41,7 @@
                                 </div>
                                 <div class="modal-body">
 
-                                   <h2>Επιλογή γνωρισμάτων</h2>
+                                   <p>Επιλογή γνωρισμάτων</p>
                                    
                                     <div class="form-horizontal">
                                         <div class="col-md-10">
@@ -58,11 +58,18 @@
 
                                             </asp:GridView>
                                         </div>
+                                        
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            Τελική μορφή συναρτησιακής εξάρτησης
+                                        </div>
                                     </div>
 
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnCalculateClosure" Text="OK" class="btn btn-default" OnClick="btnCalculateClosureClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="Button1" Text="OK" class="btn btn-default" OnClick="btnNewFDOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
@@ -142,6 +149,11 @@
                                             <div class="col-md-6"> 
                                                 <asp:TextBox ID="tbxNewAttrType" runat="server" placeholder="Τύπος γνωρίσματος"></asp:TextBox>
                                             </div>
+                                        </div>
+                                        <div>
+                                            <h6>Για εισαγωγή πολλαπλών γνωρισμάτων χρησιμοποιείστε ώς διαχωριστικό το κόμμα (,) <br />
+                                                Για παράδειγμα A, B, C
+                                            </h6>
                                         </div>
                                     </div>
                                 </div>
