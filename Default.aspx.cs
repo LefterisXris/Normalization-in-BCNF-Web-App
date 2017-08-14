@@ -17,7 +17,6 @@ public partial class _Default : System.Web.UI.Page
     private List<Attr> attrList = new List<Attr>(); // Λίστα με αντικείμενα Attr, για τα γνωρίσματα.
     private List<FD> fdList = new List<FD>(); // Λίστα με αντικείμενα FD, για τις συναρτησιακές εξαρτήσεις.
     private string msg = ""; // Μεταβλητή που τυπώνει στην Logging Console. (βοηθητική) // TODO: άλλος σχεδιασμός.
-    private string schemaDescription = "";
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -59,7 +58,6 @@ public partial class _Default : System.Web.UI.Page
 
     #region ADD NEW (Attr & Fd)
 
-    // TODO: Μένει η δυνατότητα πολλαπλής εισαγωγής γνωρισμάτων.
     #region Attr
 
     /// <summary>
@@ -75,30 +73,26 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnNewAttrOKClick(object sender, EventArgs e)
     {
-        int nAttrs = 1;
         string attrName = tbxNewAttrName.Text.Trim();
-        if (attrName.Contains(","))
-        {
-            nAttrs = attrName.Where(x => x == ',').Count();
-        }
-
-        log.InnerText = "";
-        string[] attrss = attrName.Split(',');
         
+        log.InnerText = ""; msg = "";
+        string[] attrss = attrName.Split(',');
+       
+
         for (int i = 0; i < attrss.Length; i++)
         {
-            
+            attrss[i].Trim(); // Απαλοίφω τον κενό χαρακτήρα.
             if (AttrCreate(attrss[i].Trim(), tbxNewAttrType.Text.Trim()))
             {
                 populateAttrGridView(attrList);
-                msg += "\nNew attribute inserted.";
+                msg += "\nNew attribute inserted: " + attrss[i].Trim();
             }
             else
             {
                 msg += "\nCannot create attribute: Attribute already exists..";
             }
 
-            log.InnerText += msg;
+            log.InnerText = msg;
         }
     }
 
@@ -738,6 +732,12 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnStepsDecomposeClick(object sender, EventArgs e)
     {
+        // Αν έχει προηγηθεί διάσπαση προηγουμένως, τότε πρέπει να αναιρεθούν τα ενδιάμεσα αποτελέσματα.Σ
+        foreach (FD fd in fdList)
+        {
+            fd.Excluded = false;
+        }
+
         Session["attrListSE"] = attrList;
         Session["fdListSE"] = fdList;
         //  Response.Redirect("http://ilust.uom.gr:9000/StepsDecompose.aspx");
@@ -788,6 +788,7 @@ public partial class _Default : System.Web.UI.Page
     protected void btnNewSchemaOKClick(object sender, EventArgs e)
     {
         lblSchemaName.Text = tbxNewSchemaName.Text.Trim();
+        lblSchemaDescription.Text = tbxNewSchemaDescription.Text.Trim();
 
         attrList.Clear();
         fdList.Clear();
@@ -942,7 +943,8 @@ public partial class _Default : System.Web.UI.Page
         populateAttrGridView(attrList);
         populateFdGridView(fdList);
 
-        lblSchemaName.Text = selectedSchema;
+        lblSchemaName.Text = selectedSchema;    
+        lblSchemaDescription.Text = schemaDescription;
     }
 
     /// <summary>
@@ -991,7 +993,7 @@ public partial class _Default : System.Web.UI.Page
         // Εδώ προστίθεται το περιεχόμενο.
 
         string dataForFile = "NOR\n101\n"; // αναγνωριστικό, έκδοση.
-        dataForFile += schemaDescription + "\n"; // περιγραφή σχήματος.
+        dataForFile += lblSchemaDescription.Text.Trim() + "\n"; // περιγραφή σχήματος.
         dataForFile += attrList.Count().ToString() + "\n"; // αριθμός γνωρισμάτων.
 
         foreach (Attr attr in attrList)
@@ -1017,7 +1019,7 @@ public partial class _Default : System.Web.UI.Page
         }
 
         // Εγγραφή των δεδομένων σε αρχείο.
-        string filename = lblSchemaName.Text + ".txt"; // όνομα αρχείου
+        string filename = lblSchemaName.Text.Trim() + ".txt"; // όνομα αρχείου
 
         System.IO.StreamWriter file = new System.IO.StreamWriter(Directory.GetCurrentDirectory() + "/Schemas/Students/" + filename);
         file.WriteLine(dataForFile); // εγγραφή
@@ -1306,5 +1308,7 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Αναίρεση ή ενσωμάτωση enter. 
     // TODO: Διαγραφή περιτών κομματιών (κλάσσεις, μεθόδους, μεταβλητές).
     // TODO: Περιγραφή προβλήματος;; (π.χ. Τριπλή επαγωγή).
+    // TODO: Κατά την έξοδο από την StepsDecompose επιστροφή στο τελευταίο ενεργό πρόβλημα.
+    // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
 
 }

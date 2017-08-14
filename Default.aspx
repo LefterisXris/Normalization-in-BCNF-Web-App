@@ -22,7 +22,8 @@
             <div class="page-header">
                 <h1>Νέο σχήμα:
                     <asp:Label ID="lblSchemaName" runat="server" Text="Default"></asp:Label>
-                    <small>γνωρίσματα και συναρτησιακές εξαρτήσεις. </small></h1>
+                    <small>γνωρίσματα και συναρτησιακές εξαρτήσεις.</small></h1>
+                <h5><asp:Label ID="lblSchemaDescription" runat="server" Text="" Font-Italic="True" ForeColor="#669999"></asp:Label></h5>
             </div>
 
             <%-- ROW με Επιλογές Ενεργειών --%>
@@ -107,7 +108,7 @@
             <div class="row">
 
                 <%--Γνωρίσματα--%>
-                <div class="col-md-6">
+                    <div class="col-md-6">
                     <p><b>Γνωρίσματα </b></p>
 
                     <asp:GridView ID="gridViewAttr" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
@@ -276,7 +277,10 @@
 
                                     <div class="row">
                                         <div class="col-md-10">
-                                            Τελική μορφή συναρτησιακής εξάρτησης
+                                            <p>Τελική μορφή συναρτησιακής εξάρτησης: </p>
+                                            <asp:Label ID="lblPreviewFDtoCreateLeft" runat="server" Text=""></asp:Label>
+                                            <asp:Label ID="lblArrow" runat="server" Text=""></asp:Label>
+                                            <asp:Label ID="lblPreviewFDtoCreateRight" runat="server" Text=""></asp:Label>
                                         </div>
                                     </div>
 
@@ -378,8 +382,20 @@
                                         <h4 class="modal-title">Νέο σχήμα</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Εισάγετε όνομα για το νέο σχήμα:</p>
-                                        <asp:TextBox ID="tbxNewSchemaName" runat="server" placeholder="Όνομα σχήματος"></asp:TextBox>
+                                        <div class="form-horizontal"> 
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6" for="tbxNewSchemaName">Εισάγετε όνομα για το νέο σχήμα:</label>
+			                                    <div class="col-md-6"> 
+				                                    <asp:TextBox ID="tbxNewSchemaName" runat="server" placeholder="Όνομα σχήματος"></asp:TextBox>
+			                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6" for="tbxNewSchemaDescription">Εισάγετε περιγραφή για το νέο σχήμα:</label>
+			                                    <div class="col-md-6"> 
+				                                    <asp:TextBox ID="tbxNewSchemaDescription" runat="server" placeholder=" Περιγραφή σχήματος"></asp:TextBox>
+			                                    </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <asp:Button runat="server" ID="btnNewSchemaOK" Text="Δημιουργία" class="btn btn-default" OnClick="btnNewSchemaOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
@@ -422,28 +438,61 @@
     </form>
 
     <script>
-        $(document).ready(function() {
-            InitTheChecks()
-        });
         
+        $(':checkbox').change(function () {
 
-        function InitTheChecks() {
-            var updateButtons = jQuery('#<%=gridViewLeftFD%> input[type=checkbox]');
+            var value = $(this).closest('td').next('td').html(); // Παίρνω την τιμή του επόμενου κελιού.
+            var str = this.id.toString(); // παίρνω το id του checkbox.
 
-            updateButtons.each(function () {
-                jQuery(this).attr('onclick', null).click(function () {
-                    var ThisCheckBox = jQuery(this);
-
-                    if (ThisCheckBox.is(':checked')) {
-                        ThisCheckBox.attr('oldBackColor', ThisCheckBox.parents(".row").css("background-color"));
-                        ThisCheckBox.parents(".row").css("background-color", "#FFD8CE");
+            if (str.indexOf("Left") != -1) // Εάν πρόκειτε για το αριστερό μέλος/
+            {
+                if (this.checked)  // αν είναι τσεκαρισμένο το checkbox.
+                {
+                    var l = $("#lblPreviewFDtoCreateLeft").text().length;
+                    if (l > 0)
+                    {
+                        $("#lblPreviewFDtoCreateLeft").append(", " + value);
+                    }
+                    else
+                    {
+                        $("#lblPreviewFDtoCreateLeft").append(value);
+                    }
+                }
+                else // αλλιώς αφαιρώ την τιμή από την προεπισκόπηση.
+                {
+                    var pVal = $("#lblPreviewFDtoCreateLeft").text();
+                    var s = pVal.replace(value, "");
+                    $("#lblPreviewFDtoCreateLeft").text(s);
+                }
+            }
+            else
+            {
+                if(this.checked)
+                {
+                    var l = $("#lblPreviewFDtoCreateRight").text().length;
+                    if (l > 0) {
+                        $("#lblPreviewFDtoCreateRight").append(", " + value); // προσθέτω την τιμή στην προεπισκόπηση.
                     }
                     else {
-                        ThisCheckBox.parents(".row").css("background-color", ThisCheckBox.attr('oldBackColor'));
+                        $("#lblPreviewFDtoCreateRight").append(value);
                     }
-                });
-            });
-        }
-        </script>
+                }
+                else
+                {
+                    var pVal = $("#lblPreviewFDtoCreateRight").text();
+                    $("#lblPreviewFDtoCreateRight").text(pVal.replace(value, ""));
+                }
+            }
+
+            $("#lblArrow").text("\u2192");
+           // alert("Handler for a checkbox called. " + this.id.toString());
+
+           // $("#lblPreviewFDtoCreate").text(value); // print data to the label.
+            $("#lblPreviewFDtoCreate").append(value + ", ");
+            // do stuff here. It will fire on any checkbox change
+
+        });
+
+    </script>
 </body>
 </html>

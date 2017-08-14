@@ -309,6 +309,7 @@ public partial class StepsDecompose : System.Web.UI.Page
             if (x < rel.GetList().Count && x == fd.GetAll().Count)
                 return "";
         }
+        rel.IsBCNF = true;
         return "    (BCNF)";
     }
 
