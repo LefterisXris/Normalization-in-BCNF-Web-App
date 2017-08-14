@@ -5,6 +5,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>BCNF</title>
+    <link runat="server" rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+    <link runat="server" rel="icon" href="favicon.ico" type="image/ico"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
@@ -69,7 +71,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="Button1" Text="OK" class="btn btn-default" OnClick="btnNewFDOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="Button1" Text="OK" class="btn btn-default" OnClick="btnCalculateClosureClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
