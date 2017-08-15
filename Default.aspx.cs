@@ -86,10 +86,12 @@ public partial class _Default : System.Web.UI.Page
             {
                 populateAttrGridView(attrList);
                 msg += "\nNew attribute inserted: " + attrss[i].Trim();
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> New attribute inserted!'); $('#alertBoxSuccess').show();", true);
             }
             else
             {
                 msg += "\nCannot create attribute: Attribute already exists..";
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", "$('#alertBoxFailText').html('<strong>Fail!</strong> Cannot create attribute: Attribute already exists..'); $('#alertBoxFail').show();", true);
             }
 
             log.InnerText = msg;
@@ -131,7 +133,6 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    // TODO: Mένει η εμφάνιση της συναρτησιακής κατά την επιλογή γνωρισμάτων.
     #region FD
 
     /// <summary>
@@ -170,10 +171,12 @@ public partial class _Default : System.Web.UI.Page
         {
             populateFdGridView(fdList);
             log.InnerText = "FD inserted: " + fd.ToString();
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> New FD inserted!'); $('#alertBoxSuccess').show();", true);
         }
         else
         {
-            log.InnerText = "Cannot insert FD: FD already exists";
+            log.InnerText = "Cannot insert FD: FD already exists..";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Fail!</strong> Cannot insert FD: FD already exists..'); $('#alertBoxFail').show();", true);
         }
         
     }
@@ -230,6 +233,7 @@ public partial class _Default : System.Web.UI.Page
         else
         {
             log.InnerText = "You must select an attribute first.";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an attribute first.'); $('#alertBoxWarning').show();", true);
             return;
         }
 
@@ -256,16 +260,19 @@ public partial class _Default : System.Web.UI.Page
 
                 populateAttrGridView(attrList);
                 msg += "\nAttribute Edited!.";
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> Attributed edited!'); $('#alertBoxSuccess').show();", true);
             }
             else
             {
                 msg += "\nCannot create attribute: Attribute already exists..";
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Fail!</strong> Cannot create attribute: Attribute already exists..'); $('#alertBoxFail').show();", true);
                 attrList[index].Name = prevName;
             }
         }
         else
         {
             log.InnerText = "You must select an attribute first.";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an attribute first.'); $('#alertBoxWarning').show();", true);
             return;
         }
         log.InnerText = msg;
@@ -334,6 +341,7 @@ public partial class _Default : System.Web.UI.Page
         else
         {
             log.InnerText = "You must select an FD first.";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an FD first.'); $('#alertBoxWarning').show();", true);
             return;
         }
     }
@@ -370,15 +378,18 @@ public partial class _Default : System.Web.UI.Page
                 
                 populateFdGridView(fdList);
                 log.InnerText = "FD Updated: " + fd.ToString();
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> FD Updated!'); $('#alertBoxSuccess').show();", true);
             }
             else
             {
-                log.InnerText = "Cannot insert FD: FD already exists";
+                log.InnerText = "Cannot insert FD: FD already exists..";
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Success!</strong> Cannot insert FD: FD already exists..'); $('#alertBoxFail').show();", true);
             }
         }
         else
         {
             log.InnerText = "You must select an attribute first.";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an attribute first.'); $('#alertBoxWarning').show();", true);
             return;
         }
         

@@ -356,7 +356,18 @@
                     </div>
                     <!--Modal -->
 
-
+                    <div class="alert alert-success fade in" id="alertBoxSuccess" hidden="hidden">
+				        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <h4 id="alertBoxSuccessText"> <strong>Success!</strong> This alert box could indicate a successful or positive action. </h4>
+			        </div>
+                    <div class="alert alert-warning fade in" id="alertBoxWarning" hidden="hidden">
+				        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				        <h4 id="alertBoxWarningText"> <strong>Warning!</strong> This alert box could indicate a warning that might need attention. </h4>
+			        </div>
+                    <div class="alert alert-danger fade in" id="alertBoxFail" hidden="hidden">
+				        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				        <h4 id="alertBoxFailText"> <strong>Danger!</strong> This alert box could indicate a dangerous or potentially negative action. </h4>
+			        </div>
                 </div>
 
             </div>
@@ -436,6 +447,8 @@
                 </div>
 
             </div>
+
+            
 
         </div>
     </form>
