@@ -303,7 +303,7 @@
                                 </div>
                                 <div class="modal-body">
 
-                                   <p>Δομή συναρτησιακής εξάρτησης</p>
+                                   <p>Δομή συναρτησιακής εξάρτησης:</p>
                                    
                                     <div class="form-horizontal">
                                         <div class="col-md-6">
@@ -340,7 +340,10 @@
 
                                     <div class="row">
                                         <div class="col-md-10">
-                                            Τελική μορφή συναρτησιακής εξάρτησης
+                                            <p>Τελική μορφή συναρτησιακής εξάρτησης:</p>
+                                            <asp:Label ID="lblPreviewFDtoEditLeft" runat="server" Text=""></asp:Label>
+                                            <asp:Label ID="lblArrow2" runat="server" Text=""></asp:Label>
+                                            <asp:Label ID="lblPreviewFDtoEditRight" runat="server" Text=""></asp:Label>
                                         </div>
                                     </div>
 
@@ -439,58 +442,146 @@
 
     <script>
         
+        // Καλείται κατά την οποιαδήποτε αλλαγή σε οποιοδήποτε checkbox
         $(':checkbox').change(function () {
 
             var value = $(this).closest('td').next('td').html(); // Παίρνω την τιμή του επόμενου κελιού.
-            var str = this.id.toString(); // παίρνω το id του checkbox.
-
-            if (str.indexOf("Left") != -1) // Εάν πρόκειτε για το αριστερό μέλος/
+            var str = this.id.toString(); // παίρνω το id του checkbox που άλλαξε (επιλογή ή αποεπιλογή).
+            
+            if (str.indexOf("Edit") != -1) // Εάν πρόκειτε για την επεξεργασία συναρτησιακής εξάρτησης.
             {
-                if (this.checked)  // αν είναι τσεκαρισμένο το checkbox.
+                if (str.indexOf("Left") != -1) // Εάν πρόκειτε για το αριστερό μέλος.
                 {
-                    var l = $("#lblPreviewFDtoCreateLeft").text().length;
-                    if (l > 0)
+                    if (this.checked)  // αν είναι τσεκαρισμένο το checkbox προσθέτω το γνώρισμα στην προεπισκόπηση.
                     {
-                        $("#lblPreviewFDtoCreateLeft").append(", " + value);
+                        // Ελέγχω αν είναι το πρώτο γνώρισμα ώστε να προσθέσω το κόμα.
+                        var l = $("#lblPreviewFDtoEditLeft").text().length;
+                        if (l > 0) {
+                            $("#lblPreviewFDtoEditLeft").append(", " + value);
+                        }
+                        else {
+                            $("#lblPreviewFDtoEditLeft").append(value);
+                        }
                     }
-                    else
+                    else // αν δεν είναι τσεκαρισμένο αφαιρώ το γνώρισμα από την προεπισκόπηση ελέγχοντας τη θέση του για το κόμα.
                     {
-                        $("#lblPreviewFDtoCreateLeft").append(value);
+                        var pVal = $("#lblPreviewFDtoEditLeft").text();
+                        var s;
+                        if (pVal.indexOf(", " + value) != -1) {
+                            s = pVal.replace((", " + value), "");
+                        }
+                        else if (pVal.length == value.length) { // αν είναι το πρώτο στοιχείο.
+                            s = pVal.replace(value, "");
+                        }
+                        else {
+                            s = pVal.replace((value + ", "), "");
+                        }
+                        $("#lblPreviewFDtoEditLeft").text(s);
                     }
                 }
-                else // αλλιώς αφαιρώ την τιμή από την προεπισκόπηση.
-                {
-                    var pVal = $("#lblPreviewFDtoCreateLeft").text();
-                    var s = pVal.replace(value, "");
-                    $("#lblPreviewFDtoCreateLeft").text(s);
+                else { // Εάν πρόκειτε για το δεξί μέλος.
+                    if (this.checked) { // αν είναι τσεκαρισμένο το checkbox προσθέτω το γνώρισμα στην προεπισκόπηση.
+
+                        // Ελέγχω αν είναι το πρώτο γνώρισμα ώστε να προσθέσω το κόμα.
+                        var l = $("#lblPreviewFDtoEditRight").text().length;
+                        if (l > 0) {
+                            $("#lblPreviewFDtoEditRight").append(", " + value); 
+                        }
+                        else {
+                            $("#lblPreviewFDtoEditRight").append(value);
+                        }
+                    }
+                    else { // αν δεν είναι τσεκαρισμένο αφαιρώ το γνώρισμα από την προεπισκόπηση ελέγχοντας τη θέση του για το κόμα.
+                        var pVal = $("#lblPreviewFDtoEditRight").text();
+                        var s;
+                        if (pVal.indexOf(", " + value) != -1) {
+                            s = pVal.replace((", " + value), "");
+                        }
+                        else if (pVal.length == value.length) { // αν είναι το πρώτο στοιχείο.
+                            s = pVal.replace(value, "");
+                        }
+                        else {
+                            s = pVal.replace((value + ", "), "");
+                        }
+                        $("#lblPreviewFDtoEditRight").text(s);
+                    }
                 }
+                // Εάν δεν είναι κανένα γνώρισμα επιλεγμένο τότε το βέλος δεν θα εμφανίζεται.
+                if ($("#lblPreviewFDtoEditLeft").text().length == 0 && $("#lblPreviewFDtoEditRight").text().length == 0) {
+                    $("#lblArrow2").text("");
+                }
+                else {
+                    $("#lblArrow2").text("\u2192");
+                }
+                
             }
-            else
-            {
-                if(this.checked)
+            else {
+
+                if (str.indexOf("Left") != -1) // Εάν πρόκειτε για το αριστερό μέλος.
                 {
-                    var l = $("#lblPreviewFDtoCreateRight").text().length;
-                    if (l > 0) {
-                        $("#lblPreviewFDtoCreateRight").append(", " + value); // προσθέτω την τιμή στην προεπισκόπηση.
+                    if (this.checked) // αν είναι τσεκαρισμένο το checkbox προσθέτω το γνώρισμα στην προεπισκόπηση.
+                    {
+                        // Ελέγχω αν είναι το πρώτο γνώρισμα ώστε να προσθέσω το κόμα.
+                        var l = $("#lblPreviewFDtoCreateLeft").text().length;
+                        if (l > 0) {
+                            $("#lblPreviewFDtoCreateLeft").append(", " + value);
+                        }
+                        else {
+                            $("#lblPreviewFDtoCreateLeft").append(value);
+                        }
                     }
-                    else {
-                        $("#lblPreviewFDtoCreateRight").append(value);
+                    else // αν δεν είναι τσεκαρισμένο αφαιρώ το γνώρισμα από την προεπισκόπηση ελέγχοντας τη θέση του για το κόμα.
+                    {
+                        var pVal = $("#lblPreviewFDtoCreateLeft").text();
+                        var s;
+                        if (pVal.indexOf(", " + value) != -1) {
+                            s = pVal.replace((", " + value), "");
+                        }
+                        else if (pVal.length == value.length) { // αν είναι το πρώτο στοιχείο.
+                            s = pVal.replace(value, "");
+                        }
+                        else {
+                            s = pVal.replace((value + ", "), "");
+                        }
+                        $("#lblPreviewFDtoCreateLeft").text(s);
                     }
                 }
-                else
-                {
-                    var pVal = $("#lblPreviewFDtoCreateRight").text();
-                    $("#lblPreviewFDtoCreateRight").text(pVal.replace(value, ""));
+                else {// Εάν πρόκειτε για το δεξί μέλος.
+                    if (this.checked) {  // αν είναι τσεκαρισμένο το checkbox προσθέτω το γνώρισμα στην προεπισκόπηση.
+
+                        // Ελέγχω αν είναι το πρώτο γνώρισμα ώστε να προσθέσω το κόμα.
+                        var l = $("#lblPreviewFDtoCreateRight").text().length;
+                        if (l > 0) {
+                            $("#lblPreviewFDtoCreateRight").append(", " + value); // προσθέτω την τιμή στην προεπισκόπηση.
+                        }
+                        else {
+                            $("#lblPreviewFDtoCreateRight").append(value);
+                        }
+                    }
+                    else { // αν δεν είναι τσεκαρισμένο αφαιρώ το γνώρισμα από την προεπισκόπηση ελέγχοντας τη θέση του για το κόμα.
+                        var pVal = $("#lblPreviewFDtoCreateRight").text();
+                        var s;
+                        if (pVal.indexOf(", " + value) != -1) {
+                            s = pVal.replace((", " + value), "");
+                        }
+                        else if (pVal.length == value.length) {  // αν είναι το πρώτο στοιχείο.
+                            s = pVal.replace(value, "");
+                        }
+                        else {
+                            s = pVal.replace((value + ", "), "");
+                        }
+                        $("#lblPreviewFDtoCreateRight").text(s);
+                    }
                 }
+                // Εάν δεν είναι κανένα γνώρισμα επιλεγμένο τότε το βέλος δεν θα εμφανίζεται.
+                if ($("#lblPreviewFDtoCreateRight").text().length == 0 && $("#lblPreviewFDtoCreateLeft").text().length == 0) {
+                    $("#lblArrow").text("");
+                }
+                else {
+                    $("#lblArrow").text("\u2192");
+                }
+                
             }
-
-            $("#lblArrow").text("\u2192");
-           // alert("Handler for a checkbox called. " + this.id.toString());
-
-           // $("#lblPreviewFDtoCreate").text(value); // print data to the label.
-            $("#lblPreviewFDtoCreate").append(value + ", ");
-            // do stuff here. It will fire on any checkbox change
-
         });
 
     </script>

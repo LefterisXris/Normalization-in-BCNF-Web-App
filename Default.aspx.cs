@@ -280,6 +280,10 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnEditFDClick(object sender, EventArgs e)
     {
+        // Σβήνω το περιεχόμενο τη προεπισκόπησης.
+        lblPreviewFDtoEditRight.Text = "";
+        lblPreviewFDtoEditLeft.Text = "";
+
         int index = gridViewFD.SelectedIndex;
         if (index >= 0)
         {
@@ -310,6 +314,20 @@ public partial class _Default : System.Web.UI.Page
                     }
                 }
             }
+
+            // Γεμίζω το περιεχόμενο της προεπισκόπησης.
+            foreach (Attr attr in fdList[index].GetLeft())
+                lblPreviewFDtoEditLeft.Text += attr.Name + ", "; // Αριστερό μέρος
+            foreach (Attr attr in fdList[index].GetRight())
+                lblPreviewFDtoEditRight.Text += attr.Name + ", "; // Δεξί μέρος
+            lblArrow2.Text = "\u2192"; // Βέλος.
+
+            // Αφαιρώ το κόμμα από τα τελευταία γνωρίσματα.
+            string s = lblPreviewFDtoEditLeft.Text;
+            lblPreviewFDtoEditLeft.Text = s.Remove((s.Length - 2), 2);
+            
+            s = lblPreviewFDtoEditRight.Text;
+            lblPreviewFDtoEditRight.Text = s.Remove((s.Length - 2), 2);
 
             ClientScript.RegisterStartupScript(Page.GetType(), "modalEditFD", "$('#modalEditFD').modal();", true);
         }
