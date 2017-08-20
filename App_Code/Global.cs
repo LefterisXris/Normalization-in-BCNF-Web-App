@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
+using System.Xml.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Normalization
 {
@@ -32,7 +35,26 @@ namespace Normalization
             binLoader();
             return KeysGet(fdList, attrList, false);
         }
-        
+
+        public static List<Key> findKeys(List<Attr> attrList, List<FD> fdList, bool showDetails)
+        {
+            binLoader();
+             return  KeysGet(fdList, attrList, true);
+
+          /*  dynamic result = new JObject();
+            JArray jAresult = new JArray();
+
+            foreach (Key key in keyList)
+            {
+                jAresult.Add(key);
+            }
+            result.KeyList = jAresult;
+            result.Details = new JArray("Petixe", "auti", "ti", "fora");
+
+            return result.ToString();*/
+
+        }
+
 
         private static void binLoader()
         {
@@ -56,11 +78,15 @@ namespace Normalization
         {
             //δημιουργείται πίνακας με τα υποψήφια κλειδιά του σχήματος
             List<Key> keyList = new List<Key>();
+            string details = "";
 
             //δημιουργείται η frmout που αναφέρεται στην frmOut για να στέλνει πληροφορίες για τη διαδικασία της εύρεσης κλειδιών
             /*   frmOut frmout = new frmOut("Διαδικασία εύρεσης κλειδιών", true, null);
                frmout.AddOut("Αν ο εγκλεισμός ενός γνωρίσματος ή συνδυασμός αυτών περιλαμβάνει το σύνολο όλων των γνωρισμάτων του σχήματος, τότε το γνώρισμα αυτό, ή ο συνδυασμός των γνωρισμάτων, αποτελεί υποψήφιο κλειδί.\n\n");
                frmout.AddOut("Υποψήφια κλειδιά:\n\n");*/
+            details += "Διαδικασία εύρεσης κλειδιών\n";
+            details += "Αν ο εγκλεισμός ενός γνωρίσματος ή συνδυασμός αυτών περιλαμβάνει το σύνολο όλων των γνωρισμάτων του σχήματος, τότε το γνώρισμα αυτό, ή ο συνδυασμός των γνωρισμάτων, αποτελεί υποψήφιο κλειδί.\n\n";
+            details += "Υποψήφια κλειδιά:\n\n";
 
             //ελέγχονται ένα προς ένα όλα τα γνωρίσματα για το κατά πόσον μπορεί να συμμετέχουν σε κλειδί
             //αν ένα γνώρισμα δεν βρίσκεται σε κανένα αριστερό σκέλος κάποιας FD τότε αποκλείεται από τον έλεγχο
@@ -103,12 +129,47 @@ namespace Normalization
                     key.AddToKey(newAttrList[i]);
                 keyList.Add(key);
                 //  frmout.AddOut(key.ToString() + ".\n\nΕπιλέγεται ως υποψήφιο κλειδί το σύνολο των γνωρισμάτων του σχήματος, καθώς δεν εντοπίστηκαν ως κλειδιά μεμονωμένα γνωρίσματα ή συνδυασμοί αυτών.");
+                details += key.ToString() + ".\n\nΕπιλέγεται ως υποψήφιο κλειδί το σύνολο των γνωρισμάτων του σχήματος, καθώς δεν εντοπίστηκαν ως κλειδιά μεμονωμένα γνωρίσματα ή συνδυασμοί αυτών.";
             }
             //αν έχει επιλεγεί να ανοίξει η φόρμα με τη διαδικασία εύρεσης των κλειδιών, τότε ανοίγει η frmOut
             //if (showOut)
             //    frmout.ShowDialog(null);
             // frmout.Dispose();
-            return keyList;
+
+            return keyList; 
+
+        }
+
+        public static Tuple<Attr, string> jsonGenerator()
+        {
+            dynamic product = new JObject();
+            product.ProductName = "Elbow Grease";
+            product.Enabled = true;
+            product.Price = 4.90m;
+            product.StockCount = 9000;
+            product.StockValue = 44100;
+            product.Tags = new JArray("Real", "OnSale");
+            List<string> s = new List<string>();
+            s.Add("Yolo");
+            s.Add("deytero");
+            s.Add("Trito");
+
+            JArray ja = new JArray();
+            foreach (string ss in s)
+            {
+                ja.Add(ss);
+            }
+
+            product.Bla = ja;
+            JArray ja2 = new JArray();
+            ja2.Add("Eimai");
+            ja2.Add("Eimai2");
+            product.Bla2 = ja2;
+            //  product.Tags2 = new JArray("Real2", "OnSale2");
+            var pop = new Tuple<Attr, string>(new Attr("Yolo", "re"), product.ToString());
+            return pop;
+
+            
         }
 
         private static void AttrBinarySelection(List<FD> FDList, List<Attr> newAttrList, ref List<Key> keyList, int k, string s, bool showOut)

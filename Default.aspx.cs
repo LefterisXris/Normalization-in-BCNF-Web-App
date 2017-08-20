@@ -1340,4 +1340,16 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Κατά την έξοδο από την StepsDecompose επιστροφή στο τελευταίο ενεργό πρόβλημα.
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
 
+
+    protected void Button2_Click(object sender, EventArgs e)
+    {
+
+        Tuple<Attr, string> temp = Global.jsonGenerator();
+        string msg = temp.Item1.Name;
+        msg += " " + temp.Item1.Type;
+
+        msg += " " + temp.Item2;
+
+        log.InnerText = msg;
+    }
 }
