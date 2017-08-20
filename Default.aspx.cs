@@ -87,6 +87,7 @@ public partial class _Default : System.Web.UI.Page
                 populateAttrGridView(attrList);
                 msg += "\nNew attribute inserted: " + attrss[i].Trim();
                 ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> New attribute inserted!'); $('#alertBoxSuccess').show();", true);
+                ClientScript.RegisterStartupScript(Page.GetType(), "alert", "HideLabel();", true);
             }
             else
             {
@@ -1325,14 +1326,13 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    // TODO: Αναβάθμιση της StepsDecompose.
     // TODO: Βάλε επιλογή για ανέβασμα αρχείου από τον client για φόρτωση σχήματος.
     // TODO: Βάλε δυνατότητα login για την καθηγήτρια.
-    // TODO: Βάλε σύνδεση με βάση και στατιστικά στοιχεία.
+    // TODO: Βάλε σύνδεση με βάση και στατιστικά στοιχεία. (Μπήκαν analytics)
     // TODO: Φτιάξε το design.
     // TODO: Αποφάσισε την μορφή εμφάνισης αποτελεσμάτων (Κινούμενο εξτρά παράθυρο;).
     // TODO: Άλλαξε τον επιστρεφόμενο τύπο από τις μεθόδους στην Global (βάλε Json για αποτελέσματα και σχόλια).
-    // TODO: Βάλε εμφάνιση λαθών και επιτυχιών σε Animated Alert.
+    // TODO: Βάλε εμφάνιση λαθών και επιτυχιών σε Animated Alert (διόρθωση απόκρυψης μετά από 5 δεύτερα).
     // TODO: Βάλε έλεγχο εισαγωγής στα διάφορα inputs.
     // TODO: Αναίρεση ή ενσωμάτωση enter. 
     // TODO: Διαγραφή περιτών κομματιών (κλάσσεις, μεθόδους, μεταβλητές).

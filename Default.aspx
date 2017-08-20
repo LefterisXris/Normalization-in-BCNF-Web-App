@@ -10,6 +10,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <!-- font Awesome 4.7.0 -->
+    <link href="font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" href="css/minimizeModal.css"/>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
@@ -40,6 +45,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <button class="close modalMinimize"> <i class='fa fa-minus'></i> </button> 
                                     <h4 class="modal-title">Υπολογισμός Εγκλεισμού</h4>
                                 </div>
                                 <div class="modal-body">
@@ -379,6 +385,36 @@
                 <div class="col-md-6">
                     <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>
                     <textarea runat="server" id="log" cols="40" rows="20"></textarea>
+                    <h2>A demo of modal</h2>
+                     <!-- Trigger the modal with a button -->
+                     <button type="button" class="btn btn-warning btn-lg mdlFire"  data-target="#modal-1" >Demo with max/min and customized CSS</button>
+                    <!-- Modal -->
+                    <div class="modal fade mymodal" id="modal-1" role="dialog" >
+                    <div class="modal-dialog">
+    
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                        <div class="modal-header" style="padding:35px 50px;">
+                            <button type="button" class="close" data-dismiss="modal"> <i class='fa fa-times'></i></button>   
+
+                            <button class="close modalMinimize"> <i class='fa fa-minus'></i> </button> 
+
+                            <h4 class="modal-title">A demo of modal with min/max options</h4>
+                        </div>
+
+                        <div class="modal-body"  style="padding:40px 50px;">
+                            <p>The content of the modal appears here</p>
+                        </div>
+
+                        <div class="modal-footer"  style="padding:40px 50px;">
+                            <p>Place the footer options like Ok, Cancel buttons here</p>
+                        </div>
+ 
+                        </div>      
+                    </div>
+                    </div>  
+
+
                 </div>
 
                 <%-- Load Button --%>
@@ -597,6 +633,90 @@
             }
         });
 
+        function HideLabel() {
+        var seconds = 5;
+        setTimeout(function () {
+            //document.getElementById("#alertBoxSuccess").style.display = "none";
+            document.getElementById("<%=lblSchemaName.ClientID %>").style.display = "none";
+        }, seconds * 1000);
+    };
+
     </script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-104919102-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    <script>
+
+  $(document).ready(function(){ 
+      
+
+      var $content, $modal, $apnData, $modalCon; 
+
+      $content = $(".min");   
+
+
+      //To fire modal
+      $(".mdlFire").click(function(e){
+
+          e.preventDefault();
+
+          var $id = $(this).attr("data-target"); 
+
+          $($id).modal({backdrop: false, keyboard: false}); 
+
+        }); 
+ 
+
+      $(".modalMinimize").on("click", function(){
+
+                  $modalCon = $(this).closest(".mymodal").attr("id");  
+
+                  $apnData = $(this).closest(".mymodal");
+
+                  $modal = "#" + $modalCon;
+
+                  $(".modal-backdrop").addClass("display-none");   
+
+                  $($modal).toggleClass("min");  
+
+                    if ( $($modal).hasClass("min") ){ 
+
+                        $(".minmaxCon").append($apnData);  
+
+                        $(this).find("i").toggleClass( 'fa-minus').toggleClass( 'fa-clone');
+						//$(this).find("i").text("[]");
+
+                      } 
+                      else { 
+
+                              $(".container").append($apnData); 
+
+                              $(this).find("i").toggleClass( 'fa-clone').toggleClass( 'fa-minus');
+								//$(this).find("i").text("-");
+                            };
+
+                  });
+
+        $("button[data-dismiss='modal']").click(function(){   
+
+                $(this).closest(".mymodal").removeClass("min");
+
+                $(".container").removeClass($apnData);   
+
+                $(this).next('.modalMinimize').find("i").removeClass('fa fa-clone').addClass( 'fa fa-minus');
+
+              }); 
+
+  });
+
+</script>
+
 </body>
 </html>

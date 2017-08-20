@@ -589,6 +589,5 @@ public partial class StepsDecompose : System.Web.UI.Page
     #endregion
 
     // TODO: Κατά την φόρτωση, πάρε και τίτλο παραδείγματος-αρχείου.
-    // TODO: Σφάλμα στην εμφάνιση BCNF στο πρώτο παράδειγμα.
 
 }
