@@ -22,6 +22,7 @@
                 <h1>Σταδιακή διάσπαση:
                     <asp:Label ID="lblSchemaName" runat="server" Text="Default"></asp:Label>
                     <small>γνωρίσματα και συναρτησιακές εξαρτήσεις. </small></h1>
+                <h5><asp:Label ID="lblSchemaDescription" runat="server" Text="" Font-Italic="True" ForeColor="#669999"></asp:Label></h5>
             </div>
 
             <%-- ROW (πανελ με πίνακες, αποτελέσματα) --%>

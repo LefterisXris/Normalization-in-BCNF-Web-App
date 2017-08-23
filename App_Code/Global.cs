@@ -20,9 +20,9 @@ namespace Normalization
         public static List<byte> bin = new List<byte>(); //βοηθητικός πίνακας για το δυαδικό σύστημα, μετρά το πλήθος του ψηφίου 1
         public static bool anyFDUsed; //προσδιορίζει αν χρησιμοποιήθηκε έστω και μια συναρτησιακή εξάρτηση κατά τη διαδικασία του εγκλεισμού
 
-        public static List<Attr> findClosure(List<Attr> attrList, List<FD> fdList)
+        public static Tuple<List<Attr>, string> findClosure(List<Attr> attrList, List<FD> fdList, bool showDetails)
         {
-           return attrClosure(attrList, fdList, false);
+           return attrClosure(attrList, fdList, showDetails);
             /*
             closure.Sort();
             string s = string.Join(", ", closure);
@@ -100,7 +100,7 @@ namespace Normalization
             n = newAttrList.Count;
             k = 1;
             for (k = 1; k < n; k++)
-                AttrBinarySelection(FDList, newAttrList, ref keyList, k, "", showOut);
+                details += AttrBinarySelection(FDList, newAttrList, ref keyList, k, "", showOut);
 
             //αφού ολοκληρώθηκε η διαδικασία, ελέγχεται αν βρέθηκε έστω και ένα κλειδί, κι αν όχι, επιστρέφεται ως κλειδί του σχήματος ένα νέο κλειδί με όλα τα γνωρίσματα, αλλιώς μόνο τα κλειδιά που καταχωρήθηκαν στην keyList
             if (keyList.Count == 0)
@@ -111,10 +111,6 @@ namespace Normalization
                 keyList.Add(key);
                 //  frmout.AddOut(key.ToString() + ".\n\nΕπιλέγεται ως υποψήφιο κλειδί το σύνολο των γνωρισμάτων του σχήματος, καθώς δεν εντοπίστηκαν ως κλειδιά μεμονωμένα γνωρίσματα ή συνδυασμοί αυτών.");
                 details += key.ToString() + ".\n\nΕπιλέγεται ως υποψήφιο κλειδί το σύνολο των γνωρισμάτων του σχήματος, καθώς δεν εντοπίστηκαν ως κλειδιά μεμονωμένα γνωρίσματα ή συνδυασμοί αυτών.";
-            }
-            else
-            {
-                details += key.ToString();
             }
             //αν έχει επιλεγεί να ανοίξει η φόρμα με τη διαδικασία εύρεσης των κλειδιών, τότε ανοίγει η frmOut
             //if (showOut)
@@ -163,7 +159,7 @@ namespace Normalization
             
         }
 
-        private static void AttrBinarySelection(List<FD> FDList, List<Attr> newAttrList, ref List<Key> keyList, int k, string s, bool showOut)
+        private static string AttrBinarySelection(List<FD> FDList, List<Attr> newAttrList, ref List<Key> keyList, int k, string s, bool showOut)
         {
             string sBin = "";
             int i;
@@ -182,7 +178,7 @@ namespace Normalization
             //αν όλα τα γνωρίσματα είναι excluded ή το πλήθος των συνδυασμών k είναι μεγαλύτερο του μεγέθους της λίστας, επιστρέφεται κενή λίστα
             if (cleanList.Count == 0 | k > cleanList.Count)
             {
-                return;
+                return "";
             }
 
             //δημιουργείται μια καινούρια fdlist η οποία θα φιλοξενεί μόνο τις συναρτησιακές εξαρτήσεις που αφορούν τα γνωρίσματα της newAttrList
@@ -241,8 +237,8 @@ namespace Normalization
                     {
 
                         //επίσης ελέγχεται αν ο εγκλεισμός του νέου κλειδιού περιλαμβάνει όλα τα γνωρίσματα του σχήματος, κι αν ναι, τότε προστίθεται στη λίστα των υποψήφιων κλειδιών
-
-                        if (attrClosure(key.GetAttrs(), FDList, false).Intersect(newAttrList, Global.comparer).Count() == newAttrList.Count)
+                        var result = attrClosure(key.GetAttrs(), FDList, false); // Item1 = closure.
+                        if (result.Item1.Intersect(newAttrList, Global.comparer).Count() == newAttrList.Count)
                         // if (true)
                         {
                             keyList.Add(key);
@@ -256,16 +252,24 @@ namespace Normalization
                 }
                 i++;
             }
-
-            System.Diagnostics.Debug.WriteLine("i = " + i);
+            return s;
         }
 
-        private static List<Attr> attrClosure(List<Attr> attrS, List<FD> fdList, bool showOut)
+        private static Tuple<List<Attr>, string> attrClosure(List<Attr> attrS, List<FD> fdList, bool showOut)
         {
+            string details = "";
+            anyFDUsed = false; // Μηδενίζω την μεταβλητή γιατί είναι static και κρατάει την τιμή της από προηγούμενες ενέργειες.
             //ο πίνακας closure περιλαμβάνει τον εγκλεισμό των γνωρισμάτων attrS
             List<Attr> closure = new List<Attr>();
             closure.AddRange(attrS);
 
+            details += "Διαδικασία εγκλεισμού\n";
+            details += "Ο εγκλεισμός ενός συνόλου γνωρισμάτων X συμβολίζεται ως X\x207A.\n\n";
+            Relation rel = new Relation(attrS);
+            details += "Έστω ότι X = " + rel.ToString() + "\n\n";
+            details += "Ισχύει ότι X\x207A = " + rel.ToString() + ".\n\n";
+            details += "Εξετάζουμε τις συναρτησιακές εξαρτήσεις για να υπολογίσουμε τον συνολικό εγκλεισμό του X\x207A\n\n";
+            details += "==============================\n\n";
 
         //η RepeatLoop χρησιμοποιείται ως σημείο επανεκκίνησης του βρόχου σε περίπτωση που πρέπει να ελεγχθούν από την αρχή οι συναρτησιακές εξαρτήσεις
         RepeatLoop:
@@ -289,11 +293,27 @@ namespace Normalization
                     {
                         closure.AddRange(toAdd);
 
+                        if (toAdd.Count == 1)
+                            details += "Ισχύει \"" + fd.ToString() + "\", οπότε μπαίνει στον εγκλεισμό το γνώρισμα {" + toAdd[0].Name + "}.\n\n";
+                        else
+                        {
+                            Relation relToAdd = new Relation(toAdd);
+                            details += "Ισχύει \"" + fd.ToString() + "\", οπότε μπαίνoυν στον εγκλεισμό τα γνωρίσματα " + relToAdd.ToString() + ".\n\n";
+                        }
+
+                        Relation rel2 = new Relation(closure);
+                        details += "Έχουμε X\x207A = " + rel2.ToString() + "\n\n";
+                        details += "==============================\n\n";
+
                         goto RepeatLoop;
                     }
                 }
             }
-            return closure;
+
+            if (!showOut)
+                details = "";
+            var result = new Tuple<List<Attr>, string>(closure, details);
+            return result;
 
         }
 

@@ -27,7 +27,13 @@ public partial class _Default : System.Web.UI.Page
         // Αρχικοποίηση μερικών γνωρισμάτων και συναρτησιακών εξαρτήσεων μόνο την πρώτη φορά που τρέχει η εφαρμογή.
         if (IsPostBack == false)
         {
-            LoadSelectedSchema("Default.txt");
+            if (Session["schemaName"] == null)
+                LoadSelectedSchema("Default.txt");
+            else
+            {
+                string sch = (string)Session["schemaName"]; // Φορτώνω το σχήμα που είχα στην Steps Decompose.
+                LoadSelectedSchema(sch);
+            }
         }
         
         #region ViewStates Load
@@ -478,14 +484,58 @@ public partial class _Default : System.Web.UI.Page
             }
         }
         
-        msg = "";
-        List<Attr> atr1 = Global.findClosure(attrListSelected, fdList);
-
+        
+        var result = Global.findClosure(attrListSelected, fdList, true);
+        List<Attr> attrS = result.Item1;
+        msg = result.Item2;
+        /*
         foreach (Attr attr in atr1)
         {
             msg += attr.Name + ", ";
         }
-        log.InnerText = "Closure is: " + msg;
+        log.InnerText = "Closure is: " + msg;*/
+
+        //δημιουργείται τοπικός πίνακας με τα ονόματα των γνωρισμάτων που περιλαμβάνονται στον εγκλεισμό
+        List<string> names = new List<string>();
+        foreach (Attr attr in attrS)
+            names.Add(attr.Name);
+        names.Sort();
+        string str = string.Join(", ", names);
+
+        if (Global.anyFDUsed)
+            msg += "Με βάση τις συναρτησιακές εξαρτήσεις, ο εγκλεισμός X\x207A είναι:\n\n{" + str + "}";
+        else
+        {
+            Relation rel = new Relation(attrListSelected);
+            msg += "Καμία συναρτησιακή εξάρτηση δεν έχει ως ορίζουσα το " + rel.ToString() + ".\n\nΟ εγκλεισμός X\x207A είναι:\n\n{" + str + "}";
+        }
+
+        //εξετάζεται αν το αποτέλεσμα του εγκλεισμού καθιστά τον επιλεγμένο συνδυασμό υποψήφιο κλειδί ή υπερκλειδί
+        bool superKey = false;
+        if (names.Count == attrList.Count)
+        {
+            List<Key> tempoList = new List<Key>();
+            var result2 = Global.findKeys(attrList, fdList, false);
+            tempoList = result2.Item1;
+            Key tempoKey = new Key();
+
+            foreach (Key key in tempoList)
+            {
+                if(attrListSelected.Count > key.GetAttrs().Count() && key.GetAttrs().Count == key.GetAttrs().Intersect(attrList, Global.comparer).Count())
+                {
+                    superKey = true;
+                    tempoKey = key;
+                    break;
+                }
+            }
+            if (superKey)
+                msg += "\n\nεπομένως το X αποτελεί υπερκλειδί αφού περιλαμβάνει όλα τα γνωρίσματα και είναι υπερσύνολο του υποψήφιου κλειδιού " + tempoKey.ToString() + " του R.";
+            else
+                msg += "\n\nεπομένως το X αποτελεί υποψήφιο κλειδί αφού περιλαμβάνει όλα τα γνωρίσματα του R.";
+
+        }
+        
+        log.InnerText = msg;
     }
 
     #endregion
@@ -604,7 +654,8 @@ public partial class _Default : System.Web.UI.Page
                     // αν όλα τα γνωρίσματα του δεξιού σκέλους βρέθηκαν στο αριστερό, τότε η συναρτησιακή εξάρτηση τροποποιείται,
                     // με τα ίδια γνωρίσματα στα αριστερά και τον εγκλεισμό του αριστερού σκέλους στα δεξιά.
                     Closure newClosure = new Closure(attrList, fdList);
-                    fdList[i].AddRight(Global.findClosure(fdList[i].GetLeft(), fdList));
+                    var result2 = Global.findClosure(fdList[i].GetLeft(), fdList, false); // Item1 = closure.
+                    fdList[i].AddRight(result2.Item1);
                     //  fdList[i].AddRight(newClosure.attrClosure(fdList[i].GetLeft(), false));
                     fdList[i].RemoveRight(fdList[i].GetLeft());
                 }
@@ -770,6 +821,8 @@ public partial class _Default : System.Web.UI.Page
 
         Session["attrListSE"] = attrList;
         Session["fdListSE"] = fdList;
+        Session["schemaName"] = lblSchemaName.Text;
+        Session["schemaDescription"] = lblSchemaDescription.Text;
         //  Response.Redirect("http://ilust.uom.gr:9000/StepsDecompose.aspx");
         Response.Redirect("StepsDecompose.aspx");
 
@@ -1331,14 +1384,13 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Βάλε σύνδεση με βάση και στατιστικά στοιχεία. (Μπήκαν analytics)
     // TODO: Φτιάξε το design.
     // TODO: Αποφάσισε την μορφή εμφάνισης αποτελεσμάτων (Κινούμενο εξτρά παράθυρο;).
-    // TODO: Άλλαξε τον επιστρεφόμενο τύπο από τις μεθόδους στην Global (βάλε Json για αποτελέσματα και σχόλια).
     // TODO: Βάλε εμφάνιση λαθών και επιτυχιών σε Animated Alert (διόρθωση απόκρυψης μετά από 5 δεύτερα).
     // TODO: Βάλε έλεγχο εισαγωγής στα διάφορα inputs.
     // TODO: Αναίρεση ή ενσωμάτωση enter. 
     // TODO: Διαγραφή περιτών κομματιών (κλάσσεις, μεθόδους, μεταβλητές).
-    // TODO: Περιγραφή προβλήματος;; (π.χ. Τριπλή επαγωγή).
-    // TODO: Κατά την έξοδο από την StepsDecompose επιστροφή στο τελευταίο ενεργό πρόβλημα.
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
+    // TODO: Σχολιασμός και συμμάζεμα StepsDecompose.
+
 
 
     protected void Button2_Click(object sender, EventArgs e)

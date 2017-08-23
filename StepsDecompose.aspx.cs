@@ -39,10 +39,14 @@ public partial class StepsDecompose : System.Web.UI.Page
             // Όταν καλείται η σελίδα αυτή, τότε πρέπει οπωσδήποτε να φορτωθούν και οι λίστες 
             // με τα γνωρίσματα και τις συναρτησιακές εξαρτηήσεις, για να γίνει η σταδιακή διάσπαση.
             #region Φόρτωση λιστών
-            if (Session["attrListSE"] != null && Session["fdListSE"] != null)
+            if (Session["attrListSE"] != null && Session["fdListSE"] != null && Session["schemaName"] != null)
             {
                 attrList = (List<Attr>)Session["attrListSE"];
                 fdList = (List<FD>)Session["fdListSE"];
+                lblSchemaName.Text = (string)Session["schemaName"];
+
+                if (Session["schemaDescription"] != null)
+                    lblSchemaDescription.Text = (string)Session["schemaDescription"];
 
                 setInitialValues();
 
@@ -83,7 +87,8 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         // γέμισμα υποψήφιων κλειδιών.
         //προσδιορίζονται τα κλειδιά του πίνακα και εμφανίζονται στο txtKeys
-        keyList = Global.findKeys(attrList, fdList);
+        var result = Global.findKeys(attrList, fdList, false);
+        keyList = result.Item1;
 
         List<string> names = new List<string>();
         foreach (Key key in keyList)
@@ -174,7 +179,8 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         // επίσης ελέγχεται αν η συναρτησιακή εξάρτηση έχει ως ορίζουσα υποψήφιο κλειδί του προς διάσπαση πίνακα.
         List<Key> tempoRelKey = new List<Key>();
-        tempoRelKey = Global.findKeys(rel.GetList(), fdList);
+        var resultTemp = Global.findKeys(rel.GetList(), fdList, false);
+        tempoRelKey = resultTemp.Item1;
 
         foreach (Key key in tempoRelKey)
         {
@@ -213,7 +219,8 @@ public partial class StepsDecompose : System.Web.UI.Page
             // προσδιορίζουμε το κλειδί του δεύτερου πίνακα (αυτό που δίνει όλα τα γνωρίσματά του)
             // δημιουργούμε μια τοπική λίστα κλειδιών και ως κλειδί του δεύτερου πίνακα ορίζεται το πρώτο κλειδί της λίστας.
             List<Key> tempoKeyList = new List<Key>();
-            tempoKeyList = Global.findKeys(rel2.GetList(), fdList);
+            var resultTemp2 = Global.findKeys(rel2.GetList(), fdList, false);
+            tempoKeyList = resultTemp2.Item1;
 
             key2.AddToKey(tempoKeyList[0].GetAttrs());
             rel2.SetKey(key2);
@@ -425,6 +432,8 @@ public partial class StepsDecompose : System.Web.UI.Page
     /// </summary>
     protected void btnCloseStepsDecompose_Click(object sender, EventArgs e)
     {
+        Session["schemaName"] = lblSchemaName.Text;
+
         //  Response.Redirect("http://ilust.uom.gr:9000/Default.aspx");
         Response.Redirect("Default.aspx");
     }
