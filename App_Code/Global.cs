@@ -30,31 +30,12 @@ namespace Normalization
             return s;*/
         }
 
-        public static List<Key> findKeys(List<Attr> attrList, List<FD> fdList)
+        public static Tuple<List<Key>, string> findKeys(List<Attr> attrList, List<FD> fdList, bool showDetails)
         {
             binLoader();
-            return KeysGet(fdList, attrList, false);
+            return KeysGet(fdList, attrList, showDetails);
+            
         }
-
-        public static List<Key> findKeys(List<Attr> attrList, List<FD> fdList, bool showDetails)
-        {
-            binLoader();
-             return  KeysGet(fdList, attrList, true);
-
-          /*  dynamic result = new JObject();
-            JArray jAresult = new JArray();
-
-            foreach (Key key in keyList)
-            {
-                jAresult.Add(key);
-            }
-            result.KeyList = jAresult;
-            result.Details = new JArray("Petixe", "auti", "ti", "fora");
-
-            return result.ToString();*/
-
-        }
-
 
         private static void binLoader()
         {
@@ -74,7 +55,7 @@ namespace Normalization
             #endregion
         }
 
-        private static List<Key> KeysGet(List<FD> FDList, List<Attr> newAttrList, bool showOut)
+        private static Tuple<List<Key>, string> KeysGet(List<FD> FDList, List<Attr> newAttrList, bool showOut)
         {
             //δημιουργείται πίνακας με τα υποψήφια κλειδιά του σχήματος
             List<Key> keyList = new List<Key>();
@@ -131,12 +112,22 @@ namespace Normalization
                 //  frmout.AddOut(key.ToString() + ".\n\nΕπιλέγεται ως υποψήφιο κλειδί το σύνολο των γνωρισμάτων του σχήματος, καθώς δεν εντοπίστηκαν ως κλειδιά μεμονωμένα γνωρίσματα ή συνδυασμοί αυτών.");
                 details += key.ToString() + ".\n\nΕπιλέγεται ως υποψήφιο κλειδί το σύνολο των γνωρισμάτων του σχήματος, καθώς δεν εντοπίστηκαν ως κλειδιά μεμονωμένα γνωρίσματα ή συνδυασμοί αυτών.";
             }
+            else
+            {
+                details += key.ToString();
+            }
             //αν έχει επιλεγεί να ανοίξει η φόρμα με τη διαδικασία εύρεσης των κλειδιών, τότε ανοίγει η frmOut
             //if (showOut)
             //    frmout.ShowDialog(null);
             // frmout.Dispose();
-
-            return keyList; 
+            
+            if (!showOut) // Αν δεν χρειάζεται τις λεπτομέρειες τότε επιστρέφω μόνο τη λίστα με τα κλειδιά.
+                details = "";
+            
+            var s = new Tuple<List<Key>, string>(keyList, details);
+                
+            //return keyList; 
+            return s;
 
         }
 

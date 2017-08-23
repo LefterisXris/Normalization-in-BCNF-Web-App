@@ -499,15 +499,13 @@ public partial class _Default : System.Web.UI.Page
     protected void btnCalculateKeysClick(object sender, EventArgs e)
     {
         List<Key> keyList = new List<Key>();
-        keyList = Global.findKeys(attrList, fdList);
-        msg = "";
+        var result = Global.findKeys(attrList, fdList, true);
 
-        foreach (Key key in keyList)
-        {
-            msg += key.ToString() + ", ";
-        }
+        keyList = result.Item1; // Είναι η λίστα με τα κλειδιά.
 
-        log.InnerText = "Υποψήφια κλειδιά: " + msg;
+        msg = result.Item2.ToString(); // Είναι οι λεπτομέρειες.
+        
+        log.InnerText = msg;
     }
 
     #endregion
@@ -549,7 +547,8 @@ public partial class _Default : System.Web.UI.Page
         List<Key> keyList = new List<Key>();
         // Closure closure = new Closure(attrList, fdList);
         // keyList = closure.KeysGet(fdList, attrList, false);
-        keyList = Global.findKeys(attrList, fdList);
+        var result = Global.findKeys(attrList, fdList, false);
+        keyList = result.Item1;
 
         if (keyList.Count > 0)
         {
@@ -673,7 +672,8 @@ public partial class _Default : System.Web.UI.Page
                         List<Key> tempoKeyList = new List<Key>();
                         // Closure cl = new Closure(attrList, fdList);
                         // tempoKeyList = cl.KeysGet(fdList, rel2.GetList(), false);
-                        tempoKeyList = Global.findKeys(rel2.GetList(), fdList);
+                        var resultTemp = Global.findKeys(rel2.GetList(), fdList, false);
+                        tempoKeyList = resultTemp.Item1;
                         key2.AddToKey(tempoKeyList[0].GetAttrs());
                         rel2.SetKey(key2);
 
