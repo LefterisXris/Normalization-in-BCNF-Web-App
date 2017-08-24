@@ -20,6 +20,13 @@ public partial class _Default : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+
+        if (Request.QueryString["role"] == "admin")
+        {
+            //  Response.Redirect("http://ilust.uom.gr:9000/MemberPages/Admin.aspx");
+            Response.Redirect("MemberPages/Admin.aspx");
+        }
+
         // Αρχικοποίηση της Logging Console.
         msg += "Logging Console...";
         log.InnerText = msg;
@@ -32,11 +39,11 @@ public partial class _Default : System.Web.UI.Page
             else
             {
                 string sch = (string)Session["schemaName"]; // Φορτώνω το σχήμα που είχα στην Steps Decompose.
-                if(!LoadSelectedSchema(sch))
+                if (!LoadSelectedSchema(sch))
                     LoadSelectedSchema("Default.txt");
             }
         }
-        
+
         #region ViewStates Load
         if (ViewState["attrListVS"] != null)
             attrList = (List<Attr>)ViewState["attrListVS"];
@@ -50,11 +57,18 @@ public partial class _Default : System.Web.UI.Page
         #endregion
 
 
+        // Εάν έχει συνδεθεί ο Admin τότε δίνεται η δυνατότητα αποθήκευσης.
         if (HttpContext.Current.User.Identity.IsAuthenticated)
-            //log.InnerText = "yes it is";
-            btnSaveSchema.Enabled = true;
+        {
+            LoginStatus1.Visible = true;
+            btnSaveSchema.Visible = true;
+        }
         else
-            btnSaveSchema.Enabled = false;
+        {
+            LoginStatus1.Visible = false;
+            btnSaveSchema.Visible = false;
+        }
+
 
     }
 
@@ -67,7 +81,7 @@ public partial class _Default : System.Web.UI.Page
         ViewState.Add("attrListVS", attrList);
         ViewState.Add("fdListVS", fdList);
         ViewState.Add("logVS", msg);
-      
+
     }
 
     #region ADD NEW (Attr & Fd)
@@ -88,10 +102,10 @@ public partial class _Default : System.Web.UI.Page
     protected void btnNewAttrOKClick(object sender, EventArgs e)
     {
         string attrName = tbxNewAttrName.Text.Trim();
-        
+
         log.InnerText = ""; msg = "";
         string[] attrss = attrName.Split(',');
-       
+
 
         for (int i = 0; i < attrss.Length; i++)
         {
@@ -193,7 +207,7 @@ public partial class _Default : System.Web.UI.Page
             log.InnerText = "Cannot insert FD: FD already exists..";
             ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Fail!</strong> Cannot insert FD: FD already exists..'); $('#alertBoxFail').show();", true);
         }
-        
+
     }
 
     /// <summary>
@@ -296,7 +310,7 @@ public partial class _Default : System.Web.UI.Page
     #endregion
 
     #region FD
-    
+
     /// <summary>
     /// Ελέγχει αν έχει επιλεγεί μια συναρτησιακή εξάρτηση και την φορτώνει για επεξεργασία.
     /// </summary>
@@ -347,7 +361,7 @@ public partial class _Default : System.Web.UI.Page
             // Αφαιρώ το κόμμα από τα τελευταία γνωρίσματα.
             string s = lblPreviewFDtoEditLeft.Text;
             lblPreviewFDtoEditLeft.Text = s.Remove((s.Length - 2), 2);
-            
+
             s = lblPreviewFDtoEditRight.Text;
             lblPreviewFDtoEditRight.Text = s.Remove((s.Length - 2), 2);
 
@@ -390,7 +404,7 @@ public partial class _Default : System.Web.UI.Page
             if (!FDExists(fd, index))
             {
                 fdList[index] = fd;
-                
+
                 populateFdGridView(fdList);
                 log.InnerText = "FD Updated: " + fd.ToString();
                 ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> FD Updated!'); $('#alertBoxSuccess').show();", true);
@@ -407,7 +421,7 @@ public partial class _Default : System.Web.UI.Page
             ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an attribute first.'); $('#alertBoxWarning').show();", true);
             return;
         }
-        
+
     }
 
     #endregion
@@ -433,7 +447,7 @@ public partial class _Default : System.Web.UI.Page
         {
             log.InnerText = "You must select an attribute first.";
         }
-                
+
     }
 
     #endregion
@@ -472,10 +486,10 @@ public partial class _Default : System.Web.UI.Page
     protected void btnFindClosureClick(object sender, EventArgs e)
     {
         populateFindClosureGridView(); // Φόρτωση γνωρισμάτων για επιλογή
-        
+
         ClientScript.RegisterStartupScript(Page.GetType(), "modalClosure", "$('#modalClosure').modal();", true);
     }
-    
+
     /// <summary>
     /// Υπολογίζει τον εγλεισμό των επιλεγμένων γνωρισμάτων.
     /// </summary>
@@ -491,8 +505,8 @@ public partial class _Default : System.Web.UI.Page
                 attrListSelected.Add(attrList[item.RowIndex]);
             }
         }
-        
-        
+
+
         var result = Global.findClosure(attrListSelected, fdList, true);
         List<Attr> attrS = result.Item1;
         msg = result.Item2;
@@ -529,7 +543,7 @@ public partial class _Default : System.Web.UI.Page
 
             foreach (Key key in tempoList)
             {
-                if(attrListSelected.Count > key.GetAttrs().Count() && key.GetAttrs().Count == key.GetAttrs().Intersect(attrList, Global.comparer).Count())
+                if (attrListSelected.Count > key.GetAttrs().Count() && key.GetAttrs().Count == key.GetAttrs().Intersect(attrList, Global.comparer).Count())
                 {
                     superKey = true;
                     tempoKey = key;
@@ -542,7 +556,7 @@ public partial class _Default : System.Web.UI.Page
                 msg += "\n\nεπομένως το X αποτελεί υποψήφιο κλειδί αφού περιλαμβάνει όλα τα γνωρίσματα του R.";
 
         }
-        
+
         log.InnerText = msg;
     }
 
@@ -562,7 +576,7 @@ public partial class _Default : System.Web.UI.Page
         keyList = result.Item1; // Είναι η λίστα με τα κλειδιά.
 
         msg = result.Item2.ToString(); // Είναι οι λεπτομέρειες.
-        
+
         log.InnerText = msg;
     }
 
@@ -973,7 +987,7 @@ public partial class _Default : System.Web.UI.Page
         {
             return false;
         }
-        
+
 
         int i = 0; // τρέχων γραμμή.
 
@@ -1044,7 +1058,7 @@ public partial class _Default : System.Web.UI.Page
         populateAttrGridView(attrList);
         populateFdGridView(fdList);
 
-        lblSchemaName.Text = selectedSchema;    
+        lblSchemaName.Text = selectedSchema;
         lblSchemaDescription.Text = schemaDescription;
         return true;
     }
@@ -1406,17 +1420,37 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Βάλε εμφάνιση λαθών και επιτυχιών σε Animated Alert (διόρθωση απόκρυψης μετά από 5 δεύτερα).
     // TODO: Βάλε έλεγχο εισαγωγής στα διάφορα inputs.
     // TODO: Αναίρεση ή ενσωμάτωση enter. 
-    // TODO: Διαγραφή περιτών κομματιών (κλάσσεις, μεθόδους, μεταβλητές).
+    // TODO: Διαγραφή περιτών κομματιών (κλάσεις, μεθόδους, μεταβλητές).
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
     // TODO: Σχολιασμός και συμμάζεμα StepsDecompose.
 
 
-
-
-
-    protected void Button12_Click(object sender, EventArgs e)
+    protected void btnGetSchemasClick(object sender, EventArgs e)
     {
-        //  Response.Redirect("http://ilust.uom.gr:9000/MemberPages/Admin.aspx");
-        Response.Redirect("MemberPages/Admin.aspx");
+        Console.WriteLine("hostname again");
+        System.Diagnostics.Debug.WriteLine("You click me ..................");
+
+        DBConnect dbConnect = new DBConnect();
+
+        List<string> list;
+        list = dbConnect.Select();
+
+        if (list != null)
+            log.InnerText = "Yeah";    
+        else
+            log.InnerText = "dfhfd";
+
+        string mmm = "";
+        /* foreach (List<string> ll in list)
+         {
+             foreach (string s in ll)
+                 mmm += s + ",  ";
+             mmm += "\n\n";
+         }*/
+            
+        foreach (string s in list)
+            mmm += s + ",  ";
+
+        log.InnerText = mmm;
     }
 }

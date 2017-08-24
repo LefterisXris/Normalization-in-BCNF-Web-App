@@ -423,6 +423,7 @@
                     <div>
                         <asp:Button ID="btnLoadSchema" class="btn btn-success btn-lg" runat="server" Text="Φόρτωση Σχήματος" OnClick="btnLoadSchema_Click"  />
                         <asp:Button ID="btnSaveSchema" class="btn btn-success btn-lg" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  />
+                        <asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-lg" runat="server" Text="επιλογή προεπιλεγμένου"   />
                     
                         <!-- Modal φόρτωση σχήματος-->
                         <div class="modal fade" id="loadSchemaModal" role="dialog">
@@ -444,7 +445,8 @@
                         </div>
                         <!-- Modal -->
                         <br />
-                        <asp:Button ID="Button12" runat="server" OnClick="Button12_Click" Text="Log in" />
+                        <asp:LoginStatus ID="LoginStatus1" runat="server" />
+                        <asp:Button ID="Button2" class="btn btn-success btn-lg" runat="server" Text="Paradeigmata"  OnClick="btnGetSchemasClick" />
                     </div>
                 </div>
 

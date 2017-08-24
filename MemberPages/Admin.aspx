@@ -17,6 +17,12 @@
             <asp:LoginStatus ID="LoginStatus1" runat="server" />
 &nbsp;<asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Default.aspx">Home</asp:HyperLink>
         </p>
+        <p>
+            &nbsp;</p>
+        <p>
+            Εμφάνιση στατιστικών</p>
+        <p>
+            &nbsp;</p>
     
     </div>
     </form>
