@@ -32,7 +32,8 @@ public partial class _Default : System.Web.UI.Page
             else
             {
                 string sch = (string)Session["schemaName"]; // Φορτώνω το σχήμα που είχα στην Steps Decompose.
-                LoadSelectedSchema(sch);
+                if(!LoadSelectedSchema(sch))
+                    LoadSelectedSchema("Default.txt");
             }
         }
         
@@ -47,7 +48,14 @@ public partial class _Default : System.Web.UI.Page
             msg = (string)ViewState["logVS"];
 
         #endregion
-        
+
+
+        if (HttpContext.Current.User.Identity.IsAuthenticated)
+            //log.InnerText = "yes it is";
+            btnSaveSchema.Enabled = true;
+        else
+            btnSaveSchema.Enabled = false;
+
     }
 
     /// <summary>
@@ -945,17 +953,27 @@ public partial class _Default : System.Web.UI.Page
     {
         // Φορτώνεται το αρχείο το οποίο έχει επιλεχθεί.
         string selectedSchema = schemaLoadDropDownList.SelectedValue;
-        LoadSelectedSchema(selectedSchema);
+        if (!LoadSelectedSchema(selectedSchema))
+            LoadSelectedSchema("Default.txt");
     }
 
     /// <summary>
     /// Μέθοδος που φορτώνει το παράδειγμα με το δοσμένο όνομα.
     /// </summary>
     /// <param name="selectedSchema">Το όνομα του παραδείγματος.</param>
-    private void LoadSelectedSchema(string selectedSchema)
+    private bool LoadSelectedSchema(string selectedSchema)
     {
-        // Φορτώνεται το αρχείο το οποίο έχει επιλεχθεί.
-        string[] lines = System.IO.File.ReadAllLines(Directory.GetCurrentDirectory() + "/Schemas/" + selectedSchema);
+        string[] lines;
+        try
+        {
+            // Φορτώνεται το αρχείο το οποίο έχει επιλεχθεί.
+            lines = System.IO.File.ReadAllLines(Directory.GetCurrentDirectory() + "/Schemas/" + selectedSchema);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        
 
         int i = 0; // τρέχων γραμμή.
 
@@ -963,7 +981,7 @@ public partial class _Default : System.Web.UI.Page
         if (lines[i++] != "NOR")
         {
             log.InnerText = "Μη έγκυρη μορφή αρχείου σχήματος.";
-            return;
+            return false;
         }
 
         // Καθαρίζω τις λίστες για να προσθέσω τα καινούργια δεδομένα.
@@ -1028,6 +1046,7 @@ public partial class _Default : System.Web.UI.Page
 
         lblSchemaName.Text = selectedSchema;    
         lblSchemaDescription.Text = schemaDescription;
+        return true;
     }
 
     /// <summary>
@@ -1393,15 +1412,11 @@ public partial class _Default : System.Web.UI.Page
 
 
 
-    protected void Button2_Click(object sender, EventArgs e)
+
+
+    protected void Button12_Click(object sender, EventArgs e)
     {
-
-        Tuple<Attr, string> temp = Global.jsonGenerator();
-        string msg = temp.Item1.Name;
-        msg += " " + temp.Item1.Type;
-
-        msg += " " + temp.Item2;
-
-        log.InnerText = msg;
+        //  Response.Redirect("http://ilust.uom.gr:9000/MemberPages/Admin.aspx");
+        Response.Redirect("MemberPages/Admin.aspx");
     }
 }

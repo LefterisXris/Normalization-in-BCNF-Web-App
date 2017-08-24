@@ -443,8 +443,9 @@
                             </div>
                         </div>
                         <!-- Modal -->
+                        <br />
+                        <asp:Button ID="Button12" runat="server" OnClick="Button12_Click" Text="Log in" />
                     </div>
-                    <asp:Button ID="Button2" runat="server" Text="Button" OnClick="Button2_Click" />
                 </div>
 
             </div>
