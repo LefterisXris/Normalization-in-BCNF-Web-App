@@ -19,19 +19,31 @@ namespace Normalization
 
         public DBConnect()
         {
-            Initialize();
+            //Initialize();
+            MySqlDbInit();
         }
 
         //Initialize values
         private void Initialize()
         {
-            server = "http://ilust.uom.gr";
+            server = "localhost";
             database = "lefterisxris";
             uid = "lefterisxris";
             password = "";
             string connectionString;
-            connectionString = "SERVER=" + server + ";" + "DATABASE=" + database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+            connectionString = "Server=" + server + ";" + "Port=3306;" + "Database=" + database + ";" + "Uid=" + uid + ";" + "Pwd=" + password + ";" + "Protocol=memory;" + "Shared Memory Name=MYSQL;";
 
+            connection = new MySqlConnection(connectionString);
+        }
+
+        private void MySqlDbInit()
+        {
+            server = "195.251.211.81"; 
+            database = "lefterisxris";
+            uid = "lefterisxris";
+            password = "";
+
+            string connectionString = "Server=" + server + ";" +"Port=3306;" + "Database=" + database + ";" + "Uid=" + uid + ";" + "Pwd=" + password + ";";
             connection = new MySqlConnection(connectionString);
         }
 
@@ -53,15 +65,15 @@ namespace Normalization
                 {
                     case 0:
                         //  MessageBox.Show("Cannot connect to server.  Contact administrator") ;
-                        Console.WriteLine("Cannot connect to server.  Contact administrator");
+                        Console.WriteLine("Cannot connect to server.  Contact administrator: " + ex.Message);
                         break;
 
                     case 1045:
                         // MessageBox.Show("Invalid username/password, please try again");
-                        Console.WriteLine("Invalid username/password, please try again");
+                        Console.WriteLine("Invalid username/password, please try again: " + ex.Message);
                         break;
                     case 1042:
-                        Console.WriteLine("hostname again");
+                        Console.WriteLine("Error " + ex.Number + " has occured: " + ex.Message);
                         break;
 
                 }
@@ -87,8 +99,8 @@ namespace Normalization
         //Select statement
         public List<string> Select()
         {
-            string query = "SELECT * FROM `Schemas` WHERE id=1";
-            Console.WriteLine("hostname again");
+            string query = "SELECT * FROM `Schemas`";
+            Console.WriteLine("under the query");
 
             //Create a list to store the result
             List<string>[] list = new List<string>[2];
@@ -98,6 +110,7 @@ namespace Normalization
             //Open connection
             if (this.OpenConnection() == true)
             {
+                Console.WriteLine("true statement");
                 //Create Command
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 //Create a data reader and Execute the command
@@ -111,7 +124,11 @@ namespace Normalization
                   }*/
                 List<string> yo = new List<string>();
                 while (dataReader.Read())
+                {
                     yo.Add(dataReader["id"] + "");
+                    yo.Add(dataReader["name"] + "");
+                }
+                    
                 //close Data Reader
                 dataReader.Close();
 
@@ -119,11 +136,15 @@ namespace Normalization
                 this.CloseConnection();
 
                 //return list to be displayed
+                Console.WriteLine("return happy!");
+
                 return yo;
             }
             else
             {
-                return null;
+                List<string> yo = new List<string>();
+                yo.Add("Fail");
+                return yo;
             }
         }
 

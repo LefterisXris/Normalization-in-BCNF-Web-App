@@ -8,6 +8,8 @@ using Normalization;
 using System.IO;
 using System.Data;
 using System.Drawing;
+using System.Configuration;
+using MySql.Data.MySqlClient;
 
 /// <summary>
 /// Default: Περιλαμβάνει όλες τις λειτουργίες της Εφαρμογής.
@@ -1427,9 +1429,8 @@ public partial class _Default : System.Web.UI.Page
 
     protected void btnGetSchemasClick(object sender, EventArgs e)
     {
-        Console.WriteLine("hostname again");
-        System.Diagnostics.Debug.WriteLine("You click me ..................");
-
+        Console.WriteLine("btn click");
+        
         DBConnect dbConnect = new DBConnect();
 
         List<string> list;
