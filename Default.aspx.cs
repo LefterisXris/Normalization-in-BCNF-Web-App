@@ -64,11 +64,15 @@ public partial class _Default : System.Web.UI.Page
         {
             LoginStatus1.Visible = true;
             btnSaveSchema.Visible = true;
+            btnSetDefaultSchema.Visible = true;
+            btnLoadDB.Visible = true;
         }
         else
         {
             LoginStatus1.Visible = false;
             btnSaveSchema.Visible = false;
+            btnSetDefaultSchema.Visible = false;
+            btnLoadDB.Visible = false;
         }
 
 
@@ -1425,6 +1429,7 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Διαγραφή περιτών κομματιών (κλάσεις, μεθόδους, μεταβλητές).
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
     // TODO: Σχολιασμός και συμμάζεμα StepsDecompose.
+    // TODO: Εισαγωγή κωδικού από τοπικά. όπως Gradle.
 
 
     protected void btnGetSchemasClick(object sender, EventArgs e)

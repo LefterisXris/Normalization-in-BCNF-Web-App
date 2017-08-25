@@ -446,7 +446,7 @@
                         <!-- Modal -->
                         <br />
                         <asp:LoginStatus ID="LoginStatus1" runat="server" />
-                        <asp:Button ID="Button2" class="btn btn-success btn-lg" runat="server" Text="Paradeigmata"  OnClick="btnGetSchemasClick" />
+                        <asp:Button ID="btnLoadDB" class="btn btn-success btn-lg" runat="server" Text="Paradeigmata"  OnClick="btnGetSchemasClick" />
                     </div>
                 </div>
 
