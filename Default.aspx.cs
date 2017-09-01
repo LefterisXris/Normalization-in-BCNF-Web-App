@@ -19,10 +19,11 @@ public partial class _Default : System.Web.UI.Page
     private List<Attr> attrList = new List<Attr>(); // Λίστα με αντικείμενα Attr, για τα γνωρίσματα.
     private List<FD> fdList = new List<FD>(); // Λίστα με αντικείμενα FD, για τις συναρτησιακές εξαρτήσεις.
     private string msg = ""; // Μεταβλητή που τυπώνει στην Logging Console. (βοηθητική) // TODO: άλλος σχεδιασμός.
+    DBConnect dbConnect = new DBConnect();
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        // Έλεγχος αν προσπαθεί να μπει ο διαχειριστής
         if (Request.QueryString["role"] == "admin")
         {
             //  Response.Redirect("http://ilust.uom.gr:9000/MemberPages/Admin.aspx");
@@ -33,7 +34,7 @@ public partial class _Default : System.Web.UI.Page
         msg += "Logging Console...";
         log.InnerText = msg;
 
-        // Αρχικοποίηση μερικών γνωρισμάτων και συναρτησιακών εξαρτήσεων μόνο την πρώτη φορά που τρέχει η εφαρμογή.
+        // Φόρτωση του default σχήματος.
         if (IsPostBack == false)
         {
             if (Session["schemaName"] == null)
@@ -59,7 +60,7 @@ public partial class _Default : System.Web.UI.Page
         #endregion
 
 
-        // Εάν έχει συνδεθεί ο Admin τότε δίνεται η δυνατότητα αποθήκευσης.
+        // Εάν έχει συνδεθεί ο Admin τότε εμφανίζονται οι εξτρά δυνατότητες.
         if (HttpContext.Current.User.Identity.IsAuthenticated)
         {
             LoginStatus1.Visible = true;
@@ -499,6 +500,8 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnCalculateClosureClick(object sender, EventArgs e)
     {
+        dbConnect.TrackStat(lblSchemaName.Text, "nClosure");
+
         List<Attr> attrListSelected = new List<Attr>();
 
         // Τα επιλεγμένα γνωρίσματα εισάγωνται στην λίστα attrListSelected.
@@ -568,6 +571,8 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnCalculateKeysClick(object sender, EventArgs e)
     {
+        dbConnect.TrackStat(lblSchemaName.Text, "nFindKeys");
+
         List<Key> keyList = new List<Key>();
         var result = Global.findKeys(attrList, fdList, true);
 
@@ -588,6 +593,8 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnDecomposeClick(object sender, EventArgs e)
     {
+        dbConnect.TrackStat(lblSchemaName.Text, "nDecompose");
+
         bool alter = false;
         // μηδενίζεται η αρίθμηση της Relation.
         Relation.aa = 0;
@@ -831,6 +838,8 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnStepsDecomposeClick(object sender, EventArgs e)
     {
+        dbConnect.TrackStat(lblSchemaName.Text, "nStepsDecompose");
+
         // Αν έχει προηγηθεί διάσπαση προηγουμένως, τότε πρέπει να αναιρεθούν τα ενδιάμεσα αποτελέσματα.Σ
         foreach (FD fd in fdList)
         {
@@ -900,6 +909,8 @@ public partial class _Default : System.Web.UI.Page
         lblSchemaName.Text = tbxNewSchemaName.Text.Trim();
         lblSchemaDescription.Text = tbxNewSchemaDescription.Text.Trim();
 
+        dbConnect.saveNewSchemaOnDB(lblSchemaName.Text); // Αποθήκευση ονόματος στην ΒΔ.
+
         attrList.Clear();
         fdList.Clear();
         msg = "";
@@ -951,11 +962,12 @@ public partial class _Default : System.Web.UI.Page
         // Ανάγνωση ονομάτων αρχείων με αποθηκευμένα παραδείγματα.
         string s = Directory.GetCurrentDirectory() + "/Schemas";
         string[] txtFiles = GetFileNames(s, "*.txt", false); // Μέσω της μεθόδου αποθηκεύονται τα ονόματα των αρχείων χωρίς την επέκτασή τους.
+        List<string> availableFiles = dbConnect.getSchemaNames();
 
         schemaLoadDropDownList.Items.Clear(); // σβήνονται τα προηγούμενα δεδομένα (για τυχόν ανανεώσεις).
 
         // Φόρτωση στην λίστα.
-        foreach (string st in txtFiles)
+        foreach (string st in availableFiles)
         {
             schemaLoadDropDownList.Items.Add(st);
         }
@@ -972,8 +984,10 @@ public partial class _Default : System.Web.UI.Page
     {
         // Φορτώνεται το αρχείο το οποίο έχει επιλεχθεί.
         string selectedSchema = schemaLoadDropDownList.SelectedValue;
+
         if (!LoadSelectedSchema(selectedSchema))
             LoadSelectedSchema("Default.txt");
+        
     }
 
     /// <summary>
@@ -982,6 +996,8 @@ public partial class _Default : System.Web.UI.Page
     /// <param name="selectedSchema">Το όνομα του παραδείγματος.</param>
     private bool LoadSelectedSchema(string selectedSchema)
     {
+        dbConnect.TrackStat(selectedSchema, "nLoad");
+
         string[] lines;
         try
         {
@@ -1065,6 +1081,7 @@ public partial class _Default : System.Web.UI.Page
 
         lblSchemaName.Text = selectedSchema;
         lblSchemaDescription.Text = schemaDescription;
+        
         return true;
     }
 
@@ -1417,28 +1434,24 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    // TODO: Βάλε επιλογή για ανέβασμα αρχείου από τον client για φόρτωση σχήματος.
-    // TODO: Βάλε δυνατότητα login για την καθηγήτρια.
+    
+    
     // TODO: Βάλε σύνδεση με βάση και στατιστικά στοιχεία. (Μπήκαν analytics)
-    // TODO: Φτιάξε το design.
-    // TODO: Αποφάσισε την μορφή εμφάνισης αποτελεσμάτων (Κινούμενο εξτρά παράθυρο;).
-    // TODO: Βάλε εμφάνιση λαθών και επιτυχιών σε Animated Alert (διόρθωση απόκρυψης μετά από 5 δεύτερα).
+    // TODO: Φτιάξε το design.    
     // TODO: Βάλε έλεγχο εισαγωγής στα διάφορα inputs.
     // TODO: Αναίρεση ή ενσωμάτωση enter. 
     // TODO: Διαγραφή περιτών κομματιών (κλάσεις, μεθόδους, μεταβλητές).
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
-    // TODO: Σχολιασμός και συμμάζεμα StepsDecompose.
     // TODO: Εισαγωγή κωδικού από τοπικά. όπως Gradle.
 
 
     protected void btnGetSchemasClick(object sender, EventArgs e)
     {
-        Console.WriteLine("btn click");
         
-        DBConnect dbConnect = new DBConnect();
+        
 
-        List<string> list;
-        list = dbConnect.Select();
+        List<string> list = null;
+       // list = dbConnect.Query("SELECT * FROM `Schemas`");
 
         if (list != null)
             log.InnerText = "Yeah";    
@@ -1457,6 +1470,8 @@ public partial class _Default : System.Web.UI.Page
             mmm += s + ",  ";
 
         log.InnerText = mmm;
+
+        OpenResultsModal();
     }
 
 }
