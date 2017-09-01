@@ -38,12 +38,12 @@ public partial class _Default : System.Web.UI.Page
         if (IsPostBack == false)
         {
             if (Session["schemaName"] == null)
-                LoadSelectedSchema("Default.txt");
+                LoadSelectedSchema(dbConnect.getDefaultSchemaName());
             else
             {
                 string sch = (string)Session["schemaName"]; // Φορτώνω το σχήμα που είχα στην Steps Decompose.
                 if (!LoadSelectedSchema(sch))
-                    LoadSelectedSchema("Default.txt");
+                    LoadSelectedSchema(dbConnect.getDefaultSchemaName());
             }
         }
 
@@ -500,7 +500,7 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnCalculateClosureClick(object sender, EventArgs e)
     {
-        dbConnect.TrackStat(lblSchemaName.Text, "nClosure");
+        dbConnect.TrackStat(lblSchemaName.Text, lblSchemaId.Text, "nClosure");
 
         List<Attr> attrListSelected = new List<Attr>();
 
@@ -571,7 +571,7 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnCalculateKeysClick(object sender, EventArgs e)
     {
-        dbConnect.TrackStat(lblSchemaName.Text, "nFindKeys");
+        dbConnect.TrackStat(lblSchemaName.Text, lblSchemaId.Text, "nFindKeys");
 
         List<Key> keyList = new List<Key>();
         var result = Global.findKeys(attrList, fdList, true);
@@ -593,7 +593,7 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnDecomposeClick(object sender, EventArgs e)
     {
-        dbConnect.TrackStat(lblSchemaName.Text, "nDecompose");
+        dbConnect.TrackStat(lblSchemaName.Text, lblSchemaId.Text, "nDecompose");
 
         bool alter = false;
         // μηδενίζεται η αρίθμηση της Relation.
@@ -838,7 +838,7 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnStepsDecomposeClick(object sender, EventArgs e)
     {
-        dbConnect.TrackStat(lblSchemaName.Text, "nStepsDecompose");
+        dbConnect.TrackStat(lblSchemaName.Text, lblSchemaId.Text, "nStepsDecompose");
 
         // Αν έχει προηγηθεί διάσπαση προηγουμένως, τότε πρέπει να αναιρεθούν τα ενδιάμεσα αποτελέσματα.Σ
         foreach (FD fd in fdList)
@@ -889,7 +889,7 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    #region Schemas Management (New, Load, Save Schema)
+    #region Schemas Management (New, Load Schema)
 
     #region New
 
@@ -910,6 +910,7 @@ public partial class _Default : System.Web.UI.Page
         lblSchemaDescription.Text = tbxNewSchemaDescription.Text.Trim();
 
         dbConnect.saveNewSchemaOnDB(lblSchemaName.Text); // Αποθήκευση ονόματος στην ΒΔ.
+        lblSchemaId.Text = dbConnect.getSchemaId(lblSchemaName.Text).ToString();
 
         attrList.Clear();
         fdList.Clear();
@@ -986,7 +987,7 @@ public partial class _Default : System.Web.UI.Page
         string selectedSchema = schemaLoadDropDownList.SelectedValue;
 
         if (!LoadSelectedSchema(selectedSchema))
-            LoadSelectedSchema("Default.txt");
+            LoadSelectedSchema(dbConnect.getDefaultSchemaName());
         
     }
 
@@ -996,7 +997,8 @@ public partial class _Default : System.Web.UI.Page
     /// <param name="selectedSchema">Το όνομα του παραδείγματος.</param>
     private bool LoadSelectedSchema(string selectedSchema)
     {
-        dbConnect.TrackStat(selectedSchema, "nLoad");
+        lblSchemaId.Text = dbConnect.getSchemaId(selectedSchema).ToString();
+        dbConnect.TrackStat(selectedSchema, lblSchemaId.Text, "nLoad");
 
         string[] lines;
         try
@@ -1117,58 +1119,6 @@ public partial class _Default : System.Web.UI.Page
         for (int i = 0; i < attrList.Count; i++)
             if (attrList[i].Name == name) return attrList[i];
         return null;
-    }
-
-    #endregion
-
-    #region Save
-
-    /// <summary>
-    /// Μέθοδος που αποθηκεύει και κατεβάζει στον χρήστη το τρέχων σχήμα.
-    /// </summary>
-    protected void btnSaveSchema_Click(object sender, EventArgs e)
-    {
-        // Εδώ προστίθεται το περιεχόμενο.
-
-        string dataForFile = "NOR\n101\n"; // αναγνωριστικό, έκδοση.
-        dataForFile += lblSchemaDescription.Text.Trim() + "\n"; // περιγραφή σχήματος.
-        dataForFile += attrList.Count().ToString() + "\n"; // αριθμός γνωρισμάτων.
-
-        foreach (Attr attr in attrList)
-        {
-            dataForFile += attr.Name + "\n\n"; // γνωρίσματα.
-        }
-
-        dataForFile += fdList.Count().ToString() + "\n"; // αριθμών συναρτησιακών εξαρτήσεων.
-
-        foreach (FD fd in fdList)
-        {
-            dataForFile += fd.Excluded.ToString() + "\n"; // αν είναι excluded ή όχι.
-            dataForFile += fd.GetLeft().Count().ToString() + "\n"; // αριθμός γνωρισμάτων στο αριστερό σκέλος.
-            dataForFile += fd.GetRight().Count().ToString() + "\n"; // αριθμός γνωρισμάτων στο δεξί σκέλος.
-            foreach (Attr attr in fd.GetLeft())
-            {
-                dataForFile += attr.Name + "\n"; // γνωρίσματα στο αριστερό σκέλος.
-            }
-            foreach (Attr attr in fd.GetRight())
-            {
-                dataForFile += attr.Name + "\n"; // γνωρίσματα στο δεξί σκέλος.
-            }
-        }
-
-        // Εγγραφή των δεδομένων σε αρχείο.
-        string filename = lblSchemaName.Text.Trim() + ".txt"; // όνομα αρχείου
-
-        System.IO.StreamWriter file = new System.IO.StreamWriter(Directory.GetCurrentDirectory() + "/Schemas/Students/" + filename);
-        file.WriteLine(dataForFile); // εγγραφή
-        file.Close();
-
-        // Διαδικασία για download αρχείου που αποθηκεύτηκε.
-        Response.ContentType = "application/octet-stream";
-        Response.AppendHeader("content-disposition", "attachment; filename=" + filename);
-        Response.TransmitFile(Server.MapPath("~/Schemas/Students/" + filename));
-        Response.End();
-
     }
 
     #endregion
@@ -1434,8 +1384,102 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
+    #region Admin controls (Save, SetDefault)
+
+    #region Save
+
+    /// <summary>
+    /// Μέθοδος που αποθηκεύει και κατεβάζει στον χρήστη το τρέχων σχήμα.
+    /// </summary>
+    protected void btnSaveSchema_Click(object sender, EventArgs e)
+    {
+        // Εδώ προστίθεται το περιεχόμενο.
+
+        string dataForFile = "NOR\n101\n"; // αναγνωριστικό, έκδοση.
+        dataForFile += lblSchemaDescription.Text.Trim() + "\n"; // περιγραφή σχήματος.
+        dataForFile += attrList.Count().ToString() + "\n"; // αριθμός γνωρισμάτων.
+
+        foreach (Attr attr in attrList)
+        {
+            dataForFile += attr.Name + "\n\n"; // γνωρίσματα.
+        }
+
+        dataForFile += fdList.Count().ToString() + "\n"; // αριθμών συναρτησιακών εξαρτήσεων.
+
+        foreach (FD fd in fdList)
+        {
+            dataForFile += fd.Excluded.ToString() + "\n"; // αν είναι excluded ή όχι.
+            dataForFile += fd.GetLeft().Count().ToString() + "\n"; // αριθμός γνωρισμάτων στο αριστερό σκέλος.
+            dataForFile += fd.GetRight().Count().ToString() + "\n"; // αριθμός γνωρισμάτων στο δεξί σκέλος.
+            foreach (Attr attr in fd.GetLeft())
+            {
+                dataForFile += attr.Name + "\n"; // γνωρίσματα στο αριστερό σκέλος.
+            }
+            foreach (Attr attr in fd.GetRight())
+            {
+                dataForFile += attr.Name + "\n"; // γνωρίσματα στο δεξί σκέλος.
+            }
+        }
+
+
+        dbConnect.updateSchemaByAdmin(lblSchemaId.Text);
+
+        // Εγγραφή των δεδομένων σε αρχείο.
+        string filename = lblSchemaName.Text.Trim() + ".txt"; // όνομα αρχείου
+
+        System.IO.StreamWriter file = new System.IO.StreamWriter(Directory.GetCurrentDirectory() + "/Schemas/" + filename);
+        file.WriteLine(dataForFile); // εγγραφή
+        file.Close();
+
+        // Διαδικασία για download αρχείου που αποθηκεύτηκε.
+        Response.ContentType = "application/octet-stream";
+        Response.AppendHeader("content-disposition", "attachment; filename=" + filename);
+        Response.TransmitFile(Server.MapPath("~/Schemas/" + filename));
+        Response.End();
+
+
+    }
+
+    #endregion
+
+    #region SetDefault
+
+    /// <summary>
+    /// Μέθοδος που εμφανίζει το Modal για επιλογή προεπιλεγμένου σχήματος.
+    /// </summary>
+    protected void btnSetDefaultSchemaSelect(object sender, EventArgs e)
+    {
+        List<string> availableFiles = dbConnect.getSchemaNames();
+
+        SetSchemaDefaultDropDownList.Items.Clear(); // σβήνονται τα προηγούμενα δεδομένα (για τυχόν ανανεώσεις).
+
+        // Φόρτωση στην λίστα.
+        foreach (string st in availableFiles)
+        {
+            SetSchemaDefaultDropDownList.Items.Add(st);
+        }
+
+        // Εμφάνιση modal με διαθέσιμα σχήματα.
+        ClientScript.RegisterStartupScript(Page.GetType(), "SetDefaultSchemaModal", "$('#SetDefaultSchemaModal').modal();", true);
+    }
+
+    /// <summary>
+    /// Θέτει το αρχείο ως προεπιλεγμένο στην ΒΔ.
+    /// </summary>
+    protected void btnSetDefaultSchemaClick(object sender, EventArgs e)
+    {
+        // Θέτω το αρχείο το οποίο έχει επιλεγεί ως προεπιλεγμένο.
+        string selectedSchema = SetSchemaDefaultDropDownList.SelectedValue;
+
+        dbConnect.setDefaultSchema(selectedSchema);
+
+        ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> Default Schema Updated!'); $('#alertBoxSuccess').show(); ", true);
+    }
     
-    
+    #endregion
+
+    #endregion
+
     // TODO: Βάλε σύνδεση με βάση και στατιστικά στοιχεία. (Μπήκαν analytics)
     // TODO: Φτιάξε το design.    
     // TODO: Βάλε έλεγχο εισαγωγής στα διάφορα inputs.

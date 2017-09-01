@@ -43,7 +43,7 @@ namespace Normalization
             uid = "lefterisxris";
             password = "";
 
-            string connectionString = "Server=" + server + ";" +"Port=3306;" + "Database=" + database + ";" + "Uid=" + uid + ";" + "Pwd=" + password + ";";
+            string connectionString = "Server=" + server + ";" +"Port=3306;" + "Database=" + database + ";" + "Uid=" + uid + ";" + "Pwd=" + password + ";" + "CharSet = greek;" ;
             connection = new MySqlConnection(connectionString);
         }
 
@@ -145,11 +145,12 @@ namespace Normalization
         /// </summary>
         /// <param name="schemaName">Το όνομα του σχήματος</param>
         /// <param name="action">Η ενέργεια (φόρτωση, διάσπαση, εγλεισμός κλπ)</param>
-        public void TrackStat(string schemaName, string action)
+        public void TrackStat(string schemaName, string schemaId, string action)
         {
-            string query = "UPDATE `Schemas` SET `"+ action +"`= `"+ action +"` + 1 WHERE `name`='"+ schemaName +"'";
-            //"UPDATE `Schemas` SET `nLoad`= `nLoad` + 1 WHERE `name`='Default.txt'";
+            int id = Int32.Parse(schemaId);
 
+            string query = "UPDATE `Schemas` SET `"+ action +"`= `"+ action +"` + 1 WHERE `name`='"+ schemaName +"' AND `id`="+ id +"";
+          
             //Open connection
             if (this.OpenConnection() == true)
             {
@@ -166,7 +167,7 @@ namespace Normalization
                 cmd.ExecuteNonQuery();
 
                 // Ενημέρωση ημερομηνίας.
-                lastEditSet(schemaName);
+                lastEditSet(schemaId);
 
                 //close connection
                 this.CloseConnection();
@@ -177,9 +178,10 @@ namespace Normalization
         /// Μέθοδος που θέτει την τρέχουσα ημερομηνία στο πεδίο lastEdit του αντίστοιχου σχήματος.
         /// </summary>
         /// <param name="schemaName">Το όνομα του σχήματος.</param>
-        private void lastEditSet(string schemaName)
+        private void lastEditSet(string schemaId)
         {
-            string query = "UPDATE `Schemas` SET `lastEdit`= now() WHERE `name`='" + schemaName + "'";
+            int id = Int32.Parse(schemaId);
+            string query = "UPDATE `Schemas` SET `lastEdit`= now() WHERE `id`=" + id + "";
             //UPDATE `Schemas` SET `lastEdit`=now() WHERE 1
 
             //create mysql command
@@ -192,7 +194,7 @@ namespace Normalization
             //Execute query
             cmd.ExecuteNonQuery();
         }
-
+        
         /// <summary>
         /// Μέθοδος η οποία παίρνει τα ονόματα των διαθέσιμων σχημάτων.
         /// </summary>
@@ -252,7 +254,114 @@ namespace Normalization
             }
         }
 
+        /// <summary>
+        /// Μέθοδος που παίρνει το όνομα του προεπιλεγμένου προς φόρτωση σχήματος.
+        /// </summary>
+        /// <returns>Το όνομα του προεπιλεγμένου σχήματος</returns>
+        public string getDefaultSchemaName()
+        {
+            string query = "SELECT `name` FROM `Schemas` WHERE `isDefault`= true";
 
+            string name = "";
+
+            //open connection
+            if (this.OpenConnection() == true)
+            {
+                //create command and assign the query and connection from the constructor
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                //Execute command
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    name = dataReader["name"] + "";
+                }
+                
+                //close connection
+                this.CloseConnection();
+                return name;
+            }
+            return name;
+        }
+
+        /// <summary>
+        /// Μέθοδος που παίρνει το id ενός σχήματος από τη ΒΔ.
+        /// </summary>
+        public int getSchemaId(string schemaName)
+        {
+            string query = "SELECT * FROM `Schemas` WHERE `name`='"+ schemaName  +"' ORDER BY `Schemas`.`dateCreated` DESC";
+            int id = 0;
+            //open connection
+            if (this.OpenConnection() == true)
+            {
+                //create command and assign the query and connection from the constructor
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                //Execute command
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                dataReader.Read();
+                id = (int) dataReader["id"];
+                
+
+                //close connection
+                this.CloseConnection();
+                return id;
+            }
+            return id;
+
+        }
+
+        public void updateSchemaByAdmin(string schemaId)
+        {
+            int id = Int32.Parse(schemaId);
+            string query = "UPDATE `Schemas` SET `createdBy`= 'admin' WHERE `id`= "+ id +"";
+            
+            //Open connection
+            if (this.OpenConnection() == true)
+            {
+                //create mysql command
+                MySqlCommand cmd = new MySqlCommand();
+                //Assign the query using CommandText
+                cmd.CommandText = query;
+                //Assign the connection using Connection
+                cmd.Connection = connection;
+
+                //Execute query
+                cmd.ExecuteNonQuery();
+
+                // Ενημέρωση ημερομηνίας.
+                lastEditSet(schemaId);
+
+                //close connection
+                this.CloseConnection();
+            }
+        }
+
+
+        public void setDefaultSchema(string schemaName)
+        {
+            string query = "UPDATE `lefterisxris`.`Schemas` SET `isDefault` = 0";
+            //UPDATE `lefterisxris`.`Schemas` SET `isDefault` = 1 WHERE `name`='Default.txt'
+            //Open connection
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = query;
+                cmd.Connection = connection;
+                cmd.ExecuteNonQuery();
+
+                query = "UPDATE `lefterisxris`.`Schemas` SET `isDefault` = 1 WHERE `name`='"+ schemaName +"'";
+                cmd.CommandText = query;
+                cmd.Connection = connection;
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                this.CloseConnection();
+            }
+
+        }
 
         /* SELECT
         //Select statement

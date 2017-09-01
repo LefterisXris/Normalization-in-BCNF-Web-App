@@ -22,6 +22,7 @@
             <div class="page-header">
                 <h1>Νέο σχήμα:
                     <asp:Label ID="lblSchemaName" runat="server" Text="Default"></asp:Label>
+                    <asp:Label ID="lblSchemaId" runat="server" Text="" Hidden ="true"></asp:Label>
                     <small>γνωρίσματα και συναρτησιακές εξαρτήσεις.</small></h1>
                 <h5><asp:Label ID="lblSchemaDescription" runat="server" Text="" Font-Italic="True" ForeColor="#669999"></asp:Label></h5>
             </div>
@@ -445,8 +446,10 @@
                     </div>
                     <div>
                         <asp:Button ID="btnLoadSchema" class="btn btn-success btn-lg" runat="server" Text="Φόρτωση Σχήματος" OnClick="btnLoadSchema_Click"  />
+                        <br />
                         <asp:Button ID="btnSaveSchema" class="btn btn-success btn-lg" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  />
-                        <asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-lg" runat="server" Text="επιλογή προεπιλεγμένου"   />
+                        <br />
+                        <asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-lg" runat="server" Text="Επιλογή Προεπιλεγμένου" OnClick="btnSetDefaultSchemaSelect" />
                     
                         <!-- Modal φόρτωση σχήματος-->
                         <div class="modal fade" id="loadSchemaModal" role="dialog">
@@ -467,8 +470,31 @@
                             </div>
                         </div>
                         <!-- Modal -->
+
+                        <!-- Modal επιλογή προεπιλεγμένου σχήματος-->
+                        <div class="modal fade" id="SetDefaultSchemaModal" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Επιλογή Προεπιλεγμένου σχήματος</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Διαλέξτε ένα παράδειγμα για προεπιλεγμενο</p>
+                                        <asp:DropDownList ID="SetSchemaDefaultDropDownList" runat="server"></asp:DropDownList>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <asp:Button runat="server" ID="btnSetSchema" Text="SET" class="btn btn-default" OnClick="btnSetDefaultSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal -->
+
+
                         <br />
                         <asp:LoginStatus ID="LoginStatus1" runat="server" />
+                        <br />
                         <asp:Button ID="btnLoadDB" class="btn btn-success btn-lg" runat="server" Text="Paradeigmata"  OnClick="btnGetSchemasClick" />
                     </div>
                 </div>
