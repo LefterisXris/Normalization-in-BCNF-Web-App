@@ -84,12 +84,11 @@
             </div>
 
             <%-- ROW με επιλογές ενεργειών (κουμπιά) --%>
-            <div class="row" style="margin-top: 20px;">
+            <div class="row" style="margin-top: 20px;"> 
                 <div class="col-md-2 col-sm-2"></div>
                 <div class="col-md-6 col-sm-6">
 
                     <asp:Button ID="btnPreview" class="btn btn-info btn-lg" runat="server" Text="Προεπισκόπηση" OnClick="btnPreview_Click" />
-                    <!--  <button type="button"  class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalPreview">Προεπισκόπηση</button> -->
 
                     <!-- Modal Προεπισκόπησης-->
                     <div class="modal fade" id="modalPreview" role="dialog">
@@ -100,8 +99,10 @@
                                     <h4 class="modal-title">Προεπισκόπηση διάσπασης σε BCNF</h4>
                                 </div>
                                 <div class="modal-body">
-
-                                    <asp:Label ID="lblPreviewResults" runat="server" Text=""></asp:Label>
+                                    <div class="form-horizontal"> 
+                                        <textarea runat="server" id="log" class="form-control" rows="15" style="min-width: 100%; min-height: 100%;" ></textarea>
+                                    </div>
+                                    
                                 </div>
                                 <div class="modal-footer">
                                     <asp:Button runat="server" ID="Button1" Text="Κλείσιμο" class="btn btn-default" UseSubmitBehavior="false" data-dismiss="modal" />

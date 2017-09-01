@@ -17,7 +17,7 @@ public partial class StepsDecompose : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        // Φορτώνονται οι μεταβλητές που χρειάζονται κατά την επαναφόρτωση της εφαρμογής.
         #region ViewStates Load
         if (ViewState["attrListVS"] != null)
             attrList = (List<Attr>)ViewState["attrListVS"];
@@ -105,7 +105,6 @@ public partial class StepsDecompose : System.Web.UI.Page
         populateRelationGridView(relList);
     }
 
-
     #region Actions for Decompose (Preview, Decompose, ShowBCNFTables)
 
     /// <summary>
@@ -114,9 +113,9 @@ public partial class StepsDecompose : System.Web.UI.Page
     /// </summary>
     protected void btnPreview_Click(object sender, EventArgs e)
     {
-        if (CheckTick()) DecomposeInSteps(true);
-
-        // ScriptManager.RegisterStartupScript(Page, Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
+        if (CheckTick())
+            DecomposeInSteps(true);
+        
         ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
 
     }
@@ -126,7 +125,8 @@ public partial class StepsDecompose : System.Web.UI.Page
     /// </summary>
     protected void btnDecompose_Click(object sender, EventArgs e)
     {
-        if (CheckTick()) DecomposeInSteps(false);
+        if (CheckTick())
+            DecomposeInSteps(false);
 
         ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
     }
@@ -150,7 +150,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         // αν ο πίνακας που έχει επιλεγεί δεν μπορεί να διασπαστεί περαιτέρω, βγαίνει σχετικό μήνυμα.
         if (!isPreview && rel.Excluded)
         {
-            lblPreviewResults.Text = "Ο πίνακας" + "<br/>" + "<br/>" + rel.ToString() + "<br/>" + "<br/>" + "έχει αποκλειστεί από περαιτέρω διασπάσεις.";
+            log.InnerText = "Ο πίνακας\n\n" + rel.ToString() + "\n\nέχει αποκλειστεί από περαιτέρω διασπάσεις.";
             return;
         }
 
@@ -162,7 +162,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         // εξετάζεται αν η συναρτησιακή εξάρτηση είναι τετριμμένη.
         if (fd.IsTrivial)
         {
-            lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση" + "<br/>" + "<br/>" + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "είναι τετριμμένη, επομένως δεν χρησιμοποιείται για διάσπαση πινάκων.";
+            log.InnerText = "Η συναρτησιακή εξάρτηση\n\n\""  + fd.ToString() + "\"\n\nείναι τετριμμένη, επομένως δεν χρησιμοποιείται για διάσπαση πινάκων.";
             return;
         }
 
@@ -172,7 +172,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         {
             if (fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
             {
-                lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση" + "<br/>" + "<br/>" + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "περιλαμβάνει υποψήφιο κλειδί στο αριστερό σκέλος της, επομένως δεν παραβιάζει την BCNF μορφή και δεν χρησιμοποιείται για διάσπαση πινάκων.";
+                log.InnerText = "Η συναρτησιακή εξάρτηση\n\n\"" + fd.ToString() + "\"\n\nπεριλαμβάνει υποψήφιο κλειδί στο αριστερό σκέλος της, επομένως δεν παραβιάζει την BCNF μορφή και δεν χρησιμοποιείται για διάσπαση πινάκων.";
                 return;
             }
         }
@@ -186,7 +186,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         {
             if (fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
             {
-                lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση" + "<br/>" + "<br/>" + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "περιλαμβάνει υποψήφιο κλειδί του πίνακα " + rel.Name + ", επομένως δεν μπορεί να τον διασπάσει.";
+                log.InnerText = "Η συναρτησιακή εξάρτηση\n\n\"" + fd.ToString() + "\"\n\nπεριλαμβάνει υποψήφιο κλειδί του πίνακα " + rel.Name + ", επομένως δεν μπορεί να τον διασπάσει.";
                 return;
             }
         }
@@ -258,12 +258,12 @@ public partial class StepsDecompose : System.Web.UI.Page
                 rel.Excluded = true;
                 fdList[iFD].Excluded = true;
 
-                lblPreviewResults.Text = "Έγινε διάσπαση σε δύο νέους πίνακες, τον " + rel1.Name + " και τον " + rel2.Name + ".";
+                log.InnerText = "Έγινε διάσπαση σε δύο νέους πίνακες, τον " + rel1.Name + " και τον " + rel2.Name + ".";
             }
             else
             {
-                lblPreviewResults.Text = "Με την \"" + fd.ToString() + "\" ο " + rel.ToString() + " διασπάται σε:" + "<br/>" + "<br/>" + rel1.ToString() + RelBCNF(rel1) + "<br/>" + "<br/>" + rel2.ToString() + RelBCNF(rel2) + "<br/>" + "<br/>";
-                lblPreviewResults.Text += "==============================";
+                log.InnerText = "Με την \"" + fd.ToString() + "\" ο " + rel.ToString() + " διασπάται σε:\n\n" + rel1.ToString() + RelBCNF(rel1) + "\n\n" + rel2.ToString() + RelBCNF(rel2) + "\n\n";
+                log.InnerText += "==============================\n\n";
             }
 
             // Ελέγχονται και ενημερώνονται οι πίνακες που είναι σε BCNF μορφή.
@@ -276,7 +276,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         }
         else // σε διαφορετική περίπτωση η BCNF δεν παραβιάζεται και εμφανίζεται σχετικό μήνυμα
         {
-            lblPreviewResults.Text = "Η συναρτησιακή εξάρτηση" + "<br/>" + "<br/>" + "\"" + fd.ToString() + "\"" + "<br/>" + "<br/>" + "δεν σχετίζεται με τον πίνακα" + "<br/>" + "<br/>" + rel.ToString() + "<br/>" + "<br/>" + "και επομένως δεν γίνεται διάσπαση.";
+            log.InnerText = "Η συναρτησιακή εξάρτηση\n\n\"" + fd.ToString() + "\"\n\nδεν σχετίζεται με τον πίνακα\n\n" + rel.ToString() + "\n\nκαι επομένως δεν γίνεται διάσπαση.";
         }
 
 
@@ -361,7 +361,7 @@ public partial class StepsDecompose : System.Web.UI.Page
             return true;
         }
 
-        lblPreviewResults.Text = "Πρέπει να επιλέξετε έναν πίνακα και μια συναρτησιακή εξάρτηση.";
+        log.InnerText = "Πρέπει να επιλέξετε έναν πίνακα και μια συναρτησιακή εξάρτηση.";
         return false;
     }
 
@@ -371,26 +371,29 @@ public partial class StepsDecompose : System.Web.UI.Page
     protected void btnShowBCNFTablesClick(object sender, EventArgs e)
     {
         //εμφανίζονται στο txtOut οι πίνακες που είναι σε BCNF μορφή
+
+        string msg = "";
         bool oneBCNF = false;
         foreach (Relation rel in relList)
             if (rel.IsBCNF)
                 oneBCNF = true;
 
-        lblPreviewResults.Text = "==============================" + "<br/>" + "<br/>";
+        msg += "==============================\n\n";
         if (oneBCNF)
         {
-            lblPreviewResults.Text += "Οι πίνακες BCNF είναι οι εξής:" + "<br/>" + "<br/>";
+            msg += "Οι πίνακες BCNF είναι οι εξής:\n\n";
             foreach (Relation rel in relList)
                 if (rel.IsBCNF)
                 {
-                    lblPreviewResults.Text += rel.ToString() + "<br/>" + "<br/>";
+                    msg += rel.ToString() + "\n\n";
                 }
         }
         else
         {
-            lblPreviewResults.Text += "Δεν υπάρχουν πίνακες BCNF" + "<br/>" + "<br/>";
+            msg += "Δεν υπάρχουν πίνακες BCNF\n\n";
         }
-        lblPreviewResults.Text += "==============================" + "<br/>" + "<br/>";
+        msg += "==============================\n\n";
+        log.InnerText = msg;
 
         ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
 
@@ -408,6 +411,7 @@ public partial class StepsDecompose : System.Web.UI.Page
     protected void btnClearResults_Click(object sender, EventArgs e)
     {
         resultsArea.InnerText = "";
+        log.InnerText = "";
     }
 
     /// <summary>
@@ -416,6 +420,7 @@ public partial class StepsDecompose : System.Web.UI.Page
     protected void btnResetClick(object sender, EventArgs e)
     {
         resultsArea.InnerText = "";
+        log.InnerText = "";
 
         relList.Clear();
         foreach (FD fd in fdList)
@@ -596,7 +601,5 @@ public partial class StepsDecompose : System.Web.UI.Page
     }
 
     #endregion
-
-    // TODO: Κατά την φόρτωση, πάρε και τίτλο παραδείγματος-αρχείου.
-
+    
 }

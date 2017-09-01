@@ -120,8 +120,7 @@ public partial class _Default : System.Web.UI.Page
             {
                 populateAttrGridView(attrList);
                 msg += "\nNew attribute inserted: " + attrss[i].Trim();
-                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> New attribute inserted!'); $('#alertBoxSuccess').show();", true);
-                ClientScript.RegisterStartupScript(Page.GetType(), "alert", "HideLabel();", true);
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> New attribute inserted!'); $('#alertBoxSuccess').show(); ", true);
             }
             else
             {
@@ -483,7 +482,6 @@ public partial class _Default : System.Web.UI.Page
 
     #region ACTIONS (Closure, Keys, Decompose, StepsDecompose)
 
-    // Μένει να εμφανίζω τα ενδιάμεσα αποτελέσματα και πληροφορίες κατά τον υπολογισμό.
     #region Closure
 
     /// <summary>
@@ -516,12 +514,6 @@ public partial class _Default : System.Web.UI.Page
         var result = Global.findClosure(attrListSelected, fdList, true);
         List<Attr> attrS = result.Item1;
         msg = result.Item2;
-        /*
-        foreach (Attr attr in atr1)
-        {
-            msg += attr.Name + ", ";
-        }
-        log.InnerText = "Closure is: " + msg;*/
 
         //δημιουργείται τοπικός πίνακας με τα ονόματα των γνωρισμάτων που περιλαμβάνονται στον εγκλεισμό
         List<string> names = new List<string>();
@@ -564,11 +556,11 @@ public partial class _Default : System.Web.UI.Page
         }
 
         log.InnerText = msg;
+        OpenResultsModal();
     }
 
     #endregion
 
-    // Μένει να εμφανίζω τα ενδιάμεσα αποτελέσματα και πληροφορίες κατά τον υπολογισμό.
     #region CalculateKeys
 
     /// <summary>
@@ -584,6 +576,7 @@ public partial class _Default : System.Web.UI.Page
         msg = result.Item2.ToString(); // Είναι οι λεπτομέρειες.
 
         log.InnerText = msg;
+        OpenResultsModal();
     }
 
     #endregion
@@ -623,8 +616,6 @@ public partial class _Default : System.Web.UI.Page
 
         // ορίζεται η λίστα που παίρνει τα κλειδιά του πίνακα.
         List<Key> keyList = new List<Key>();
-        // Closure closure = new Closure(attrList, fdList);
-        // keyList = closure.KeysGet(fdList, attrList, false);
         var result = Global.findKeys(attrList, fdList, false);
         keyList = result.Item1;
 
@@ -749,8 +740,6 @@ public partial class _Default : System.Web.UI.Page
                         //προσδιορίζουμε το κλειδί του δεύτερου πίνακα (αυτό που δίνει όλα τα γνωρίσματά του)
                         //δημιουργούμε μια τοπική λίστα κλειδιών και ως κλειδί του δεύτερου πίνακα ορίζεται το πρώτο κλειδί της λίστας
                         List<Key> tempoKeyList = new List<Key>();
-                        // Closure cl = new Closure(attrList, fdList);
-                        // tempoKeyList = cl.KeysGet(fdList, rel2.GetList(), false);
                         var resultTemp = Global.findKeys(rel2.GetList(), fdList, false);
                         tempoKeyList = resultTemp.Item1;
                         key2.AddToKey(tempoKeyList[0].GetAttrs());
@@ -830,6 +819,7 @@ public partial class _Default : System.Web.UI.Page
                     msg += "υπάρχει ενναλακτική.";
             }
         log.InnerText = msg;
+        OpenResultsModal();
     }
 
     #endregion
@@ -876,6 +866,15 @@ public partial class _Default : System.Web.UI.Page
         }
         return "    (BCNF)";
     }
+
+    /// <summary>
+    /// Ανοίγει το modal με τα αποτελέσματα.
+    /// </summary>
+    private void OpenResultsModal()
+    {
+        ClientScript.RegisterStartupScript(Page.GetType(), "modalResults", "$('#modalResults').modal();", true);
+    }
+
 
     #endregion
 
@@ -1459,4 +1458,5 @@ public partial class _Default : System.Web.UI.Page
 
         log.InnerText = mmm;
     }
+
 }

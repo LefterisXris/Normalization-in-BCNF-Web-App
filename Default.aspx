@@ -66,7 +66,7 @@
 
                                     <div class="row">
                                         <div class="col-md-10">
-                                            Τελική μορφή συναρτησιακής εξάρτησης
+                                            Επιλέξτε τα γνωρίσματα που θέλετε για να υπολογιστεί ο εγκλεισμός τους.
                                         </div>
                                     </div>
 
@@ -356,6 +356,18 @@
                     </div>
                     <!--Modal -->
 
+                    
+                </div>
+
+            </div>
+
+            <%-- ROW με Logging Console και Load Button --%>
+            <div class="row">
+
+                <%-- Logging Console --%>
+                <div class="col-md-6">
+                    <button type="button" id="btnOpenResultsModal" class="btn btn-info btn-lg"  data-toggle="modal" data-target="#modalResults">Results</button>
+
                     <div class="alert alert-success fade in" id="alertBoxSuccess" hidden="hidden">
 				        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                         <h4 id="alertBoxSuccessText"> <strong>Success!</strong> This alert box could indicate a successful or positive action. </h4>
@@ -368,17 +380,28 @@
 				        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 				        <h4 id="alertBoxFailText"> <strong>Danger!</strong> This alert box could indicate a dangerous or potentially negative action. </h4>
 			        </div>
-                </div>
 
-            </div>
+                    <!-- Modal Αποτελέσματα -->
+                    <div class="modal fade" id="modalResults" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Αποτελέσματα</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-horizontal"> 
+                                        <textarea runat="server" id="log" class="form-control" rows="15" style="min-width: 100%; min-height: 100%;" ></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal -->
 
-            <%-- ROW με Logging Console και Load Button --%>
-            <div class="row">
-
-                <%-- Logging Console --%>
-                <div class="col-md-6">
-                    <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>
-                    <textarea runat="server" id="log" cols="40" rows="20"></textarea>
                 </div>
 
                 <%-- Load Button --%>
