@@ -19,42 +19,116 @@ namespace Normalization
         public static int MaxAttrNum = 20; //το μέγιστο πλήθος των επιτρεπόμενων γνωρισμάτων
         public static List<byte> bin = new List<byte>(); //βοηθητικός πίνακας για το δυαδικό σύστημα, μετρά το πλήθος του ψηφίου 1
         public static bool anyFDUsed; //προσδιορίζει αν χρησιμοποιήθηκε έστω και μια συναρτησιακή εξάρτηση κατά τη διαδικασία του εγκλεισμού
+       
+        #region Closure
 
+        /// <summary>
+        /// Καλεί την μέθοδο υπολογισμού εγκλεισμού.
+        /// </summary>
+        /// <param name="attrList">Λίστα με γνωρίσματα</param>
+        /// <param name="fdList">Λίστα με συναρτησιακές εξαρτήσεις</param>
+        /// <param name="showDetails">Λογική μεταβλητή για την εμφάνιση λεπτομερειών</param>
+        /// <returns>Σύνθετο τύπο Tuple με Εγκλεισμό και string</returns>
         public static Tuple<List<Attr>, string> findClosure(List<Attr> attrList, List<FD> fdList, bool showDetails)
         {
-           return attrClosure(attrList, fdList, showDetails);
-            /*
-            closure.Sort();
-            string s = string.Join(", ", closure);
-
-            return s;*/
+            return attrClosure(attrList, fdList, showDetails);
         }
 
+
+        /// <summary>
+        /// Μέθοδος που υπολογίζει και επιστρέφει τον Εγλεισμό.
+        /// </summary>
+        /// <param name="attrS">Τα γνωρίσματα για τα οποία θα υπολογιστεί ο εγκλεισμός</param>
+        /// <param name="fdList">Οι αντίστοιχες συναρτησιακές εξαρτήσεις</param>
+        /// <param name="showOut">λογική μεταβλητή για εμφάνιση λεπτομερειών</param>
+        /// <returns>Σύνθετο τύπο Tuple με Εγλεισμό και λεπτομέρειες</returns>
+        private static Tuple<List<Attr>, string> attrClosure(List<Attr> attrS, List<FD> fdList, bool showOut)
+        {
+            string details = "";
+            anyFDUsed = false; // Μηδενίζω την μεταβλητή γιατί είναι static και κρατάει την τιμή της από προηγούμενες ενέργειες.
+            //ο πίνακας closure περιλαμβάνει τον εγκλεισμό των γνωρισμάτων attrS
+            List<Attr> closure = new List<Attr>();
+            closure.AddRange(attrS);
+
+            details += "Διαδικασία εγκλεισμού\n";
+            details += "Ο εγκλεισμός ενός συνόλου γνωρισμάτων X συμβολίζεται ως X\x207A.\n\n";
+            Relation rel = new Relation(attrS);
+            details += "Έστω ότι X = " + rel.ToString() + "\n\n";
+            details += "Ισχύει ότι X\x207A = " + rel.ToString() + ".\n\n";
+            details += "Εξετάζουμε τις συναρτησιακές εξαρτήσεις για να υπολογίσουμε τον συνολικό εγκλεισμό του X\x207A\n\n";
+            details += "==============================\n\n";
+
+        //η RepeatLoop χρησιμοποιείται ως σημείο επανεκκίνησης του βρόχου σε περίπτωση που πρέπει να ελεγχθούν από την αρχή οι συναρτησιακές εξαρτήσεις
+        RepeatLoop:
+            //ελέγχω μία προς μία τις συναρτησιακές εξαρτήσεις
+            foreach (FD fd in fdList)
+            {
+                //ελέγχεται με την τομή αν τα γνωρίσματα του αριστερού σκέλους της συναρτησιακής εξάρτησης περιλαμβάνονται στον ως τώρα εγκλεισμό
+                if (fd.GetLeft().Intersect(closure, Global.comparer).Count() >= fd.GetLeft().Count)
+                {
+                    //αν ναι, τότε προστίθενται τα γνωρίσματα του δεξιού σκέλους στην συναρτησιακή εξάρτηση, με την προϋπόθεση να μην έχουν ήδη προστεθεί, κι αν αυτό γίνει τότε η διαδικασία αρχίζει ξανά από την RepeatLoop
+                    List<Attr> toAdd = new List<Attr>();
+                    foreach (Attr attR in fd.GetRight())
+                    {
+                        if (!closure.Contains(attR, Global.comparer))
+                        {
+                            anyFDUsed = true;
+                            toAdd.Add(attR);
+                        }
+                    }
+                    if (toAdd.Count > 0)
+                    {
+                        closure.AddRange(toAdd);
+
+                        if (toAdd.Count == 1)
+                            details += "Ισχύει \"" + fd.ToString() + "\", οπότε μπαίνει στον εγκλεισμό το γνώρισμα {" + toAdd[0].Name + "}.\n\n";
+                        else
+                        {
+                            Relation relToAdd = new Relation(toAdd);
+                            details += "Ισχύει \"" + fd.ToString() + "\", οπότε μπαίνoυν στον εγκλεισμό τα γνωρίσματα " + relToAdd.ToString() + ".\n\n";
+                        }
+
+                        Relation rel2 = new Relation(closure);
+                        details += "Έχουμε X\x207A = " + rel2.ToString() + "\n\n";
+                        details += "==============================\n\n";
+
+                        goto RepeatLoop;
+                    }
+                }
+            }
+
+            if (!showOut)
+                details = "";
+            var result = new Tuple<List<Attr>, string>(closure, details);
+            return result;
+
+        }
+
+        #endregion
+
+        #region Keys
+
+        /// <summary>
+        /// Καλεί την μέθοδο εύρεσης κλειδιών.
+        /// </summary>
+        /// <param name="attrList">Λίστα με γνωρίσματα</param>
+        /// <param name="fdList">Λίστα με συναρτησιακές εξαρτήσεις</param>
+        /// <param name="showDetails">Λογική μεταβλητή για την εμφάνιση λεπτομερειών</param>
+        /// <returns>Σύνθετο τύπο Tuple με κλειδιά και string</returns>
         public static Tuple<List<Key>, string> findKeys(List<Attr> attrList, List<FD> fdList, bool showDetails)
         {
             binLoader();
             return KeysGet(fdList, attrList, showDetails);
-            
+
         }
 
-        private static void binLoader()
-        {
-            #region γεμισμα bin
-            //καταχωρούνται στον πίνακα bin το πλήθος των ψηφίων 1 στο δυαδικό σύστημα για κάθε αριθμό
-            //η μεταβλητή str αναπαριστά δυαδικό αριθμό, ξεκινώντας από το 0 μέχρι το μέγιστο δυνητικό συνδυασμό, που είναι το 2 υψωμένο στο μέγιστο επιτρεπόμενο πλήθος των γνωρισμάτων
-            string str;
-            int kk = (int)Math.Pow(2, MaxAttrNum);
-            for (int ii = 0; ii <= kk; ii++)
-            {
-                //ο αριθμός i μετατρέπεται σε δυαδικό
-                str = Convert.ToString(ii, 2);
-
-                //μετριέται το πλήθος των ψηφίων 1 στον δυαδικό αριθμό str και καταχωρείται στον πίνακα bin
-                bin.Add((byte)str.Replace("0", "").Length);
-            }
-            #endregion
-        }
-
+        /// <summary>
+        /// Μέθοδος που υπολογίζει τα υποψήφια κλειδιά.
+        /// </summary>
+        /// <param name="FDList">Λίστα με συναρτησιακές εξαρτήσεις</param>
+        /// <param name="newAttrList">Λίστα με γνωρίσματα</param>
+        /// <param name="showOut">Λογική μεταβλητή για εμφάνιση λεπτομερειών</param>
+        /// <returns>Σύνθετο τύπο Tuple με Λίστα από κλειδιά και string</returns>
         private static Tuple<List<Key>, string> KeysGet(List<FD> FDList, List<Attr> newAttrList, bool showOut)
         {
             //δημιουργείται πίνακας με τα υποψήφια κλειδιά του σχήματος
@@ -62,9 +136,6 @@ namespace Normalization
             string details = "";
 
             //δημιουργείται η frmout που αναφέρεται στην frmOut για να στέλνει πληροφορίες για τη διαδικασία της εύρεσης κλειδιών
-            /*   frmOut frmout = new frmOut("Διαδικασία εύρεσης κλειδιών", true, null);
-               frmout.AddOut("Αν ο εγκλεισμός ενός γνωρίσματος ή συνδυασμός αυτών περιλαμβάνει το σύνολο όλων των γνωρισμάτων του σχήματος, τότε το γνώρισμα αυτό, ή ο συνδυασμός των γνωρισμάτων, αποτελεί υποψήφιο κλειδί.\n\n");
-               frmout.AddOut("Υποψήφια κλειδιά:\n\n");*/
             details += "Διαδικασία εύρεσης κλειδιών\n";
             details += "Αν ο εγκλεισμός ενός γνωρίσματος ή συνδυασμός αυτών περιλαμβάνει το σύνολο όλων των γνωρισμάτων του σχήματος, τότε το γνώρισμα αυτό, ή ο συνδυασμός των γνωρισμάτων, αποτελεί υποψήφιο κλειδί.\n\n";
             details += "Υποψήφια κλειδιά:\n\n";
@@ -109,56 +180,30 @@ namespace Normalization
                 for (int i = 0; i < newAttrList.Count; i++)
                     key.AddToKey(newAttrList[i]);
                 keyList.Add(key);
-                //  frmout.AddOut(key.ToString() + ".\n\nΕπιλέγεται ως υποψήφιο κλειδί το σύνολο των γνωρισμάτων του σχήματος, καθώς δεν εντοπίστηκαν ως κλειδιά μεμονωμένα γνωρίσματα ή συνδυασμοί αυτών.");
+
                 details += key.ToString() + ".\n\nΕπιλέγεται ως υποψήφιο κλειδί το σύνολο των γνωρισμάτων του σχήματος, καθώς δεν εντοπίστηκαν ως κλειδιά μεμονωμένα γνωρίσματα ή συνδυασμοί αυτών.";
             }
-            //αν έχει επιλεγεί να ανοίξει η φόρμα με τη διαδικασία εύρεσης των κλειδιών, τότε ανοίγει η frmOut
-            //if (showOut)
-            //    frmout.ShowDialog(null);
-            // frmout.Dispose();
-            
+
             if (!showOut) // Αν δεν χρειάζεται τις λεπτομέρειες τότε επιστρέφω μόνο τη λίστα με τα κλειδιά.
                 details = "";
-            
+
             var s = new Tuple<List<Key>, string>(keyList, details);
-                
-            //return keyList; 
+
             return s;
 
         }
 
-        public static Tuple<Attr, string> jsonGenerator()
-        {
-            dynamic product = new JObject();
-            product.ProductName = "Elbow Grease";
-            product.Enabled = true;
-            product.Price = 4.90m;
-            product.StockCount = 9000;
-            product.StockValue = 44100;
-            product.Tags = new JArray("Real", "OnSale");
-            List<string> s = new List<string>();
-            s.Add("Yolo");
-            s.Add("deytero");
-            s.Add("Trito");
-
-            JArray ja = new JArray();
-            foreach (string ss in s)
-            {
-                ja.Add(ss);
-            }
-
-            product.Bla = ja;
-            JArray ja2 = new JArray();
-            ja2.Add("Eimai");
-            ja2.Add("Eimai2");
-            product.Bla2 = ja2;
-            //  product.Tags2 = new JArray("Real2", "OnSale2");
-            var pop = new Tuple<Attr, string>(new Attr("Yolo", "re"), product.ToString());
-            return pop;
-
-            
-        }
-
+        /// <summary>
+        /// Βοηθητική μέθοδος για τον υπολογισμό Εγκλεισμού αλλά και Υποψήφιων κλειδιών.
+        /// Γενικά, για κάθε γνώρισμα ελέγχει τους πιθανούς συνδυασμούς του με άλλα.
+        /// </summary>
+        /// <param name="FDList">Λίστα με συναρτησιακές εξαρτήσεις</param>
+        /// <param name="newAttrList">Λίστα με γνωρίσματα</param>
+        /// <param name="keyList">αναφορά σε λίστα κλειδιών</param>
+        /// <param name="k">παραγοντικό</param>
+        /// <param name="s">μήνυμα</param>
+        /// <param name="showOut">Λογική μεταβλητή για εμφάνιση λεπτομερειών</param>
+        /// <returns>Το κλειδί</returns>
         private static string AttrBinarySelection(List<FD> FDList, List<Attr> newAttrList, ref List<Key> keyList, int k, string s, bool showOut)
         {
             string sBin = "";
@@ -255,68 +300,11 @@ namespace Normalization
             return s;
         }
 
-        private static Tuple<List<Attr>, string> attrClosure(List<Attr> attrS, List<FD> fdList, bool showOut)
-        {
-            string details = "";
-            anyFDUsed = false; // Μηδενίζω την μεταβλητή γιατί είναι static και κρατάει την τιμή της από προηγούμενες ενέργειες.
-            //ο πίνακας closure περιλαμβάνει τον εγκλεισμό των γνωρισμάτων attrS
-            List<Attr> closure = new List<Attr>();
-            closure.AddRange(attrS);
-
-            details += "Διαδικασία εγκλεισμού\n";
-            details += "Ο εγκλεισμός ενός συνόλου γνωρισμάτων X συμβολίζεται ως X\x207A.\n\n";
-            Relation rel = new Relation(attrS);
-            details += "Έστω ότι X = " + rel.ToString() + "\n\n";
-            details += "Ισχύει ότι X\x207A = " + rel.ToString() + ".\n\n";
-            details += "Εξετάζουμε τις συναρτησιακές εξαρτήσεις για να υπολογίσουμε τον συνολικό εγκλεισμό του X\x207A\n\n";
-            details += "==============================\n\n";
-
-        //η RepeatLoop χρησιμοποιείται ως σημείο επανεκκίνησης του βρόχου σε περίπτωση που πρέπει να ελεγχθούν από την αρχή οι συναρτησιακές εξαρτήσεις
-        RepeatLoop:
-            //ελέγχω μία προς μία τις συναρτησιακές εξαρτήσεις
-            foreach (FD fd in fdList)
-            {
-                //ελέγχεται με την τομή αν τα γνωρίσματα του αριστερού σκέλους της συναρτησιακής εξάρτησης περιλαμβάνονται στον ως τώρα εγκλεισμό
-                if (fd.GetLeft().Intersect(closure, Global.comparer).Count() >= fd.GetLeft().Count)
-                {
-                    //αν ναι, τότε προστίθενται τα γνωρίσματα του δεξιού σκέλους στην συναρτησιακή εξάρτηση, με την προϋπόθεση να μην έχουν ήδη προστεθεί, κι αν αυτό γίνει τότε η διαδικασία αρχίζει ξανά από την RepeatLoop
-                    List<Attr> toAdd = new List<Attr>();
-                    foreach (Attr attR in fd.GetRight())
-                    {
-                        if (!closure.Contains(attR, Global.comparer))
-                        {
-                            anyFDUsed = true;
-                            toAdd.Add(attR);
-                        }
-                    }
-                    if (toAdd.Count > 0)
-                    {
-                        closure.AddRange(toAdd);
-
-                        if (toAdd.Count == 1)
-                            details += "Ισχύει \"" + fd.ToString() + "\", οπότε μπαίνει στον εγκλεισμό το γνώρισμα {" + toAdd[0].Name + "}.\n\n";
-                        else
-                        {
-                            Relation relToAdd = new Relation(toAdd);
-                            details += "Ισχύει \"" + fd.ToString() + "\", οπότε μπαίνoυν στον εγκλεισμό τα γνωρίσματα " + relToAdd.ToString() + ".\n\n";
-                        }
-
-                        Relation rel2 = new Relation(closure);
-                        details += "Έχουμε X\x207A = " + rel2.ToString() + "\n\n";
-                        details += "==============================\n\n";
-
-                        goto RepeatLoop;
-                    }
-                }
-            }
-
-            if (!showOut)
-                details = "";
-            var result = new Tuple<List<Attr>, string>(closure, details);
-            return result;
-
-        }
-
+        /// <summary>
+        /// Μέθοδος που υπολογίζει το παραγοντικό ενός αριμού
+        /// </summary>
+        /// <param name="x">αριθμός</param>
+        /// <returns>παραγοντικό</returns>
         private static int Factorial(ulong x)
         {
             ulong total = 1;
@@ -327,6 +315,63 @@ namespace Normalization
             return (int)total;
         }
 
+        /// <summary>
+        /// Βοηθητική μέθοδο για εύρεση κλειδιών.
+        /// </summary>
+        private static void binLoader()
+        {
+            #region γεμισμα bin
+            //καταχωρούνται στον πίνακα bin το πλήθος των ψηφίων 1 στο δυαδικό σύστημα για κάθε αριθμό
+            //η μεταβλητή str αναπαριστά δυαδικό αριθμό, ξεκινώντας από το 0 μέχρι το μέγιστο δυνητικό συνδυασμό, που είναι το 2 υψωμένο στο μέγιστο επιτρεπόμενο πλήθος των γνωρισμάτων
+            string str;
+            int kk = (int)Math.Pow(2, MaxAttrNum);
+            for (int ii = 0; ii <= kk; ii++)
+            {
+                //ο αριθμός i μετατρέπεται σε δυαδικό
+                str = Convert.ToString(ii, 2);
+
+                //μετριέται το πλήθος των ψηφίων 1 στον δυαδικό αριθμό str και καταχωρείται στον πίνακα bin
+                bin.Add((byte)str.Replace("0", "").Length);
+            }
+            #endregion
+        }
+
+        #endregion
+
+        #region FOR DELETE???
+        public static Tuple<Attr, string> jsonGenerator()
+        {
+            dynamic product = new JObject();
+            product.ProductName = "Elbow Grease";
+            product.Enabled = true;
+            product.Price = 4.90m;
+            product.StockCount = 9000;
+            product.StockValue = 44100;
+            product.Tags = new JArray("Real", "OnSale");
+            List<string> s = new List<string>();
+            s.Add("Yolo");
+            s.Add("deytero");
+            s.Add("Trito");
+
+            JArray ja = new JArray();
+            foreach (string ss in s)
+            {
+                ja.Add(ss);
+            }
+
+            product.Bla = ja;
+            JArray ja2 = new JArray();
+            ja2.Add("Eimai");
+            ja2.Add("Eimai2");
+            product.Bla2 = ja2;
+            //  product.Tags2 = new JArray("Real2", "OnSale2");
+            var pop = new Tuple<Attr, string>(new Attr("Yolo", "re"), product.ToString());
+            return pop;
+
+
+        }
+
+        #endregion
 
     }
 }
