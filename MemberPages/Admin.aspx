@@ -20,7 +20,9 @@
         <p>
             &nbsp;</p>
         <p>
-            Εμφάνιση στατιστικών</p>
+            <asp:HyperLink ID="HyperLink2" runat="server" NavigateUrl="~/MemberPages/Stats.aspx">Εμφάνιση στατιστικών</asp:HyperLink>
+            
+            </p>
         <p>
             &nbsp;</p>
     

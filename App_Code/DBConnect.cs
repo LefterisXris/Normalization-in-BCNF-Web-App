@@ -313,6 +313,10 @@ namespace Normalization
 
         }
 
+        /// <summary>
+        /// Μέθοδος που ενημερώνει ένα σχήμα ότι έχει αποθηκευτεί από τον admin.
+        /// </summary>
+        /// <param name="schemaId">Το id του σχήματος</param>
         public void updateSchemaByAdmin(string schemaId)
         {
             int id = Int32.Parse(schemaId);
@@ -339,7 +343,10 @@ namespace Normalization
             }
         }
 
-
+        /// <summary>
+        /// Μέθοδος που θέτει το προεπιλεγμένο σχήμα
+        /// </summary>
+        /// <param name="schemaName">Όνομα σχήματος</param>
         public void setDefaultSchema(string schemaName)
         {
             string query = "UPDATE `lefterisxris`.`Schemas` SET `isDefault` = 0";
@@ -414,6 +421,49 @@ namespace Normalization
 
           */
 
+
+        #region Stats
+
+        public List<string>[] getStatsforPies(string action)
+        {
+            string query = "SELECT `name`,`"+ action +"` FROM `Schemas`";
+
+            //Create a list to store the result
+            List<string>[] list = new List<string>[2];
+            list[0] = new List<string>();
+            list[1] = new List<string>();
+
+            //Open connection
+            if (this.OpenConnection() == true)
+            {
+                //Create Command
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                //Create a data reader and Execute the command
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                //Read the data and store them in the list
+                while (dataReader.Read())
+                {
+                    list[0].Add(dataReader["name"] + "");
+                    list[1].Add(dataReader[action] + "");
+                }
+
+                //close Data Reader
+                dataReader.Close();
+
+                //close Connection
+                this.CloseConnection();
+
+            }
+            return list;
+        }
+
+        /*
+         
+        SELECT `name`,`nLoad` FROM `Schemas`
+
+        */
+        #endregion
 
     }
 }
