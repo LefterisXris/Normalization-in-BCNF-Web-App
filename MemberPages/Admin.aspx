@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>BCNF</title>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -15,7 +15,7 @@
         </h1>
         <p>
             <asp:LoginStatus ID="LoginStatus1" runat="server" />
-&nbsp;<asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Default.aspx">Home</asp:HyperLink>
+&nbsp;<asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Default.aspx">Διαχείριση αρχικής σελίδας</asp:HyperLink>
         </p>
         <p>
             &nbsp;</p>

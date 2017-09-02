@@ -16,7 +16,7 @@ public partial class Login : System.Web.UI.Page
     protected void Login1_Authenticate(object sender, AuthenticateEventArgs e)
     {
 
-        if (Login1.UserName.Length > 5 && Login1.Password.Length > 3)
+        if (Login1.UserName.Length > 5 && Login1.Password.Length == 5)
         {
             Msg.Text = "Wellcome back!!.";
             FormsAuthentication.RedirectFromLoginPage(Login1.UserName, Login1.RememberMeSet);
