@@ -884,23 +884,6 @@ public partial class _Default : System.Web.UI.Page
         return msg;
     }
 
-    /// <summary>
-    /// Ελέγχει αν ο πίνακας Rel είναι BCNF
-    /// </summary>
-    private string RelBCNF(Relation rel)
-    {
-        foreach (FD fd in fdList)
-        {
-            if (fd.Excluded) continue;
-            //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
-            //σε διαφορετική περίπτωση ο πίνακας είναι BCNF
-            int x = fd.GetAll().Intersect(rel.GetList(), Global.comparer).Count();
-            if (x < rel.GetList().Count && x == fd.GetAll().Count)
-                return "";
-        }
-        return "    (BCNF)";
-    }
-
     #endregion
 
     #region StepsDecompose
@@ -933,13 +916,29 @@ public partial class _Default : System.Web.UI.Page
     #region Helping Methods for Actions
 
     /// <summary>
+    /// Ελέγχει αν ο πίνακας Rel είναι BCNF
+    /// </summary>
+    private string RelBCNF(Relation rel)
+    {
+        foreach (FD fd in fdList)
+        {
+            if (fd.Excluded) continue;
+            //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
+            //σε διαφορετική περίπτωση ο πίνακας είναι BCNF
+            int x = fd.GetAll().Intersect(rel.GetList(), Global.comparer).Count();
+            if (x < rel.GetList().Count && x == fd.GetAll().Count)
+                return "";
+        }
+        return "    (BCNF)";
+    }
+
+    /// <summary>
     /// Ανοίγει το modal με τα αποτελέσματα.
     /// </summary>
     private void OpenResultsModal()
     {
         ClientScript.RegisterStartupScript(Page.GetType(), "modalResults", "$('#modalResults').modal();", true);
     }
-
 
     #endregion
 
@@ -1531,18 +1530,19 @@ public partial class _Default : System.Web.UI.Page
 
         ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> Default Schema Updated!'); $('#alertBoxSuccess').show(); ", true);
     }
-    
-    #endregion
 
     #endregion
 
-    // TODO: Βάλε σύνδεση με βάση και στατιστικά στοιχεία. (Μπήκαν analytics)
+    #endregion
+
+    // TODO: Extra desktop εφαρμογή για Στατιστικά.
     // TODO: Φτιάξε το design.    
     // TODO: Βάλε έλεγχο εισαγωγής στα διάφορα inputs.
     // TODO: Αναίρεση ή ενσωμάτωση enter. 
     // TODO: Διαγραφή περιτών κομματιών (κλάσεις, μεθόδους, μεταβλητές).
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
-    // TODO: Εισαγωγή κωδικού από τοπικά. όπως Gradle.
+    // TODO: Προσθήκη δυνατότητητας εναλλακτικής διάσπασης.
+    // TODO: Προσθήκη δυνατότητητας επεξεργασίας FD στην StepsDecompose
 
 
     protected void btnGetSchemasClick(object sender, EventArgs e)
