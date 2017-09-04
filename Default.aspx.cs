@@ -559,6 +559,7 @@ public partial class _Default : System.Web.UI.Page
         }
 
         log.InnerText = msg;
+        resultTitle.Text = "Διαδικασία Εγλεισμού";
         OpenResultsModal();
     }
 
@@ -581,6 +582,7 @@ public partial class _Default : System.Web.UI.Page
         msg = result.Item2.ToString(); // Είναι οι λεπτομέρειες.
 
         log.InnerText = msg;
+        resultTitle.Text = "Διαδικασία Εύρεσης Κλειδιών";
         OpenResultsModal();
     }
 
@@ -595,7 +597,59 @@ public partial class _Default : System.Web.UI.Page
     {
         dbConnect.TrackStat(lblSchemaName.Text, lblSchemaId.Text, "nDecompose");
 
-        bool alter = false;
+        /* bool isAlternative = false; // Αν πρόκειτε για εναλλακτική λύση τότε θα οριστεί σε αυτή τη μεταβλητή.
+         logAlter.Visible = false;
+         log.Attributes["class"] = "form-control alone";
+
+         Button btn = (Button)sender;
+
+         if (btn.ID.Equals("btnDecomposeAlternative"))
+         {
+             isAlternative = true;
+             log.Attributes["class"] = "form-control together";
+             logAlter.Visible = true;
+         }
+
+
+         var result = Global.Decompose(attrList, fdList, false);
+
+         msg = result.Item1; // Είναι το αποτέλεσμα της διάσπασης.
+         bool AlterExists = result.Item2; // Αν υπάρχει εναλλακτική.
+
+         log.InnerText = msg;
+         resultTitle.Text = "Διαδικασία Διάσπασης σε BCNF";
+
+         if (isAlternative)
+         {
+             var result2 = Global.Decompose(attrList, fdList, isAlternative);
+             logAlter.InnerText = result2.Item1;
+             AlterExists = result2.Item2;
+             resultTitle.Text = "Διαδικασία Διάσπασης σε BCNF (Αρχική - Εναλλακτική)";
+         }
+
+         // Εμφάνιση ή απόκρυψη πλήκτρου ενναλακτικής.
+         if (AlterExists)
+             btnDecomposeAlternative.Visible = true;
+         else
+             btnDecomposeAlternative.Visible = false;
+             */
+
+        bool isAlternative = false;
+        Button btn = (Button)sender;
+        if (btn.ID.Equals("btnDecomposeAlternative"))
+        {
+            isAlternative = true;
+        }
+
+        log.InnerText = Decompose(isAlternative);
+        resultTitle.Text = "Διαδικασία Διάσπασης σε BCNF";
+        OpenResultsModal();
+    }
+
+    private string Decompose(bool isAlternative)
+    {
+        string msg = "";
+        btnDecomposeAlternative.Visible = false;
         // μηδενίζεται η αρίθμηση της Relation.
         Relation.aa = 0;
 
@@ -618,7 +672,7 @@ public partial class _Default : System.Web.UI.Page
         }
 
         // αν η λύση είναι η εναλλακτική, αντιστρέφεται η σειρά των συναρτησιακών εξαρτήσεων.
-        if (alter)
+        if (isAlternative)
             fdList.Reverse();
 
         // ορίζεται η λίστα που παίρνει τα κλειδιά του πίνακα.
@@ -814,7 +868,7 @@ public partial class _Default : System.Web.UI.Page
         }
 
         //αν η διάσπαση ήταν με εναλλακτική σειρά, τότε αντιστρέφεται ξανά η σειρά των συναρτησιακών εξαρτήσεων
-        if (alter)
+        if (isAlternative)
             fdList.Reverse();
 
         //αν κάποια από τις συναρτησιακές εξαρτήσεις δεν χρησιμοποιήθηκε, εμφανίζεται το όνομά της και δίνεται η δυνατότητα εναλλακτικής διάσπασης
@@ -822,11 +876,29 @@ public partial class _Default : System.Web.UI.Page
             if (!fd.Excluded)
             {
                 msg += "Η συναρτησιακή εξάρτηση \"" + fd.ToString() + "\" δεν χρησιμοποιήθηκε.\n\n";
-                if (!alter)
-                    msg += "υπάρχει ενναλακτική.";
+                if (!isAlternative)
+                    btnDecomposeAlternative.Visible = true;
             }
-        log.InnerText = msg;
-        OpenResultsModal();
+
+        
+        return msg;
+    }
+
+    /// <summary>
+    /// Ελέγχει αν ο πίνακας Rel είναι BCNF
+    /// </summary>
+    private string RelBCNF(Relation rel)
+    {
+        foreach (FD fd in fdList)
+        {
+            if (fd.Excluded) continue;
+            //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
+            //σε διαφορετική περίπτωση ο πίνακας είναι BCNF
+            int x = fd.GetAll().Intersect(rel.GetList(), Global.comparer).Count();
+            if (x < rel.GetList().Count && x == fd.GetAll().Count)
+                return "";
+        }
+        return "    (BCNF)";
     }
 
     #endregion
@@ -859,22 +931,6 @@ public partial class _Default : System.Web.UI.Page
 
 
     #region Helping Methods for Actions
-    /// <summary>
-    /// Ελέγχει αν ο πίνακας Rel είναι BCNF
-    /// </summary>
-    private string RelBCNF(Relation rel)
-    {
-        foreach (FD fd in fdList)
-        {
-            if (fd.Excluded) continue;
-            //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
-            //σε διαφορετική περίπτωση ο πίνακας είναι BCNF
-            int x = fd.GetAll().Intersect(rel.GetList(), Global.comparer).Count();
-            if (x < rel.GetList().Count && x == fd.GetAll().Count)
-                return "";
-        }
-        return "    (BCNF)";
-    }
 
     /// <summary>
     /// Ανοίγει το modal με τα αποτελέσματα.

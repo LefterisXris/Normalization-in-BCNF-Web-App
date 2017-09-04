@@ -49,8 +49,7 @@ namespace Normalization
             //ο πίνακας closure περιλαμβάνει τον εγκλεισμό των γνωρισμάτων attrS
             List<Attr> closure = new List<Attr>();
             closure.AddRange(attrS);
-
-            details += "Διαδικασία εγκλεισμού\n";
+            
             details += "Ο εγκλεισμός ενός συνόλου γνωρισμάτων X συμβολίζεται ως X\x207A.\n\n";
             Relation rel = new Relation(attrS);
             details += "Έστω ότι X = " + rel.ToString() + "\n\n";
@@ -136,7 +135,6 @@ namespace Normalization
             string details = "";
 
             //δημιουργείται η frmout που αναφέρεται στην frmOut για να στέλνει πληροφορίες για τη διαδικασία της εύρεσης κλειδιών
-            details += "Διαδικασία εύρεσης κλειδιών\n";
             details += "Αν ο εγκλεισμός ενός γνωρίσματος ή συνδυασμός αυτών περιλαμβάνει το σύνολο όλων των γνωρισμάτων του σχήματος, τότε το γνώρισμα αυτό, ή ο συνδυασμός των γνωρισμάτων, αποτελεί υποψήφιο κλειδί.\n\n";
             details += "Υποψήφια κλειδιά:\n\n";
 
@@ -337,7 +335,7 @@ namespace Normalization
         }
 
         #endregion
-
+        
         #region FOR DELETE???
         public static Tuple<Attr, string> jsonGenerator()
         {

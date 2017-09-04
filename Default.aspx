@@ -388,14 +388,15 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Αποτελέσματα</h4>
+                                    <asp:Label class="modal-title" ID="resultTitle" runat="server" Text="Αποτελέσματα" Font-Size="16px"></asp:Label>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="form-horizontal"> 
-                                        <textarea runat="server" id="log" class="form-control" rows="15" style="min-width: 100%; min-height: 100%;" ></textarea>
+                                    <div class="form-horizontal">  
+                                        <textarea runat="server" id="log" class="form-control alone" rows="15" ></textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
+                                    <asp:Button runat="server" ID="btnDecomposeAlternative" Text="Ενναλακτική" class="btn btn-default" OnClick="btnDecomposeClick" UseSubmitBehavior="false" Visible="false" />
                                     <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
                                 </div>
                             </div>
