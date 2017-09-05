@@ -335,7 +335,265 @@ namespace Normalization
         }
 
         #endregion
-        
+
+        #region Decompose
+
+        public static Tuple<string, bool> Decompose(List<Attr> attrList, List<FD> fdList, bool isAlternative)
+        {
+            string msg = "";
+            bool alterExists = false;
+            // μηδενίζεται η αρίθμηση της Relation.
+            Relation.aa = 0;
+
+            // ορίζεται λίστα με τους πίνακες Relation.
+            List<Relation> RelList = new List<Relation>();
+
+            // δημιουργείται νέος πίνακας Relation ο οποίος αρχικά περιλαμβάνει όλα τα γνωρίσματα του σχήματος
+            // και προσττίθεται στη λίστα των πίνάκων Relation.
+            Relation relInitial = new Relation(attrList);
+            RelList.Add(relInitial);
+            relInitial.Name = "R";
+
+            msg += "Θέλουμε να διασπάσουμε κατά BCNF τον αρχικό πίνακα " + relInitial.ToString() + "\n\n";
+
+            // δημιουργείται backup όλων των συναρτησιακών εξαρτήσεων, γιατί υπάρχει περίπτωση να αλλάξουν στην μέθοδο αυτή.
+            foreach (FD fd in fdList)
+            {
+                fd.Backup();
+                fd.Excluded = false;
+            }
+
+            // αν η λύση είναι η εναλλακτική, αντιστρέφεται η σειρά των συναρτησιακών εξαρτήσεων.
+            if (isAlternative)
+                fdList.Reverse();
+
+            // ορίζεται η λίστα που παίρνει τα κλειδιά του πίνακα.
+            List<Key> keyList = new List<Key>();
+            var result = Global.findKeys(attrList, fdList, false);
+            keyList = result.Item1;
+
+            if (keyList.Count > 0)
+            {
+                msg += "Τα υποψήφια κλειδιά του R είναι:\n\n";
+                Key newkey = new Key();
+                foreach (Key key in keyList)
+                {
+                    msg += key.ToString() + "\n\n";
+                    newkey.AddToKey(key.GetAttrs());
+                }
+                relInitial.SetKey(newkey);
+            }
+            else
+            {
+                Key key = new Key();
+                for (int i = 0; i < attrList.Count; i++)
+                    key.AddToKey(attrList[i]);
+
+                keyList.Add(key);
+                relInitial.SetKey(key);
+                msg += "Επιλέγεται ως υποψήφιο κλειδί το σύνολο των γνωρισμάτων του R, καθώς δεν εντοπίστηκαν ως κλειδιά μεμονωμένα γνωρίσματα ή συνδυασμοί αυτών.";
+            }
+
+            // αποκλείονται οι τετριμμένες συναρτησιακές εξαρτήσεις.
+            foreach (FD fd in fdList)
+                if (fd.IsTrivial)
+                    fd.Excluded = true;
+
+            // εξαιρούνται οι συναρτησιακές εξαρτήσεις που το αριστερό σκέλος τους περιλαμβάνει κλειδί.
+            // ο έλεγχος γίνεται με τη βοήθεια της τομής.
+            foreach (FD fd in fdList)
+                foreach (Key key in keyList)
+                    if (!fd.Excluded && fd.GetLeft().Intersect(key.GetAttrs(), Global.comparer).Count() >= key.GetAttrs().Count)
+                    {
+                        fd.Excluded = true;
+                        break;
+                    }
+
+            // ελέγχεται αν ισχύει ο κανόνας της μεταβατικότητας μεταξύ κάποιων συναρτησιακών εξαρτήσεων
+            // κι αν ναι, τότε το δεξί σκέλος αλλάζει και παίρνει τον  εγκλεισμό του αριστερού σκέλους (πλην τα γνωρίσματα του αριστερού).
+            for (int i = 0; i < fdList.Count; i++)
+            {
+                for (int j = 0; j < fdList.Count; j++)
+                {
+                    if (fdList[i] == fdList[j] | fdList[i].Excluded | fdList[j].Excluded)
+                        continue;
+                    int x = 0;
+                    foreach (Attr attr in fdList[i].GetRight())
+                        if (fdList[j].GetLeft().Contains(attr, Global.comparer))
+                            x++;
+                    if (x >= fdList[j].GetLeft().Count)
+                    {
+                        // αν όλα τα γνωρίσματα του δεξιού σκέλους βρέθηκαν στο αριστερό, τότε η συναρτησιακή εξάρτηση τροποποιείται,
+                        // με τα ίδια γνωρίσματα στα αριστερά και τον εγκλεισμό του αριστερού σκέλους στα δεξιά.
+                        Closure newClosure = new Closure(attrList, fdList);
+                        var result2 = Global.findClosure(fdList[i].GetLeft(), fdList, false); // Item1 = closure.
+                        fdList[i].AddRight(result2.Item1);
+                        //  fdList[i].AddRight(newClosure.attrClosure(fdList[i].GetLeft(), false));
+                        fdList[i].RemoveRight(fdList[i].GetLeft());
+                    }
+                }
+            }
+
+            msg += "==============================\n\n";
+            msg += "Οι συναρτησιακές εξαρτήσεις που θα χρησιμοποιηθούν για τη διάσπαση, μετά:\n(1) την αφαίρεση των τετριμμένων,\n(2) την αφαίρεση αυτών που δεν παραβιάζουν την BCNF μορφή και\n(3) τη μετατροπή αυτών που ικανοποιούν τον κανόνα της μεταβατικότητας,\nείναι οι εξής:\n\n";
+
+            bool chk = false;
+            foreach (FD fd in fdList)
+            {
+                if (!fd.Excluded)
+                {
+                    msg += fd.ToString() + "\n\n";
+                    chk = true;
+                }
+            }
+
+            if (!chk)
+            {
+                msg += "Καμία!!!\n\nΕπομένως, ο αρχικός πίνακας R είναι σε BCNF μορφή και η διαδικασία σταματά.\n\n";
+                relInitial.IsBCNF = true;
+                goto SkipProcess;
+            }
+
+            msg += "==============================\n\n";
+
+            // σαρώνονται όλοι οι πίνακες για να ελεγχθεί αν υπάρχει έστω και ένας πίνακας που δεν είναι BCNF ώστε να διασπαστεί.
+            bool newRel = false;
+            for (int i = 0; i < RelList.Count; i++)
+            {
+                if (!RelList[i].IsBCNF & !RelList[i].Excluded)
+                {
+                    // σαρώνονται όλες οι διαθέσιμες συναρτησιακές εξαρτήσεις για να δούμε αν μπορούμε να τον διασπάσουμε.
+                    foreach (FD fd in fdList)
+                    {
+                        if (fd.Excluded)
+                            continue;
+                        //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
+                        int x = fd.GetAll().Intersect(RelList[i].GetList(), Global.comparer).Count();
+                        if (x < RelList[i].GetList().Count && x == fd.GetAll().Count)
+                        {
+                            //παρακάτω δημιουργούνται δύο νέοι πίνακες, ο rel1 και ο rel2
+
+                            //ο rel1 πίνακας παίρνει τα γνωρίσματα της συναρτησιακής εξάρτησης
+                            Relation rel1 = new Relation(fd.GetAll());
+
+                            //ο rel2 πίνακας παίρνει τα γνωρίσματα από το αριστερό σκέλος της συναρτησιακής εξάρτησης, συν τα γνωρίσματα του πίνακα που διασπάστηκε, πλην αυτών που βρίσκονται στο δεξί σκέλος της συναρτησιακής εξάρτησης
+                            List<Attr> temp = new List<Attr>();
+                            temp.AddRange(fd.GetLeft());
+                            temp.AddRange(RelList[i].GetList().Except(fd.GetRight(), Global.comparer));
+                            Relation rel2 = new Relation(temp);
+
+                            //δημιουργούνται δύο κλειδιά, ένα για τον καθένα πίνακα
+                            Key key1 = new Key();
+                            Key key2 = new Key();
+
+                            //το κλειδί του πρώτου πίνακα είναι η ορίζουσα της συναρτησιακής εξάρτησης που προκάλεσε την διάσπαση
+                            key1.AddToKey(fd.GetLeft());
+                            rel1.SetKey(key1);
+
+                            //προσδιορίζουμε το κλειδί του δεύτερου πίνακα (αυτό που δίνει όλα τα γνωρίσματά του)
+                            //δημιουργούμε μια τοπική λίστα κλειδιών και ως κλειδί του δεύτερου πίνακα ορίζεται το πρώτο κλειδί της λίστας
+                            List<Key> tempoKeyList = new List<Key>();
+                            var resultTemp = Global.findKeys(rel2.GetList(), fdList, false);
+                            tempoKeyList = resultTemp.Item1;
+                            key2.AddToKey(tempoKeyList[0].GetAttrs());
+                            rel2.SetKey(key2);
+
+                            //ορίζονται τα ονόματα των δύο νέων πινάκων
+                            if (Relation.isAA)
+                            {
+                                rel1.Name = "R" + ++Relation.aa;
+                                rel2.Name = "R" + ++Relation.aa;
+                            }
+                            else
+                            {
+                                rel1.Name = RelList[i].Name + "1";
+                                rel2.Name = RelList[i].Name + "2";
+                            }
+
+                            //οι δύο νέοι πίνακες προστίθενται στη λίστα
+                            RelList.Add(rel1);
+                            RelList.Add(rel2);
+
+                            // εμφανίζονται τα σχετικά μηνύματα.
+                            msg += "Με την \"" + fd.ToString() + "\" ο " + RelList[i].Name + " διασπάται σε:\n\n" + rel1.ToString() + RelBCNF(rel1, fdList) + "\n\n" + rel2.ToString() + RelBCNF(rel2, fdList) + "\n\n";
+                            msg += "==============================\n\n";
+
+
+                            // ο πίνακας RelList[i] και η συναρτησιακή εξάρτηση fd αποκλείονται από περαιτέρω διασπάσεις
+                            RelList[i].Excluded = true;
+                            fd.Excluded = true;
+
+                            newRel = true;
+                            break;
+                        }
+                    }
+
+                    //ελέγχεται αν δημιουργήθηκαν νέοι πίνακες, κι αν ναι, η σάρωση αρχίζει από την αρχή
+                    if (newRel)
+                    {
+                        newRel = false;
+                        i = -1;
+                    }
+                    else //ο πίνακας θεωρείται ότι είναι σε μορφή BCNF
+                    {
+                        RelList[i].IsBCNF = true;
+                        RelList[i].Excluded = true;
+                    }
+
+                }
+            }
+        SkipProcess: //αν η διαδικασία της κανονικοποίησης λήξει πρόωρα, οδηγούμαστε σε αυτό το σημείο του κώδικα
+
+            //επανέρχονται οι συναρτησιακές εξαρτήσεις στην αρχική τους κατάσταση
+            foreach (FD fd in fdList)
+                fd.Restore();
+
+            //εμφανίζονται στην frmOut ποιοι είναι οι BCNF πίνακες
+            if (RelList.Count > 0)
+            {
+                msg += "==============================\n\n";
+                msg += "Οι πίνακες BCNF είναι οι εξής:\n\n";
+                foreach (Relation relation in RelList)
+                    if (relation.IsBCNF)
+                        msg += relation.ToString() + "\n\n";
+                msg += "==============================\n\n";
+            }
+
+            //αν η διάσπαση ήταν με εναλλακτική σειρά, τότε αντιστρέφεται ξανά η σειρά των συναρτησιακών εξαρτήσεων
+            if (isAlternative)
+                fdList.Reverse();
+
+            //αν κάποια από τις συναρτησιακές εξαρτήσεις δεν χρησιμοποιήθηκε, εμφανίζεται το όνομά της και δίνεται η δυνατότητα εναλλακτικής διάσπασης
+            foreach (FD fd in fdList)
+                if (!fd.Excluded)
+                {
+                    msg += "Η συναρτησιακή εξάρτηση \"" + fd.ToString() + "\" δεν χρησιμοποιήθηκε.\n\n";
+                    if (!isAlternative)
+                        alterExists = true;
+                }
+
+            var s = new Tuple<string, bool>(msg, alterExists);
+            return s;
+        }
+
+        /// <summary>
+        /// Ελέγχει αν ο πίνακας Rel είναι BCNF
+        /// </summary>
+        private static string RelBCNF(Relation rel, List<FD> fdList)
+        {
+            foreach (FD fd in fdList)
+            {
+                if (fd.Excluded) continue;
+                //αν η τομή x του συνόλου των γνωρισμάτων της συναρτησιακής εξάρτησης και των γνωρισμάτων του πίνακα είναι μικρότερη σε αριθμό από το πλήθος των γνωρισμάτων του πίνακα και ίση με το πλήθος των γνωρισμάτων της συναρτησιακής εξάρτησης, τότε παραβιάζεται η BCNF μορφή και ο πίνακας μπορεί να διασπαστεί
+                //σε διαφορετική περίπτωση ο πίνακας είναι BCNF
+                int x = fd.GetAll().Intersect(rel.GetList(), Global.comparer).Count();
+                if (x < rel.GetList().Count && x == fd.GetAll().Count)
+                    return "";
+            }
+            return "    (BCNF)";
+        }
+        #endregion
+
         #region FOR DELETE???
         public static Tuple<Attr, string> jsonGenerator()
         {

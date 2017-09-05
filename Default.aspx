@@ -12,6 +12,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <style>
+        
+        #together{
+            max-width:45%;
+        }
+
+    </style>
+
 </head>
 
 <body>
@@ -384,7 +393,7 @@
 
                     <!-- Modal Αποτελέσματα -->
                     <div class="modal fade" id="modalResults" role="dialog">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog" runat="server" id="resultModalSize">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -392,11 +401,13 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-horizontal">  
-                                        <textarea runat="server" id="log" class="form-control alone" rows="15" ></textarea>
+                                        <textarea runat="server" id="log" class="form-control" rows="15" ></textarea>
+                                        <asp:Label ID="lblAlter" runat="server" Text="Εναλλακτική" Visible="false" ForeColor="Blue" style="margin-top:10px;" Font-Bold="True" Font-Italic="True"></asp:Label>
+                                        <textarea runat="server" id="logAlter" class="form-control" rows="15" Visible="false" ></textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnDecomposeAlternative" Text="Ενναλακτική" class="btn btn-default" OnClick="btnDecomposeClick" UseSubmitBehavior="false" Visible="false" />
+                                    <asp:Button runat="server" ID="btnDecomposeAlternative" Text="Εναλλακτική" class="btn btn-default" OnClick="btnDecomposeClick" UseSubmitBehavior="false" Visible="false" />
                                     <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
                                 </div>
                             </div>
@@ -651,14 +662,14 @@
             }
         });
 
-        function HideLabel() {
-        var seconds = 5;
-        setTimeout(function () {
-            //document.getElementById("#alertBoxSuccess").style.display = "none";
-            document.getElementById("<%=lblSchemaName.ClientID %>").style.display = "none";
-        }, seconds * 1000);
-    };
+        function ChangeClass(isAlter) {
+            if(isAlter)
+                $("resultModalSize").addClass("modal-lg");
+            else
+                $("resultModalSize").removeClass("modal-lg");
+        };
 
+        $("btnDecomposeAlternative").click(ChangeClass(1));
     </script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
