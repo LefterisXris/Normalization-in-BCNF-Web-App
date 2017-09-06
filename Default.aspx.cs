@@ -257,7 +257,7 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnEditAttrClick(object sender, EventArgs e)
     {
-        int index = gridViewAttr.SelectedIndex;
+        int index = Int32.Parse(gridViewAttrHiddenField.Value);
         if (index >= 0)
         {
             tbxEditAttrName.Text = attrList[index].Name;
@@ -281,8 +281,8 @@ public partial class _Default : System.Web.UI.Page
     {
         string name = tbxEditAttrName.Text.Trim();
         string type = tbxEditAttrType.Text.Trim();
-
-        int index = gridViewAttr.SelectedIndex;
+        
+        int index = Int32.Parse(gridViewAttrHiddenField.Value);
         if (index >= 0)
         {
             string prevName = attrList[index].Name;
@@ -325,8 +325,8 @@ public partial class _Default : System.Web.UI.Page
         // Σβήνω το περιεχόμενο τη προεπισκόπησης.
         lblPreviewFDtoEditRight.Text = "";
         lblPreviewFDtoEditLeft.Text = "";
-
-        int index = gridViewFD.SelectedIndex;
+        
+        int index = Int32.Parse(gridViewFDHiddenField.Value);
         if (index >= 0)
         {
             populateLeftAndRightEditFDGridView();
@@ -386,7 +386,7 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnEditFDΟΚClick(object sender, EventArgs e)
     {
-        int index = gridViewFD.SelectedIndex;
+        int index = Int32.Parse(gridViewFDHiddenField.Value);
         if (index >= 0)
         {
             FD fd = new FD(); // Η προσωρινή.
@@ -443,7 +443,7 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnDeleteAttrClick(object sender, EventArgs e)
     {
-        int index = gridViewAttr.SelectedIndex;
+        int index = Int32.Parse(gridViewAttrHiddenField.Value);
         if (index >= 0)
         {
             attrList.RemoveAt(index);
@@ -467,7 +467,7 @@ public partial class _Default : System.Web.UI.Page
     /// </summary>
     protected void btnDeleteFDClick(object sender, EventArgs e)
     {
-        int index = gridViewFD.SelectedIndex;
+        int index = Int32.Parse(gridViewFDHiddenField.Value);
         if (index >= 0)
         {
             fdList.RemoveAt(index);
@@ -1074,74 +1074,6 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    #region GridViews Management (Update selected rows: Attr & Fd)
-
-    /// <summary>
-    /// Προσθέτει λειτουργικότητα στις γραμμές του gridViewAttr μόλις προστεθεί περιεχόμενο.
-    /// </summary>
-    protected void OnRowDataBoundAttr(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
-    {
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gridViewAttr, "Select$" + e.Row.RowIndex);
-            e.Row.ToolTip = "Click to select this row.";
-        }
-    }
-
-    /// <summary>
-    /// Ενημερώνει την επιλεγμένη γραμμή για το gridViewAttr.
-    /// </summary>
-    protected void OnSelectedIndexChangedAttr(object sender, EventArgs e)
-    {
-        foreach (GridViewRow row in gridViewAttr.Rows)
-        {
-            if (row.RowIndex == gridViewAttr.SelectedIndex)
-            {
-                row.BackColor = ColorTranslator.FromHtml("#A1DCF2");
-                row.ToolTip = string.Empty;
-            }
-            else
-            {
-                row.BackColor = ColorTranslator.FromHtml("#FFFFFF");
-                row.ToolTip = "Click to select this row.";
-            }
-        }
-    }
-
-    /// <summary>
-    /// Προσθέτει λειτουργικότητα στις γραμμές του gridViewFD μόλις προστεθεί περιεχόμενο.
-    /// </summary>
-    protected void OnRowDataBoundFD(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
-    {
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gridViewFD, "Select$" + e.Row.RowIndex);
-            e.Row.ToolTip = "Click to select this row.";
-        }
-    }
-
-    /// <summary>
-    /// Ενημερώνει την επιλεγμένη γραμμή για το gridViewFD.
-    /// </summary>
-    protected void OnSelectedIndexChangedFD(object sender, EventArgs e)
-    {
-        foreach (GridViewRow row in gridViewFD.Rows)
-        {
-            if (row.RowIndex == gridViewFD.SelectedIndex)
-            {
-                row.BackColor = ColorTranslator.FromHtml("#A1DCF2");
-                row.ToolTip = string.Empty;
-            }
-            else
-            {
-                row.BackColor = ColorTranslator.FromHtml("#FFFFFF");
-                row.ToolTip = "Click to select this row.";
-            }
-        }
-    }
-
-    #endregion
-
     #region FOR DELETE???
     // TODO: delete??? 
 
@@ -1310,7 +1242,9 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Διαγραφή περιτών κομματιών (κλάσεις, μεθόδους, μεταβλητές).
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
     // TODO: Προσθήκη δυνατότητητας επεξεργασίας FD στην StepsDecompose
-    // TODO: Bug στο σχήμα stockExchange
+    // TODO: Bug στο σχήμα stockExchange, 2_04, 2_05, 3
+    // TODO: Αλλαγή επιλεγμένου με JS και όχι με C#
+    // TODO: Μη δυνατή διαγραφή αν το γνώρισμα συμμετέχει σε FD.
 
 
     protected void btnGetSchemasClick(object sender, EventArgs e)

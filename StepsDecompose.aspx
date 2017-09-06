@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <style>
+        .highlight { background-color: #A1DCF2; }
+    </style>
 </head>
 
 <body>
@@ -35,8 +39,7 @@
                         <p><b>Πίνακες</b></p>
                    
                         <asp:GridView ID="gridViewRelation" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
-                            runat="server" AutoGenerateColumns="false"  Width="100%"
-                            OnRowDataBound="OnRowDataBoundRelation" OnSelectedIndexChanged="OnSelectedIndexChangedRelation">
+                            runat="server" AutoGenerateColumns="false"  Width="100%">
 
                             <Columns>
                                 <asp:BoundField DataField="BCNF" HeaderText=" BCNF" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" ItemStyle-Width="10%"/>
@@ -45,6 +48,8 @@
 
                         </asp:GridView>
                         
+                        <asp:HiddenField ID="gridViewRelationHiddenField" runat="server" Value="-1" />
+
                         <asp:Button ID="btnShowBCNFtables" class="btn btn-info btn-lg" runat="server" Text="Προβολή BCNF πινάκων" Style="float: right;" OnClick="btnShowBCNFTablesClick" />
 
                     </div>
@@ -53,8 +58,7 @@
                         <p><b>Συναρτησιακές εξαρτήσεις</b></p>
 
                         <asp:GridView ID="gridViewFD" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
-                            runat="server" AutoGenerateColumns="false"  Width="100%"
-                            OnRowDataBound="OnRowDataBoundFD" OnSelectedIndexChanged="OnSelectedIndexChangedFD">
+                            runat="server" AutoGenerateColumns="false"  Width="100%">
 
                             <Columns>
                                 <asp:BoundField DataField="Excluded" HeaderText="Χ" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" ItemStyle-Width="10%"/>
@@ -63,6 +67,8 @@
                             </Columns>
 
                         </asp:GridView>
+
+                        <asp:HiddenField ID="gridViewFDHiddenField" runat="server" Value="-1" />
 
                         <div class="row" style="float:right;">
                             <asp:Button ID="btnNewFD" class="btn btn-info btn-sm" runat="server" Text="Προσθήκη" OnClick="btnNewFDClick" />
@@ -255,7 +261,7 @@
                                     
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="Button1" Text="Κλείσιμο" class="btn btn-default" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Κλείσιμο</button>
                                 </div>
                             </div>
                         </div>
@@ -422,7 +428,27 @@
             }
         });
 
-    </script>
+        // Για αλλαγή χρώματος και επιλεγμένης γραμμής του πίνακα gridViewRelation.
+        $("#gridViewRelation tr").click(function () {
+            var selected = $(this).hasClass("highlight");
+            $("#gridViewRelation tr").removeClass("highlight");
+            if (!selected)
+                $(this).addClass("highlight");
+            $("#gridViewRelationHiddenField").val($(this).index() - 1);
+
+        });
+
+        // Για αλλαγή χρώματος και επιλεγμένης γραμμής του πίνακα gridViewFD.
+        $("#gridViewFD tr").click(function () {
+            var selected = $(this).hasClass("highlight");
+            $("#gridViewFD tr").removeClass("highlight");
+            if (!selected)
+                $(this).addClass("highlight");
+            $("#gridViewFDHiddenField").val($(this).index() - 1);
+
+        });
+    
+        </script>
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

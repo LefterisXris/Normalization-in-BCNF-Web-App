@@ -144,7 +144,7 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         // προσδιορίζεται ο πίνακας που έχει επιλεγεί.
         Relation rel = null;
-        iRel = gridViewRelation.SelectedIndex;
+        iRel = Int32.Parse(gridViewRelationHiddenField.Value);
         rel = relList[iRel];
 
         // αν ο πίνακας που έχει επιλεγεί δεν μπορεί να διασπαστεί περαιτέρω, βγαίνει σχετικό μήνυμα.
@@ -156,7 +156,7 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         // προσδιορίζεται η συναρτησιακή εξάρτηση που έχει επιλεγεί.
         FD fd = null;
-        iFD = gridViewFD.SelectedIndex;
+        iFD = Int32.Parse(gridViewFDHiddenField.Value);
         fd = fdList[iFD];
 
         // εξετάζεται αν η συναρτησιακή εξάρτηση είναι τετριμμένη.
@@ -353,8 +353,8 @@ public partial class StepsDecompose : System.Web.UI.Page
     /// <returns></returns>
     private bool CheckTick()
     {
-        int indexRel = gridViewRelation.SelectedIndex;
-        int indexFd = gridViewFD.SelectedIndex;
+        int indexRel = Int32.Parse(gridViewRelationHiddenField.Value);
+        int indexFd = Int32.Parse(gridViewFDHiddenField.Value);
 
         if (indexRel >= 0 && indexFd >= 0)
         {
@@ -492,8 +492,9 @@ public partial class StepsDecompose : System.Web.UI.Page
         // Σβήνω το περιεχόμενο τη προεπισκόπησης.
         lblPreviewFDtoEditRight.Text = "";
         lblPreviewFDtoEditLeft.Text = "";
+        
+        int index = Int32.Parse(gridViewFDHiddenField.Value);
 
-        int index = gridViewFD.SelectedIndex;
         if (index >= 0)
         {
             populateLeftAndRightEditFDGridView();
@@ -553,7 +554,7 @@ public partial class StepsDecompose : System.Web.UI.Page
     /// </summary>
     protected void btnEditFDΟΚClick(object sender, EventArgs e)
     {
-        int index = gridViewFD.SelectedIndex;
+        int index = Int32.Parse(gridViewFDHiddenField.Value);
         if (index >= 0)
         {
             FD fd = new FD(); // Η προσωρινή.
@@ -606,7 +607,7 @@ public partial class StepsDecompose : System.Web.UI.Page
     /// </summary>
     protected void btnDeleteFDClick(object sender, EventArgs e)
     {
-        int index = gridViewFD.SelectedIndex;
+        int index = Int32.Parse(gridViewFDHiddenField.Value);
         if (index >= 0)
         {
             fdList.RemoveAt(index);
@@ -786,74 +787,6 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         gridViewEditRightFD.DataSource = dataTable2;
         gridViewEditRightFD.DataBind();
-    }
-
-    #endregion
-
-    #region Management (Update selected row)
-
-    /// <summary>
-    /// Προσθέτει λειτουργικότητα στις γραμμές του gridViewRelation μόλις προστεθεί περιεχόμενο.
-    /// </summary>
-    protected void OnRowDataBoundRelation(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
-    {
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gridViewRelation, "Select$" + e.Row.RowIndex);
-            e.Row.ToolTip = "Click to select this row.";
-        }
-    }
-
-    /// <summary>
-    /// Ενημερώνει την επιλεγμένη γραμμή για το gridViewRelation.
-    /// </summary>
-    protected void OnSelectedIndexChangedRelation(object sender, EventArgs e)
-    {
-        foreach (GridViewRow row in gridViewRelation.Rows)
-        {
-            if (row.RowIndex == gridViewRelation.SelectedIndex)
-            {
-                row.BackColor = ColorTranslator.FromHtml("#A1DCF2");
-                row.ToolTip = string.Empty;
-            }
-            else
-            {
-                row.BackColor = ColorTranslator.FromHtml("#FFFFFF");
-                row.ToolTip = "Click to select this row.";
-            }
-        }
-    }
-
-    /// <summary>
-    /// Προσθέτει λειτουργικότητα στις γραμμές του gridViewFD μόλις προστεθεί περιεχόμενο.
-    /// </summary>
-    protected void OnRowDataBoundFD(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
-    {
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gridViewFD, "Select$" + e.Row.RowIndex);
-            e.Row.ToolTip = "Click to select this row.";
-        }
-    }
-
-    /// <summary>
-    /// Ενημερώνει την επιλεγμένη γραμμή για το gridViewFD.
-    /// </summary>
-    protected void OnSelectedIndexChangedFD(object sender, EventArgs e)
-    {
-        foreach (GridViewRow row in gridViewFD.Rows)
-        {
-            if (row.RowIndex == gridViewFD.SelectedIndex)
-            {
-                row.BackColor = ColorTranslator.FromHtml("#A1DCF2");
-                row.ToolTip = string.Empty;
-            }
-            else
-            {
-                row.BackColor = ColorTranslator.FromHtml("#FFFFFF");
-                row.ToolTip = "Click to select this row.";
-            }
-        }
     }
 
     #endregion

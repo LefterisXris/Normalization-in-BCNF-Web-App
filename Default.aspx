@@ -18,7 +18,8 @@
         #together{
             max-width:45%;
         }
-
+    
+        .highlight { background-color: #A1DCF2; }
     </style>
 
 </head>
@@ -122,15 +123,15 @@
                     <p><b>Γνωρίσματα </b></p>
 
                     <asp:GridView ID="gridViewAttr" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
-                        runat="server" AutoGenerateColumns="false"  Width="100%"
-                        OnRowDataBound="OnRowDataBoundAttr" OnSelectedIndexChanged="OnSelectedIndexChangedAttr">
-
+                        runat="server" AutoGenerateColumns="false"  Width="100%">
+                         <%--OnRowDataBound="OnRowDataBoundAttr" OnSelectedIndexChanged="OnSelectedIndexChangedAttr"--%>
                         <Columns>
                             <asp:BoundField DataField="Name" HeaderText=" Όνομα" ItemStyle-Width="55%"/>
                             <asp:BoundField DataField="Description" HeaderText=" Τύπος \ Περιγραφή" HeaderStyle-CssClass="text-center" ItemStyle-Width="35%" ItemStyle-HorizontalAlign="Center"/>
                         </Columns>
 
                     </asp:GridView>
+                    <asp:HiddenField ID="gridViewAttrHiddenField" runat="server" />
 
                     <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/add new.jpg" Visible="False" />
 
@@ -218,16 +219,17 @@
                    <%--  <asp:ListBox ID="lboxFD" runat="server" Rows="10" Width="100%"></asp:ListBox> --%>
 
                     <asp:GridView ID="gridViewFD" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
-                        runat="server" AutoGenerateColumns="false" Width="100%"
-                        OnRowDataBound="OnRowDataBoundFD" OnSelectedIndexChanged="OnSelectedIndexChangedFD">
+                        runat="server" AutoGenerateColumns="false" Width="100%">
                        
                          <Columns>
                             <asp:BoundField DataField="Description" HeaderText=" Περιγραφή" ItemStyle-Width="80%" />
                             <asp:BoundField DataField="Trivial" HeaderText=" Τετ" HeaderStyle-CssClass="text-center" ItemStyle-Width="10%" ItemStyle-HorizontalAlign="Center"/>
                         </Columns>
 
+
                     </asp:GridView>
 
+                    <asp:HiddenField ID="gridViewFDHiddenField" runat="server" />
                     <asp:Image ID="Image2" runat="server" ImageUrl="~/Images/add new.jpg" Visible="False" />
 
                     <!-- Buttons -->
@@ -520,7 +522,7 @@
 
     <script>
         
-        // Καλείται κατά την οποιαδήποτε αλλαγή σε οποιοδήποτε checkbox
+        // Καλείται κατά την οποιαδήποτε αλλαγή σε οποιοδήποτε checkbox για την αναπαράσταση της FD
         $(':checkbox').change(function () {
 
             var value = $(this).closest('td').next('td').html(); // Παίρνω την τιμή του επόμενου κελιού.
@@ -662,14 +664,27 @@
             }
         });
 
-        function ChangeClass(isAlter) {
-            if(isAlter)
-                $("resultModalSize").addClass("modal-lg");
-            else
-                $("resultModalSize").removeClass("modal-lg");
-        };
+        // Για αλλαγή χρώματος και επιλεγμένης γραμμής του πίνακα gridViewAttr.
+        $("#gridViewAttr tr").click(function () {
+            var selected = $(this).hasClass("highlight");
+            $("#gridViewAttr tr").removeClass("highlight");
+            if (!selected)
+                $(this).addClass("highlight");
+            $("#gridViewAttrHiddenField").val($(this).index()-1);
+            
+        });
 
-        $("btnDecomposeAlternative").click(ChangeClass(1));
+        // Για αλλαγή χρώματος και επιλεγμένης γραμμής του πίνακα gridViewFD.
+        $("#gridViewFD tr").click(function () {
+            var selected = $(this).hasClass("highlight");
+            $("#gridViewFD tr").removeClass("highlight");
+            if (!selected)
+                $(this).addClass("highlight");
+            $("#gridViewFDHiddenField").val($(this).index() - 1);
+
+        });
+
+        
     </script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
