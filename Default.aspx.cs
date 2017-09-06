@@ -121,12 +121,12 @@ public partial class _Default : System.Web.UI.Page
             {
                 populateAttrGridView(attrList);
                 msg += "\nNew attribute inserted: " + attrss[i].Trim();
-                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> New attribute inserted!'); $('#alertBoxSuccess').show(); ", true);
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Επιτυχία!</strong> Το γνώρισμα δημιουργήθηκε με επιτυχία!'); $('#alertBoxSuccess').show(); ", true);
             }
             else
             {
                 msg += "\nCannot create attribute: Attribute already exists..";
-                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", "$('#alertBoxFailText').html('<strong>Fail!</strong> Cannot create attribute: Attribute already exists..'); $('#alertBoxFail').show();", true);
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", "$('#alertBoxFailText').html('<strong>Σφάλμα!</strong> Αποτυχία δημιουργίας γνωρίσματος. Το γνώρισμα υπάρχει ήδη..'); $('#alertBoxFail').show();", true);
             }
 
             log.InnerText = msg;
@@ -206,12 +206,12 @@ public partial class _Default : System.Web.UI.Page
         {
             populateFdGridView(fdList);
             log.InnerText = "FD inserted: " + fd.ToString();
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> New FD inserted!'); $('#alertBoxSuccess').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Επιτυχία!</strong> Η συναρτησιακή εξάρτηση δημιουργήθηκε με επιτυχία!'); $('#alertBoxSuccess').show();", true);
         }
         else
         {
             log.InnerText = "Cannot insert FD: FD already exists..";
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Fail!</strong> Cannot insert FD: FD already exists..'); $('#alertBoxFail').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Σφάλμα!</strong> Αποτυχία δημιουργίας συναρτησιακής εξάρτησης. Η συναρτησιακή εξάρτηση υπάρχει ήδη..'); $('#alertBoxFail').show();", true);
         }
 
     }
@@ -268,7 +268,7 @@ public partial class _Default : System.Web.UI.Page
         else
         {
             log.InnerText = "You must select an attribute first.";
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an attribute first.'); $('#alertBoxWarning').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Προσοχή!</strong> Πρέπει να επιλέξετε ένα γνώρισμα.'); $('#alertBoxWarning').show();", true);
             return;
         }
 
@@ -295,19 +295,19 @@ public partial class _Default : System.Web.UI.Page
 
                 populateAttrGridView(attrList);
                 msg += "\nAttribute Edited!.";
-                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> Attributed edited!'); $('#alertBoxSuccess').show();", true);
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Επιτυχία!</strong> Το γνώρισμα επεξεργάστηκε επιτυχώς!'); $('#alertBoxSuccess').show();", true);
             }
             else
             {
                 msg += "\nCannot create attribute: Attribute already exists..";
-                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Fail!</strong> Cannot create attribute: Attribute already exists..'); $('#alertBoxFail').show();", true);
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Σφάλμα!</strong> Αδυναμία επεξεργασίας γνωρίσματος. Το γνώρισμα υπάρχει ήδη..'); $('#alertBoxFail').show();", true);
                 attrList[index].Name = prevName;
             }
         }
         else
         {
             log.InnerText = "You must select an attribute first.";
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an attribute first.'); $('#alertBoxWarning').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Προσοχή!</strong> Πρέπει να επιλέξετε ένα γνώρισμα.'); $('#alertBoxWarning').show();", true);
             return;
         }
         log.InnerText = msg;
@@ -376,7 +376,7 @@ public partial class _Default : System.Web.UI.Page
         else
         {
             log.InnerText = "You must select an FD first.";
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an FD first.'); $('#alertBoxWarning').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Προσοχή!</strong> Πρέπει να επιλέξετε μια συναρτησιακή εξάρτηση.'); $('#alertBoxWarning').show();", true);
             return;
         }
     }
@@ -413,18 +413,18 @@ public partial class _Default : System.Web.UI.Page
 
                 populateFdGridView(fdList);
                 log.InnerText = "FD Updated: " + fd.ToString();
-                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> FD Updated!'); $('#alertBoxSuccess').show();", true);
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Επιτυχία!</strong> Η συναρτησιακή εξάρτηση επεξεργάστηκε επιτυχώς!'); $('#alertBoxSuccess').show();", true);
             }
             else
             {
                 log.InnerText = "Cannot insert FD: FD already exists..";
-                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Success!</strong> Cannot insert FD: FD already exists..'); $('#alertBoxFail').show();", true);
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Σφάλμα!</strong> Αδυναμία επεξεργασίας συναρτησιακής εξάρτησης. Η συναρτησιακή εξάρτηση υπάρχει ήδη..'); $('#alertBoxFail').show();", true);
             }
         }
         else
         {
             log.InnerText = "You must select an attribute first.";
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an attribute first.'); $('#alertBoxWarning').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Προσοχή!</strong> Πρέπει να επιλέξετε μια συναρτησιακή εξάρτηση.'); $('#alertBoxWarning').show();", true);
             return;
         }
 
@@ -444,18 +444,36 @@ public partial class _Default : System.Web.UI.Page
     protected void btnDeleteAttrClick(object sender, EventArgs e)
     {
         int index = Int32.Parse(gridViewAttrHiddenField.Value);
-        if (index >= 0)
+        if (index >= 0 && !IsAttrInFD(attrList[index]))
         {
             attrList.RemoveAt(index);
             populateAttrGridView(attrList);
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Deleted!</strong> Attribute successfully deleted.'); $('#alertBoxSuccess').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Επιτυχία!</strong> Το γνώρισμα διαγράφηκε επιτυχώς.'); $('#alertBoxSuccess').show();", true);
+        }
+        else if(index < 0)
+        {
+            log.InnerText = "You must select an attribute first.";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Προσοχή!</strong> Πρέπει να επιλέξετε ένα γνώρισμα.'); $('#alertBoxWarning').show();", true);
         }
         else
         {
-            log.InnerText = "You must select an attribute first.";
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an Attribute first.'); $('#alertBoxWarning').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Σφάλμα!</strong> Το γνώρισμα συμμετέχει σε τουλάχιστον μια συναρτησιακή εξάρτηση και δεν μπορεί να διαγραφεί.'); $('#alertBoxFail').show();", true);
         }
 
+    }
+
+    /// <summary>
+    /// Επιστρέφει true αν το γνώρισμα attr συμμετέχει σε κάποια από τις συναρτησιακές εξαρτήσεις
+    /// </summary>
+    /// <param name="attr">Το γνώρισμα που ελέγχουμε</param>
+    public bool IsAttrInFD(Attr attr)
+    {
+        foreach (FD fd in fdList)
+        {
+            if (fd.GetLeft().Contains(attr, Global.comparer)) return true;
+            if (fd.GetRight().Contains(attr, Global.comparer)) return true;
+        }
+        return false;
     }
 
     #endregion
@@ -472,12 +490,12 @@ public partial class _Default : System.Web.UI.Page
         {
             fdList.RemoveAt(index);
             populateFdGridView(fdList);
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Deleted!</strong> FD successfully deleted.'); $('#alertBoxSuccess').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Επιτυχία!</strong> Η συναρησιακή εξάρτηση διαγράφηκε επιτυχώς.'); $('#alertBoxSuccess').show();", true);
         }
         else
         {
             log.InnerText = "You must select an FD first.";
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an FD first.'); $('#alertBoxWarning').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Προσοχή!</strong> Πρέπει να επιλέξετε μια συναρτησιακή εξάρτηση.'); $('#alertBoxWarning').show();", true);
         }
     }
 
@@ -1228,7 +1246,7 @@ public partial class _Default : System.Web.UI.Page
 
         dbConnect.setDefaultSchema(selectedSchema);
 
-        ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> Default Schema Updated!'); $('#alertBoxSuccess').show(); ", true);
+        ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Επιτυχία!</strong> Το προεπιλεγμένο σχήμα άλλαξε!'); $('#alertBoxSuccess').show(); ", true);
     }
 
     #endregion
@@ -1245,6 +1263,7 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Bug στο σχήμα stockExchange, 2_04, 2_05, 3
     // TODO: Αλλαγή επιλεγμένου με JS και όχι με C#
     // TODO: Μη δυνατή διαγραφή αν το γνώρισμα συμμετέχει σε FD.
+    // TODO: Επεξεργασία με double click.
 
 
     protected void btnGetSchemasClick(object sender, EventArgs e)

@@ -48,7 +48,7 @@
 
                         </asp:GridView>
                         
-                        <asp:HiddenField ID="gridViewRelationHiddenField" runat="server" Value="-1" />
+                        <asp:HiddenField ID="gridViewRelationHiddenField" runat="server" Value="-3" />
 
                         <asp:Button ID="btnShowBCNFtables" class="btn btn-info btn-lg" runat="server" Text="Προβολή BCNF πινάκων" Style="float: right;" OnClick="btnShowBCNFTablesClick" />
 
@@ -68,7 +68,7 @@
 
                         </asp:GridView>
 
-                        <asp:HiddenField ID="gridViewFDHiddenField" runat="server" Value="-1" />
+                        <asp:HiddenField ID="gridViewFDHiddenField" runat="server" Value="-3" />
 
                         <div class="row" style="float:right;">
                             <asp:Button ID="btnNewFD" class="btn btn-info btn-sm" runat="server" Text="Προσθήκη" OnClick="btnNewFDClick" />
@@ -432,22 +432,36 @@
         $("#gridViewRelation tr").click(function () {
             var selected = $(this).hasClass("highlight");
             $("#gridViewRelation tr").removeClass("highlight");
-            if (!selected)
+            if (!selected) {
                 $(this).addClass("highlight");
-            $("#gridViewRelationHiddenField").val($(this).index() - 1);
-
+                $("#gridViewRelationHiddenField").val($(this).index() - 1);
+            }
+            else {
+                $("#gridViewRelationHiddenField").val(-3);
+            }
         });
 
         // Για αλλαγή χρώματος και επιλεγμένης γραμμής του πίνακα gridViewFD.
         $("#gridViewFD tr").click(function () {
             var selected = $(this).hasClass("highlight");
             $("#gridViewFD tr").removeClass("highlight");
-            if (!selected)
+            if (!selected) {
                 $(this).addClass("highlight");
-            $("#gridViewFDHiddenField").val($(this).index() - 1);
-
+                $("#gridViewFDHiddenField").val($(this).index() - 1);
+            }
+            else {
+                $("#gridViewFDHiddenField").val(-3);
+            }
         });
     
+        // Κατά την φόρτωση (και επαναφόρτωση) της σελίδας, χρωματίζεται η τελευταία επιλεγμένη γραμμή των gridView
+        $(document).ready(function () {
+            var rowId = parseInt($("#gridViewRelationHiddenField").val()) + 2;
+            $("#gridViewRelation tr:nth-child(" + rowId + ")").addClass("highlight");
+
+            var rowId = parseInt($("#gridViewFDHiddenField").val()) + 2;
+            $("#gridViewFD tr:nth-child(" + rowId + ")").addClass("highlight");
+        });
         </script>
 
     <script>

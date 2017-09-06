@@ -442,12 +442,12 @@ public partial class StepsDecompose : System.Web.UI.Page
         {
             populateFdGridView(fdList);
             log.InnerText = "FD inserted: " + fd.ToString();
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> New FD inserted!'); $('#alertBoxSuccess').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Επιτυχία!</strong> Η συναρτησιακή εξάρτηση δημιουργήθηκε επιτυχώς!'); $('#alertBoxSuccess').show();", true);
         }
         else
         {
             log.InnerText = "Cannot insert FD: FD already exists..";
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Fail!</strong> Cannot insert FD: FD already exists..'); $('#alertBoxFail').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Σφάλμα!</strong> Αδυναμία δημιουργίας συναρτησιακής εξάρτησης. Η συναρτησιακή εξάρτηση υπάρχει ήδη..'); $('#alertBoxFail').show();", true);
         }
 
     }
@@ -544,7 +544,7 @@ public partial class StepsDecompose : System.Web.UI.Page
         else
         {
             log.InnerText = "You must select an FD first.";
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an FD first.'); $('#alertBoxWarning').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Προσοχή!</strong> Πρέπει να επιλέξετε μια συναρτησιακή εξάρτηση.'); $('#alertBoxWarning').show();", true);
             return;
         }
     }
@@ -581,18 +581,18 @@ public partial class StepsDecompose : System.Web.UI.Page
 
                 populateFdGridView(fdList);
                 log.InnerText = "FD Updated: " + fd.ToString();
-                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> FD Updated!'); $('#alertBoxSuccess').show();", true);
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Επιτυχία!</strong> Η συναρτησιακή εξάρτηση επεξεργάστηκε επιτυχώς!'); $('#alertBoxSuccess').show();", true);
             }
             else
             {
                 log.InnerText = "Cannot insert FD: FD already exists..";
-                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Success!</strong> Cannot insert FD: FD already exists..'); $('#alertBoxFail').show();", true);
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Σφάλμα!</strong> Αδυναμία επεξεργασίας συναρτησιακής εξάρτησης. Η συναρτησιακή εξάρτηση υπάρχει ήδη..'); $('#alertBoxFail').show();", true);
             }
         }
         else
         {
             log.InnerText = "You must select an attribute first.";
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an attribute first.'); $('#alertBoxWarning').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Προσοχή!</strong> Πρέπει να επιλέξετε μια συναρτησιακή εξάρτηση.'); $('#alertBoxWarning').show();", true);
             return;
         }
 
@@ -612,12 +612,12 @@ public partial class StepsDecompose : System.Web.UI.Page
         {
             fdList.RemoveAt(index);
             populateFdGridView(fdList);
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Deleted!</strong> FD succesfully deleted.'); $('#alertBoxSuccess').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Επιτυχία!</strong> Η συναρτησιακή εξάρτηση διαγράφηκε επιτυχώς!'); $('#alertBoxSuccess').show();", true);
         }
         else
         {
             log.InnerText = "You must select an FD first.";
-            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an FD first.'); $('#alertBoxWarning').show();", true);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Προσοχή!</strong> Πρέπει να επιλέξετε μια συναρτησιακή εξάρτηση.'); $('#alertBoxWarning').show();", true);
         }
     }
 

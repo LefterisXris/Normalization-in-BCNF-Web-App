@@ -131,7 +131,7 @@
                         </Columns>
 
                     </asp:GridView>
-                    <asp:HiddenField ID="gridViewAttrHiddenField" runat="server" />
+                    <asp:HiddenField ID="gridViewAttrHiddenField" runat="server" Value="-3" />
 
                     <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/add new.jpg" Visible="False" />
 
@@ -229,7 +229,7 @@
 
                     </asp:GridView>
 
-                    <asp:HiddenField ID="gridViewFDHiddenField" runat="server" />
+                    <asp:HiddenField ID="gridViewFDHiddenField" runat="server" Value="-3" />
                     <asp:Image ID="Image2" runat="server" ImageUrl="~/Images/add new.jpg" Visible="False" />
 
                     <!-- Buttons -->
@@ -668,24 +668,38 @@
         $("#gridViewAttr tr").click(function () {
             var selected = $(this).hasClass("highlight");
             $("#gridViewAttr tr").removeClass("highlight");
-            if (!selected)
+            if (!selected){
                 $(this).addClass("highlight");
-            $("#gridViewAttrHiddenField").val($(this).index()-1);
-            
+                $("#gridViewAttrHiddenField").val($(this).index()-1);
+            }
+            else {
+                $("#gridViewAttrHiddenField").val(-3);
+            }
         });
 
         // Για αλλαγή χρώματος και επιλεγμένης γραμμής του πίνακα gridViewFD.
         $("#gridViewFD tr").click(function () {
             var selected = $(this).hasClass("highlight");
             $("#gridViewFD tr").removeClass("highlight");
-            if (!selected)
+            if (!selected) {
                 $(this).addClass("highlight");
-            $("#gridViewFDHiddenField").val($(this).index() - 1);
-
+                $("#gridViewFDHiddenField").val($(this).index() - 1);
+            }
+            else {
+                $("#gridViewFDHiddenField").val(-3);
+            }
         });
 
-        
-    </script>
+        // Κατά την φόρτωση (και επαναφόρτωση) της σελίδας, χρωματίζεται η τελευταία επιλεγμένη γραμμή των gridView
+        $(document).ready(function () {
+            var rowId = parseInt($("#gridViewAttrHiddenField").val()) + 2;
+            $("#gridViewAttr tr:nth-child(" + rowId + ")").addClass("highlight");
+
+            var rowId = parseInt($("#gridViewFDHiddenField").val()) + 2;
+            $("#gridViewFD tr:nth-child(" + rowId + ")").addClass("highlight");
+        });
+    
+        </script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
