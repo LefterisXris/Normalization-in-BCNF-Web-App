@@ -157,8 +157,10 @@ namespace Normalization
                         attrall.AddRange(fd.GetRight());
 
                     //αν το γνώρισμα attr υπάρχει στην τοπική λίστα με τα γνωρίσματα των δεξιών σκελών, ο αποκλεισμός του γνωρίσματος αίρεται
-                    if (attrall.Contains(attr, Global.comparer)) attr.Exclude = true;
-                    else attr.Exclude = false;
+                    if (attrall.Contains(attr, Global.comparer))
+                        attr.Exclude = true;
+                    else
+                        attr.Exclude = false;
                     attrall = null;
                 }
             }
@@ -413,7 +415,7 @@ namespace Normalization
             // κι αν ναι, τότε το δεξί σκέλος αλλάζει και παίρνει τον  εγκλεισμό του αριστερού σκέλους (πλην τα γνωρίσματα του αριστερού).
             for (int i = 0; i < fdList.Count; i++)
             {
-                for (int j = 0; j < fdList.Count; j++)
+                for (int j = i+1; j < fdList.Count; j++)
                 {
                     if (fdList[i] == fdList[j] | fdList[i].Excluded | fdList[j].Excluded)
                         continue;
@@ -425,7 +427,7 @@ namespace Normalization
                     {
                         // αν όλα τα γνωρίσματα του δεξιού σκέλους βρέθηκαν στο αριστερό, τότε η συναρτησιακή εξάρτηση τροποποιείται,
                         // με τα ίδια γνωρίσματα στα αριστερά και τον εγκλεισμό του αριστερού σκέλους στα δεξιά.
-                        Closure newClosure = new Closure(attrList, fdList);
+                        //Closure newClosure = new Closure(attrList, fdList);
                         var result2 = Global.findClosure(fdList[i].GetLeft(), fdList, false); // Item1 = closure.
                         fdList[i].AddRight(result2.Item1);
                         //  fdList[i].AddRight(newClosure.attrClosure(fdList[i].GetLeft(), false));
@@ -496,6 +498,7 @@ namespace Normalization
                             var resultTemp = Global.findKeys(rel2.GetList(), fdList, false);
                             tempoKeyList = resultTemp.Item1;
                             key2.AddToKey(tempoKeyList[0].GetAttrs());
+                            msg += "\n\n\n rel2 = " + rel2.ToString() + " \n\n\n";
                             rel2.SetKey(key2);
 
                             //ορίζονται τα ονόματα των δύο νέων πινάκων

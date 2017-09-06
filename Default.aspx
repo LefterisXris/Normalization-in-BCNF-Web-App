@@ -119,97 +119,97 @@
             <div class="row">
 
                 <%--Γνωρίσματα--%>
-                    <div class="col-md-6">
-                    <p><b>Γνωρίσματα </b></p>
+                <div class="col-md-6">
+                <p><b>Γνωρίσματα </b></p>
 
-                    <asp:GridView ID="gridViewAttr" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
-                        runat="server" AutoGenerateColumns="false"  Width="100%">
-                         <%--OnRowDataBound="OnRowDataBoundAttr" OnSelectedIndexChanged="OnSelectedIndexChangedAttr"--%>
-                        <Columns>
-                            <asp:BoundField DataField="Name" HeaderText=" Όνομα" ItemStyle-Width="55%"/>
-                            <asp:BoundField DataField="Description" HeaderText=" Τύπος \ Περιγραφή" HeaderStyle-CssClass="text-center" ItemStyle-Width="35%" ItemStyle-HorizontalAlign="Center"/>
-                        </Columns>
+                <asp:GridView ID="gridViewAttr" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+                    runat="server" AutoGenerateColumns="false"  Width="100%" >
 
-                    </asp:GridView>
-                    <asp:HiddenField ID="gridViewAttrHiddenField" runat="server" Value="-3" />
+                    <Columns>
+                        <asp:BoundField DataField="Name" HeaderText=" Όνομα" ItemStyle-Width="55%"/>
+                        <asp:BoundField DataField="Description" HeaderText=" Τύπος \ Περιγραφή" HeaderStyle-CssClass="text-center" ItemStyle-Width="35%" ItemStyle-HorizontalAlign="Center"/>
+                    </Columns>
 
-                    <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/add new.jpg" Visible="False" />
+                </asp:GridView>
+                <asp:HiddenField ID="gridViewAttrHiddenField" runat="server" Value="-3" />
 
-                    <!-- Buttons -->
-                    <div style="text-align: right; width: 100%;">
-                        <asp:Button class="btn btn-info btn-lg" ID="btnAddAttr" runat="server" Text="Προσθήκη" OnClick="btnNewAttrClick" />
-                        <asp:Button class="btn btn-info btn-lg" ID="btnEditAttr" runat="server" Text="Επεξεργασία" OnClick="btnEditAttrClick" />
-                        <asp:Button class="btn btn-info btn-lg" ID="btnDeleteAttr" runat="server" Text="Διαγραφή" OnClick="btnDeleteAttrClick" />
-                    </div>
+                <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/add new.jpg" Visible="False" />
 
-                    <!-- Modal νέο γνώρισμα-->
-                    <div class="modal fade" id="modalNewAttribute" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Νέο γνώρισμα</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-horizontal">
-                                        <div class="form-group">
-                                            <label class="control-label col-md-6" for="tbxNewAttrName">Εισάγετε όνομα για το νέο γνώρισμα.</label>
-                                            <div class="col-md-6"> 
-                                                <asp:TextBox ID="tbxNewAttrName" runat="server" placeholder="Όνομα γνωρίσματος"></asp:TextBox>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">    
-                                            <label class="control-label col-md-6" for="tbxNewAttrType">Εισάγετε τύπο για το νέο γνώρισμα.</label>
-                                            <div class="col-md-6"> 
-                                                <asp:TextBox ID="tbxNewAttrType" runat="server" placeholder="Τύπος γνωρίσματος"></asp:TextBox>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h6>Για εισαγωγή πολλαπλών γνωρισμάτων χρησιμοποιείστε ώς διαχωριστικό το κόμμα (,) <br />
-                                                Για παράδειγμα A, B, C
-                                            </h6>
+                <!-- Buttons -->
+                <div style="text-align: right; width: 100%;">
+                    <asp:Button class="btn btn-info btn-lg" ID="btnAddAttr" runat="server" Text="Προσθήκη" OnClick="btnNewAttrClick" />
+                    <asp:Button class="btn btn-info btn-lg" ID="btnEditAttr" runat="server" Text="Επεξεργασία" OnClick="btnEditAttrClick" />
+                    <asp:Button class="btn btn-info btn-lg" ID="btnDeleteAttr" runat="server" Text="Διαγραφή" OnClick="btnDeleteAttrClick" />
+                </div>
+
+                <!-- Modal νέο γνώρισμα-->
+                <div class="modal fade" id="modalNewAttribute" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Νέο γνώρισμα</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6" for="tbxNewAttrName">Εισάγετε όνομα για το νέο γνώρισμα.</label>
+                                        <div class="col-md-6"> 
+                                            <asp:TextBox ID="tbxNewAttrName" runat="server" placeholder="Όνομα γνωρίσματος"></asp:TextBox>
                                         </div>
                                     </div>
+                                    <div class="form-group">    
+                                        <label class="control-label col-md-6" for="tbxNewAttrType">Εισάγετε τύπο για το νέο γνώρισμα.</label>
+                                        <div class="col-md-6"> 
+                                            <asp:TextBox ID="tbxNewAttrType" runat="server" placeholder="Τύπος γνωρίσματος"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6>Για εισαγωγή πολλαπλών γνωρισμάτων χρησιμοποιείστε ώς διαχωριστικό το κόμμα (,) <br />
+                                            Για παράδειγμα A, B, C
+                                        </h6>
+                                    </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnSaveAttr" Text="OK" class="btn btn-default" OnClick="btnNewAttrOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
-                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <asp:Button runat="server" ID="btnSaveAttr" Text="OK" class="btn btn-default" OnClick="btnNewAttrOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                             </div>
                         </div>
                     </div>
-                    <!-- Modal -->
+                </div>
+                <!-- Modal -->
 
-                    <!-- Modal επεξεργασία γνωρίσματος -->
-                    <div class="modal fade" id="modalEditAttribute" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Επεξεργασία γνωρίσματος</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-horizontal">
-                                        <div class="form-group">
-                                            <label class="control-label col-md-6" for="tbxEditAttrName">Εισάγετε όνομα για το γνώρισμα.</label>
-                                            <div class="col-md-6"> 
-                                                <asp:TextBox ID="tbxEditAttrName" runat="server" placeholder="Όνομα γνωρίσματος"></asp:TextBox>
-                                            </div>
+                <!-- Modal επεξεργασία γνωρίσματος -->
+                <div class="modal fade" id="modalEditAttribute" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Επεξεργασία γνωρίσματος</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6" for="tbxEditAttrName">Εισάγετε όνομα για το γνώρισμα.</label>
+                                        <div class="col-md-6"> 
+                                            <asp:TextBox ID="tbxEditAttrName" runat="server" placeholder="Όνομα γνωρίσματος"></asp:TextBox>
                                         </div>
-                                        <div class="form-group">    
-                                            <label class="control-label col-md-6" for="tbxEditAttrType">Εισάγετε τύπο για το γνώρισμα.</label>
-                                            <div class="col-md-6"> 
-                                                <asp:TextBox ID="tbxEditAttrType" runat="server" placeholder="Τύπος γνωρίσματος"></asp:TextBox>
-                                            </div>
+                                    </div>
+                                    <div class="form-group">    
+                                        <label class="control-label col-md-6" for="tbxEditAttrType">Εισάγετε τύπο για το γνώρισμα.</label>
+                                        <div class="col-md-6"> 
+                                            <asp:TextBox ID="tbxEditAttrType" runat="server" placeholder="Τύπος γνωρίσματος"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnEditAttrOK" Text="Ενημέρωση" class="btn btn-default" OnClick="btnEditAttrΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
-                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <asp:Button runat="server" ID="btnEditAttrOK" Text="Ενημέρωση" class="btn btn-default" OnClick="btnEditAttrΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
                             </div>
                         </div>
                     </div>
-                    <!-- Modal -->
+                </div>
+                <!-- Modal -->
                 </div>
 
                 <%--Συναρτησιακές εξαρτήσεις--%>
