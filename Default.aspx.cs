@@ -448,10 +448,12 @@ public partial class _Default : System.Web.UI.Page
         {
             attrList.RemoveAt(index);
             populateAttrGridView(attrList);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Deleted!</strong> Attribute successfully deleted.'); $('#alertBoxSuccess').show();", true);
         }
         else
         {
             log.InnerText = "You must select an attribute first.";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an Attribute first.'); $('#alertBoxWarning').show();", true);
         }
 
     }
@@ -470,10 +472,12 @@ public partial class _Default : System.Web.UI.Page
         {
             fdList.RemoveAt(index);
             populateFdGridView(fdList);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Deleted!</strong> FD successfully deleted.'); $('#alertBoxSuccess').show();", true);
         }
         else
         {
             log.InnerText = "You must select an FD first.";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an FD first.'); $('#alertBoxWarning').show();", true);
         }
     }
 
@@ -1305,7 +1309,6 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Αναίρεση ή ενσωμάτωση enter. 
     // TODO: Διαγραφή περιτών κομματιών (κλάσεις, μεθόδους, μεταβλητές).
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
-    // TODO: Προσθήκη δυνατότητητας εναλλακτικής διάσπασης.
     // TODO: Προσθήκη δυνατότητητας επεξεργασίας FD στην StepsDecompose
     // TODO: Bug στο σχήμα stockExchange
 

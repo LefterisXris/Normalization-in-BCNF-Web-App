@@ -402,6 +402,228 @@ public partial class StepsDecompose : System.Web.UI.Page
 
     #endregion
 
+    #region FD Actions (Add, Edit, Delete)
+
+    #region Add
+
+    /// <summary>
+    /// Ανοίγει το Modal για προσθήκη νέας συναρτησιακής εξάρτησης.
+    /// </summary>
+    protected void btnNewFDClick(object sender, EventArgs e)
+    {
+        populateLeftAndRightFDGridView();
+        ClientScript.RegisterStartupScript(Page.GetType(), "modalNewFD", "$('#modalNewFD').modal();", true);
+    }
+
+    /// <summary>
+    /// Καλείται όταν πατηθεί ΟΚ από το Modal Συναρτησιακής Εξάρτησης.
+    /// </summary>
+    protected void btnNewFDOKClick(object sender, EventArgs e)
+    {
+        FD fd = new FD();
+
+        foreach (GridViewRow item in gridViewLeftFD.Rows)
+        {
+            if ((item.Cells[0].FindControl("checkBoxLeftFD") as CheckBox).Checked)
+            {
+                fd.AddLeft(attrList[item.RowIndex]);
+            }
+        }
+
+        foreach (GridViewRow item in gridViewRightFD.Rows)
+        {
+            if ((item.Cells[0].FindControl("checkBoxRightFD") as CheckBox).Checked)
+            {
+                fd.AddRight(attrList[item.RowIndex]);
+            }
+        }
+
+        if (FDCreate(fd))
+        {
+            populateFdGridView(fdList);
+            log.InnerText = "FD inserted: " + fd.ToString();
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> New FD inserted!'); $('#alertBoxSuccess').show();", true);
+        }
+        else
+        {
+            log.InnerText = "Cannot insert FD: FD already exists..";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Fail!</strong> Cannot insert FD: FD already exists..'); $('#alertBoxFail').show();", true);
+        }
+
+    }
+
+    /// <summary>
+    /// Μέθοδος ελέγχου και προσθήκης νέας συναρτησιακής εξάρτησης στην FDList
+    /// </summary>
+    /// <param name="fd">Το αντικείμενο συναρτησιακής εξάρτησης fd θα ελεγχθεί αν υπάρχει κάποιο άλλο παρόμοιο με αυτό πριν καταχωρηθεί.</param>
+    public bool FDCreate(FD fd)
+    {
+        //ελέγχεται αν η νέα συναρτησιακή εξάρτηση είναι παρόμοια με μια άλλη, κι αν ναι, επιστρέφεται η ένδειξη false
+        if (FDExists(fd, -1)) return false;
+
+        //το νέο αντικείμενο προστίθεται στην FDList
+        fdList.Add(fd);
+
+        //επιστρέφεται η ένδειξη true
+        return true;
+    }
+
+    /// <summary>
+    /// Ελέγχει και επιστρέφει true αν υπάρχει παρόμοια συναρτησιακή εξάρτηση
+    /// </summary>
+    /// <param name="fd">Το αντικείμενο της συναρτησιακής εξάρτησης που ελέγχουμε</param>
+    /// <param name="id">Ο αύξοντας αριθμός της υπό επεξεργασία συναρτησιακής εξάρτησης</param>
+    public bool FDExists(FD fd, int id)
+    {
+        for (int i = 0; i < fdList.Count; i++)
+            if (fdList[i].ToString() == fd.ToString() && i != id) return true; //βρέθηκε παρόμοια συναρτησιακή εξάρτηση
+        return false; //δεν υπάρχει παρόμοια συναρτησιακή εξάρτηση
+    }
+
+    #endregion
+
+    #region Edit
+
+    /// <summary>
+    /// Ελέγχει αν έχει επιλεγεί μια συναρτησιακή εξάρτηση και την φορτώνει για επεξεργασία.
+    /// </summary>
+    protected void btnEditFDClick(object sender, EventArgs e)
+    {
+        // Σβήνω το περιεχόμενο τη προεπισκόπησης.
+        lblPreviewFDtoEditRight.Text = "";
+        lblPreviewFDtoEditLeft.Text = "";
+
+        int index = gridViewFD.SelectedIndex;
+        if (index >= 0)
+        {
+            populateLeftAndRightEditFDGridView();
+
+            // Τσεκάρω το αριστερό μέρος της fd.
+            foreach (GridViewRow item in gridViewEditLeftFD.Rows)
+            {
+                foreach (Attr attr in fdList[index].GetLeft())
+                {
+                    if ((item.Cells[1].Text.Equals(attr.Name)))
+                    {
+                        CheckBox c = (CheckBox)item.Cells[0].FindControl("checkBoxEditLeftFD");
+                        c.Checked = true;
+                    }
+                }
+            }
+
+            // Τσεκάρω το δεξί μέρος της fd.
+            foreach (GridViewRow item in gridViewEditRightFD.Rows)
+            {
+                foreach (Attr attr in fdList[index].GetRight())
+                {
+                    if ((item.Cells[1].Text.Equals(attr.Name)))
+                    {
+                        CheckBox c = (CheckBox)item.Cells[0].FindControl("checkBoxEditRightFD");
+                        c.Checked = true;
+                    }
+                }
+            }
+
+            // Γεμίζω το περιεχόμενο της προεπισκόπησης.
+            foreach (Attr attr in fdList[index].GetLeft())
+                lblPreviewFDtoEditLeft.Text += attr.Name + ", "; // Αριστερό μέρος
+            foreach (Attr attr in fdList[index].GetRight())
+                lblPreviewFDtoEditRight.Text += attr.Name + ", "; // Δεξί μέρος
+            lblArrow2.Text = "\u2192"; // Βέλος.
+
+            // Αφαιρώ το κόμμα από τα τελευταία γνωρίσματα.
+            string s = lblPreviewFDtoEditLeft.Text;
+            lblPreviewFDtoEditLeft.Text = s.Remove((s.Length - 2), 2);
+
+            s = lblPreviewFDtoEditRight.Text;
+            lblPreviewFDtoEditRight.Text = s.Remove((s.Length - 2), 2);
+
+            ClientScript.RegisterStartupScript(Page.GetType(), "modalEditFD", "$('#modalEditFD').modal();", true);
+        }
+        else
+        {
+            log.InnerText = "You must select an FD first.";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an FD first.'); $('#alertBoxWarning').show();", true);
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Η επεξεργασμένη πλέον συναρτησιακή εξάρτηση προστίθεται στην λίστα fdList.
+    /// </summary>
+    protected void btnEditFDΟΚClick(object sender, EventArgs e)
+    {
+        int index = gridViewFD.SelectedIndex;
+        if (index >= 0)
+        {
+            FD fd = new FD(); // Η προσωρινή.
+
+            foreach (GridViewRow item in gridViewEditLeftFD.Rows)
+            {
+                if ((item.Cells[0].FindControl("checkBoxEditLeftFD") as CheckBox).Checked)
+                {
+                    fd.AddLeft(attrList[item.RowIndex]);
+                }
+            }
+
+            foreach (GridViewRow item in gridViewEditRightFD.Rows)
+            {
+                if ((item.Cells[0].FindControl("checkBoxEditRightFD") as CheckBox).Checked)
+                {
+                    fd.AddRight(attrList[item.RowIndex]);
+                }
+            }
+
+            if (!FDExists(fd, index))
+            {
+                fdList[index] = fd;
+
+                populateFdGridView(fdList);
+                log.InnerText = "FD Updated: " + fd.ToString();
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Success!</strong> FD Updated!'); $('#alertBoxSuccess').show();", true);
+            }
+            else
+            {
+                log.InnerText = "Cannot insert FD: FD already exists..";
+                ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxFail", " $('#alertBoxFailText').html('<strong>Success!</strong> Cannot insert FD: FD already exists..'); $('#alertBoxFail').show();", true);
+            }
+        }
+        else
+        {
+            log.InnerText = "You must select an attribute first.";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an attribute first.'); $('#alertBoxWarning').show();", true);
+            return;
+        }
+
+    }
+
+    #endregion
+
+    #region Delete
+
+    /// <summary>
+    /// Διαγράφει την επιλεγμένη συναρτησιακή εξάρτηση από τον πίνακα.
+    /// </summary>
+    protected void btnDeleteFDClick(object sender, EventArgs e)
+    {
+        int index = gridViewFD.SelectedIndex;
+        if (index >= 0)
+        {
+            fdList.RemoveAt(index);
+            populateFdGridView(fdList);
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxSuccess", " $('#alertBoxSuccessText').html('<strong>Deleted!</strong> FD succesfully deleted.'); $('#alertBoxSuccess').show();", true);
+        }
+        else
+        {
+            log.InnerText = "You must select an FD first.";
+            ClientScript.RegisterStartupScript(Page.GetType(), "alertBoxWarning", " $('#alertBoxWarningText').html('<strong>Warning!</strong> You must select an FD first.'); $('#alertBoxWarning').show();", true);
+        }
+    }
+
+    #endregion
+
+    #endregion
+
     #region Other Actions (Clear, Reset, Exit)
 
     /// <summary>
@@ -505,6 +727,65 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         gridViewFD.DataSource = dataTable;
         gridViewFD.DataBind();
+    }
+
+
+    /// <summary>
+    /// Μέθοδος που φορτώνει τον πίνακα με τις συναρτησιακές εξαρτήσεις αριστερού και δεξιού σκέλους.
+    /// </summary>
+    private void populateLeftAndRightFDGridView()
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("Orizouses", typeof(string)));
+
+        foreach (Attr attr in attrList)
+        {
+            dataTable.Rows.Add(attr.Name);
+        }
+
+        gridViewLeftFD.DataSource = dataTable;
+        gridViewLeftFD.DataBind();
+
+        DataTable dataTable2 = new DataTable();
+        dataTable2.Columns.Add(new DataColumn("Eksartimenes", typeof(string)));
+
+        foreach (Attr attr in attrList)
+        {
+            dataTable2.Rows.Add(attr.Name);
+        }
+
+        gridViewRightFD.DataSource = dataTable2;
+        gridViewRightFD.DataBind();
+    }
+
+
+    /// <summary>
+    /// Μέθοδος που φορτώνει τον πίνακα με τις συναρτησιακές εξαρτήσεις αριστερού και δεξιού σκέλους για επεξεργασία.
+    /// </summary>
+    /// <param name="fdList">Οι συναρτησιακές εξαρτήσεις που θα φορτώσει.</param>
+    private void populateLeftAndRightEditFDGridView()
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add(new DataColumn("Orizouses", typeof(string)));
+
+        foreach (Attr attr in attrList)
+        {
+            dataTable.Rows.Add(attr.Name);
+        }
+
+        gridViewEditLeftFD.DataSource = dataTable;
+        gridViewEditLeftFD.DataBind();
+
+        DataTable dataTable2 = new DataTable();
+        dataTable2.Columns.Add(new DataColumn("Eksartimenes", typeof(string)));
+
+        foreach (Attr attr in attrList)
+        {
+            dataTable2.Rows.Add(attr.Name);
+        }
+
+        gridViewEditRightFD.DataSource = dataTable2;
+        gridViewEditRightFD.DataBind();
     }
 
     #endregion
