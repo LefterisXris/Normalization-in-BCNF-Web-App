@@ -170,6 +170,7 @@ namespace Normalization
             int n, k;
             n = newAttrList.Count;
             k = 1;
+
             for (k = 1; k < n; k++)
                 details += AttrBinarySelection(FDList, newAttrList, ref keyList, k, "", showOut);
 
@@ -282,7 +283,7 @@ namespace Normalization
                     {
 
                         //επίσης ελέγχεται αν ο εγκλεισμός του νέου κλειδιού περιλαμβάνει όλα τα γνωρίσματα του σχήματος, κι αν ναι, τότε προστίθεται στη λίστα των υποψήφιων κλειδιών
-                        var result = attrClosure(key.GetAttrs(), FDList, false); // Item1 = closure.
+                        var result = attrClosure(key.GetAttrs(), tempFDList, false); // Item1 = closure.
                         if (result.Item1.Intersect(newAttrList, Global.comparer).Count() == newAttrList.Count)
                         // if (true)
                         {
@@ -498,7 +499,6 @@ namespace Normalization
                             var resultTemp = Global.findKeys(rel2.GetList(), fdList, false);
                             tempoKeyList = resultTemp.Item1;
                             key2.AddToKey(tempoKeyList[0].GetAttrs());
-                            msg += "\n\n\n rel2 = " + rel2.ToString() + " \n\n\n";
                             rel2.SetKey(key2);
 
                             //ορίζονται τα ονόματα των δύο νέων πινάκων

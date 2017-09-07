@@ -1261,9 +1261,8 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
     // TODO: Προσθήκη δυνατότητητας επεξεργασίας FD στην StepsDecompose
     // TODO: Bug στο σχήμα stockExchange, 2_04, 2_05, 3
-    // TODO: Αλλαγή επιλεγμένου με JS και όχι με C#
-    // TODO: Μη δυνατή διαγραφή αν το γνώρισμα συμμετέχει σε FD.
     // TODO: Επεξεργασία με double click.
+    // TODO: Η διαγραφή δουλεύει μόνο σε ταξινομημένα. Διόρθωσε.
 
 
     protected void btnGetSchemasClick(object sender, EventArgs e)
