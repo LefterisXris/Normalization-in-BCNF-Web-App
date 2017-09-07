@@ -444,7 +444,7 @@ public partial class _Default : System.Web.UI.Page
     protected void btnDeleteAttrClick(object sender, EventArgs e)
     {
         int index = Int32.Parse(gridViewAttrHiddenField.Value);
-        if (index >= 0 && !IsAttrInFD(attrList[index]))
+        if (index >= 0 && index <= attrList.Count && !IsAttrInFD(attrList[index]))
         {
             attrList.RemoveAt(index);
             populateAttrGridView(attrList);

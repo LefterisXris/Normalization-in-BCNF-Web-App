@@ -20,6 +20,27 @@
         }
     
         .highlight { background-color: #A1DCF2; }
+        .hide-loader{display:none;}
+        .loader {
+            position: absolute;
+            left: 45%;
+            top: 45%;
+            z-index: 300;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid blue;
+            border-bottom: 16px solid blue;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+            }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        
     </style>
 
 </head>
@@ -27,6 +48,8 @@
 <body>
     <form id="form1" runat="server">
         <div class="container">
+
+            <div class="loader hide-loader" id="loader"></div>
 
             <%-- HEADER (τίτλο, όνομα κλπ) --%>
             <div class="page-header">
@@ -83,7 +106,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="Button1" Text="OK" class="btn btn-default" OnClick="btnCalculateClosureClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnClosureOK" Text="OK" class="btn btn-default" OnClick="btnCalculateClosureClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
@@ -101,7 +124,7 @@
                 <%--Διάσπαση BCNF (Επιλογή)--%>
                 <div class="col-md-3">
 
-                    <asp:Button class="btn btn-info btn-lg" ID="Button11" runat="server" Text="Διάσπαση BCNF" OnClick="btnDecomposeClick" />
+                    <asp:Button class="btn btn-info btn-lg" ID="btnDecompose" runat="server" Text="Διάσπαση BCNF" OnClick="btnDecomposeClick" />
 
                 </div>
 
@@ -409,7 +432,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnDecomposeAlternative" Text="Εναλλακτική" class="btn btn-default" OnClick="btnDecomposeClick" UseSubmitBehavior="false" Visible="false" />
+                                    <asp:Button runat="server" ID="btnDecomposeAlternative" Text="Εναλλακτική" class="btn btn-default" OnClick="btnDecomposeClick" UseSubmitBehavior="false" Visible="false" Style="float:left;" />
                                     <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
                                 </div>
                             </div>
@@ -699,6 +722,23 @@
             $("#gridViewFD tr:nth-child(" + rowId + ")").addClass("highlight");
         });
     
+        $("#btnDecompose").click(function () {
+            $("#loader").removeClass("hide-loader");
+        });
+
+        $("#btnClosureOK").click(function () {
+            $("#loader").removeClass("hide-loader");
+        });
+
+        $("#btnCalculateKeys").click(function () {
+            $("#loader").removeClass("hide-loader");
+        });
+
+        $("#btnDecomposeAlternative").click(function () {
+            $("#loader").removeClass("hide-loader");
+        });
+
+
         </script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
