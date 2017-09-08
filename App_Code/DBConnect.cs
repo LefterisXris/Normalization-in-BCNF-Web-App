@@ -370,6 +370,79 @@ namespace Normalization
 
         }
 
+        /// <summary>
+        /// Μέθοδος που ελέγχει αν ο χρήστης υπάρχει στη βάση δεδομένων, κι αν ναι, ενημερώνει τα δεδομένα του.
+        /// </summary>
+        /// <param name="username">Το όνομα χρήστη το οποίο ελέγχει</param>
+        /// <returns></returns>
+        public bool authenticateUser(string username)
+        {
+            string query = "SELECT EXISTS(SELECT 1 FROM `Admin` WHERE `name`='" + username + "') AS result";
+
+            bool authenticationResult = false;
+
+            //open connection
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    int r = Int32.Parse(dataReader["result"] + "");
+                    if (r == 1)
+                        authenticationResult = true;
+                }
+
+                dataReader.Close(); // κλείνει η ανοιχτή σύνδεση ώστε να γίνουν τα επόμενα.
+
+                
+                this.CloseConnection();
+            }
+
+            return authenticationResult;
+        }
+
+        /// <summary>
+        /// Μέθοδος που παίρνει την ημερομηνία τελευταίας πρόσβασης για έναν χρήστη.
+        /// </summary>
+        /// <param name="username">Το όνομα χρήστη</param>
+        /// <returns></returns>
+        public string getNsetLastLogin(string username)
+        {
+            string query = "SELECT `lastLogin` FROM `Admin` WHERE `name`='" + username + "'";
+
+            string res = "";
+
+            //open connection
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    res = dataReader["lastLogin"] + "";
+                }
+
+                dataReader.Close(); // κλείνει η ανοιχτή σύνδεση ώστε να γίνουν τα επόμενα.
+
+                // Ενημέρωση lastLogin
+                query = "UPDATE `Admin` SET `lastLogin`= now() WHERE `name`='" + username + "' ";
+                cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+
+                // Ενημέρωση μετρητή
+                query = "UPDATE `Admin` SET `loginCount`= `loginCount` + 1 WHERE `name`='" + username + "' ";
+                cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                
+                this.CloseConnection();
+            }
+            return res;
+        }
+
+
         /* SELECT
         //Select statement
         public List<string> TrackStat(string query)

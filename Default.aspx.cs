@@ -63,6 +63,7 @@ public partial class _Default : System.Web.UI.Page
         // Εάν έχει συνδεθεί ο Admin τότε εμφανίζονται οι εξτρά δυνατότητες.
         if (HttpContext.Current.User.Identity.IsAuthenticated)
         {
+            
             LoginStatus1.Visible = true;
             btnSaveSchema.Visible = true;
             btnSetDefaultSchema.Visible = true;

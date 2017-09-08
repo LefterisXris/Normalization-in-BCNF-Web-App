@@ -5,9 +5,12 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Normalization;
 
 public partial class Login : System.Web.UI.Page
 {
+    DBConnect dbConnect = new DBConnect();
+
     protected void Page_Load(object sender, EventArgs e)
     {
 
@@ -15,15 +18,16 @@ public partial class Login : System.Web.UI.Page
 
     protected void Login1_Authenticate(object sender, AuthenticateEventArgs e)
     {
-
-        if (Login1.UserName.Length > 5 && Login1.Password.Length == 5)
+        if (dbConnect.authenticateUser(Login1.UserName) && Login1.Password.Length == 5)
         {
+           
             Msg.Text = "Wellcome back!!.";
             FormsAuthentication.RedirectFromLoginPage(Login1.UserName, Login1.RememberMeSet);
+            
         }
         else
             Msg.Text = "Login failed. Please check your user name and password and try again.";
-    }
+        }
 
     protected void Button1_Click(object sender, EventArgs e)
     {

@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using Normalization;
 
 public partial class MemberPages_Admin : System.Web.UI.Page
 {
+    DBConnect dbConnect = new DBConnect();
+
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        lblLastLogin.Text = dbConnect.getNsetLastLogin(User.Identity.Name.ToString());
+        
     }
 }
