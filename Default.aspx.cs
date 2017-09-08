@@ -1263,6 +1263,7 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Bug στο σχήμα stockExchange, 2_04, 2_05, 3
     // TODO: Επεξεργασία με double click.
     // TODO: Η διαγραφή δουλεύει μόνο σε ταξινομημένα. Διόρθωσε.
+    // TODO: Μέτρηση σενδέσεων admin
 
 
     protected void btnGetSchemasClick(object sender, EventArgs e)

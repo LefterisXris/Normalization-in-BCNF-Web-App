@@ -25,15 +25,15 @@
             position: absolute;
             left: 45%;
             top: 45%;
-            z-index: 300;
+            z-index: 2000;
             border: 16px solid #f3f3f3;
             border-radius: 50%;
             border-top: 16px solid blue;
             border-bottom: 16px solid blue;
             width: 120px;
             height: 120px;
-            -webkit-animation: spin 2s linear infinite;
-            animation: spin 2s linear infinite;
+            -webkit-animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
             }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -106,7 +106,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnClosureOK" Text="OK" class="btn btn-default" OnClick="btnCalculateClosureClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnClosureOK" Text="OK" class="btn btn-default showLoader" OnClick="btnCalculateClosureClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
@@ -117,21 +117,21 @@
                 <%--Υποψήφια κλειδιά (Επιλογή)--%>
                 <div class="col-md-3">
 
-                    <asp:Button class="btn btn-info btn-lg" ID="btnCalculateKeys" runat="server" Text="Υποψήφια κλειδιά" OnClick="btnCalculateKeysClick" />
+                    <asp:Button class="btn btn-info btn-lg showLoader" ID="btnCalculateKeys" runat="server" Text="Υποψήφια κλειδιά" OnClick="btnCalculateKeysClick" />
 
                 </div>
 
                 <%--Διάσπαση BCNF (Επιλογή)--%>
                 <div class="col-md-3">
 
-                    <asp:Button class="btn btn-info btn-lg" ID="btnDecompose" runat="server" Text="Διάσπαση BCNF" OnClick="btnDecomposeClick" />
+                    <asp:Button class="btn btn-info btn-lg showLoader" ID="btnDecompose" runat="server" Text="Διάσπαση BCNF" OnClick="btnDecomposeClick" />
 
                 </div>
 
                 <%--Σταδιακή διάσπαση BCNF (Επιλογή)--%>
                 <div class="col-md-3">
                     <!--   <button type="button"  class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalKeys">Σταδιακή διάσπαση BCNF</button> -->
-                    <asp:Button class="btn btn-info btn-lg" ID="Button9" runat="server" Text="Σταδιακή διάσπαση BCNF" OnClick="btnStepsDecomposeClick" />
+                    <asp:Button class="btn btn-info btn-lg showLoader" ID="Button9" runat="server" Text="Σταδιακή διάσπαση BCNF" OnClick="btnStepsDecomposeClick" />
                 </div>
 
             </div>
@@ -160,9 +160,9 @@
 
                 <!-- Buttons -->
                 <div style="text-align: right; width: 100%;">
-                    <asp:Button class="btn btn-info btn-lg" ID="btnAddAttr" runat="server" Text="Προσθήκη" OnClick="btnNewAttrClick" />
-                    <asp:Button class="btn btn-info btn-lg" ID="btnEditAttr" runat="server" Text="Επεξεργασία" OnClick="btnEditAttrClick" />
-                    <asp:Button class="btn btn-info btn-lg" ID="btnDeleteAttr" runat="server" Text="Διαγραφή" OnClick="btnDeleteAttrClick" />
+                    <asp:Button class="btn btn-info btn-lg showLoader" ID="btnAddAttr" runat="server" Text="Προσθήκη" OnClick="btnNewAttrClick" />
+                    <asp:Button class="btn btn-info btn-lg showLoader" ID="btnEditAttr" runat="server" Text="Επεξεργασία" OnClick="btnEditAttrClick" />
+                    <asp:Button class="btn btn-info btn-lg showLoader" ID="btnDeleteAttr" runat="server" Text="Διαγραφή" OnClick="btnDeleteAttrClick" />
                 </div>
 
                 <!-- Modal νέο γνώρισμα-->
@@ -195,7 +195,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <asp:Button runat="server" ID="btnSaveAttr" Text="OK" class="btn btn-default" OnClick="btnNewAttrOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                <asp:Button runat="server" ID="btnSaveAttr" Text="OK" class="btn btn-default showLoader" OnClick="btnNewAttrOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                             </div>
                         </div>
                     </div>
@@ -227,7 +227,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <asp:Button runat="server" ID="btnEditAttrOK" Text="Ενημέρωση" class="btn btn-default" OnClick="btnEditAttrΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                <asp:Button runat="server" ID="btnEditAttrOK" Text="Ενημέρωση" class="btn btn-default showLoader" OnClick="btnEditAttrΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
                             </div>
                         </div>
                     </div>
@@ -260,9 +260,9 @@
                        <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalNewFD">+</button> -->
                        <!-- <asp:Button class="btn btn-info btn-lg" ID="Button3" runat="server" Text="-" OnClick="btnDeleteFDClick" /> -->
 
-                        <asp:Button class="btn btn-info btn-lg" ID="btnNewFD" runat="server" Text="Προσθήκη" OnClick="btnNewFDClick" />
-                        <asp:Button class="btn btn-info btn-lg" ID="btnEditFD" runat="server" Text="Επεξεργασία" OnClick="btnEditFDClick" />
-                        <asp:Button class="btn btn-info btn-lg" ID="btnDeleteFD" runat="server" Text="Διαγραφή" OnClick="btnDeleteFDClick" />
+                        <asp:Button class="btn btn-info btn-lg showLoader" ID="btnNewFD" runat="server" Text="Προσθήκη" OnClick="btnNewFDClick" />
+                        <asp:Button class="btn btn-info btn-lg showLoader" ID="btnEditFD" runat="server" Text="Επεξεργασία" OnClick="btnEditFDClick" />
+                        <asp:Button class="btn btn-info btn-lg showLoader" ID="btnDeleteFD" runat="server" Text="Διαγραφή" OnClick="btnDeleteFDClick" />
                     </div>
 
                     <!-- Modal νέας συναρτησιακής εξάρτησης -->
@@ -321,7 +321,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnNewFDOK" Text="OK" class="btn btn-default" OnClick="btnNewFDOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnNewFDOK" Text="OK" class="btn btn-default showLoader" OnClick="btnNewFDOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
@@ -384,7 +384,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnEditFDOK" Text="Ενημέρωση" class="btn btn-default" OnClick="btnEditFDΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnEditFDOK" Text="Ενημέρωση" class="btn btn-default showLoader" OnClick="btnEditFDΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
@@ -432,7 +432,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnDecomposeAlternative" Text="Εναλλακτική" class="btn btn-default" OnClick="btnDecomposeClick" UseSubmitBehavior="false" Visible="false" Style="float:left;" />
+                                    <asp:Button runat="server" ID="btnDecomposeAlternative" Text="Εναλλακτική" class="btn btn-default showLoader" OnClick="btnDecomposeClick" UseSubmitBehavior="false" Visible="false" Style="float:left;" />
                                     <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
                                 </div>
                             </div>
@@ -446,7 +446,7 @@
                 <div class="col-md-6">
                     <div>
                        
-                         <asp:Button ID="btnNewSchema" class="btn btn-success btn-lg" runat="server" Text="Νέο Σχήμα" OnClick="btnNewSchemaClick"/>
+                         <asp:Button ID="btnNewSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Νέο Σχήμα" OnClick="btnNewSchemaClick"/>
                         
                         <!-- Modal νέο σχήμα -->
                         <div class="modal fade" id="modalNewSchema" role="dialog">
@@ -473,7 +473,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <asp:Button runat="server" ID="btnNewSchemaOK" Text="Δημιουργία" class="btn btn-default" OnClick="btnNewSchemaOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                        <asp:Button runat="server" ID="btnNewSchemaOK" Text="Δημιουργία" class="btn btn-default showLoader" OnClick="btnNewSchemaOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                     </div>
                                 </div>
                             </div>
@@ -482,11 +482,11 @@
 
                     </div>
                     <div>
-                        <asp:Button ID="btnLoadSchema" class="btn btn-success btn-lg" runat="server" Text="Φόρτωση Σχήματος" OnClick="btnLoadSchema_Click"  />
+                        <asp:Button ID="btnLoadSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Φόρτωση Σχήματος" OnClick="btnLoadSchema_Click"  />
                         <br />
-                        <asp:Button ID="btnSaveSchema" class="btn btn-success btn-lg" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  />
+                        <asp:Button ID="btnSaveSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  />
                         <br />
-                        <asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-lg" runat="server" Text="Επιλογή Προεπιλεγμένου" OnClick="btnSetDefaultSchemaSelect" />
+                        <asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" OnClick="btnSetDefaultSchemaSelect" />
                     
                         <!-- Modal φόρτωση σχήματος-->
                         <div class="modal fade" id="loadSchemaModal" role="dialog">
@@ -501,7 +501,7 @@
                                         <asp:DropDownList ID="schemaLoadDropDownList" runat="server"></asp:DropDownList>
                                     </div>
                                     <div class="modal-footer">
-                                        <asp:Button runat="server" ID="btnLoadSchemaClick" Text="OK" class="btn btn-default" OnClick="btnLoadSelectedSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                        <asp:Button runat="server" ID="btnLoadSchemaClick" Text="OK" class="btn btn-default showLoader" OnClick="btnLoadSelectedSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                     </div>
                                 </div>
                             </div>
@@ -521,7 +521,7 @@
                                         <asp:DropDownList ID="SetSchemaDefaultDropDownList" runat="server"></asp:DropDownList>
                                     </div>
                                     <div class="modal-footer">
-                                        <asp:Button runat="server" ID="btnSetSchema" Text="SET" class="btn btn-default" OnClick="btnSetDefaultSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                        <asp:Button runat="server" ID="btnSetSchema" Text="SET" class="btn btn-default showLoader" OnClick="btnSetDefaultSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                     </div>
                                 </div>
                             </div>
@@ -722,22 +722,10 @@
             $("#gridViewFD tr:nth-child(" + rowId + ")").addClass("highlight");
         });
     
-        $("#btnDecompose").click(function () {
+        // Τα elements αυτής της κλάσης, στο κλικ προκαλούν την εμφάνιση του Loader. Αποκρύπτεται αυτόματα κατά την ολοκλήρωση του PostBack.   
+        $(".showLoader").click(function () {
             $("#loader").removeClass("hide-loader");
         });
-
-        $("#btnClosureOK").click(function () {
-            $("#loader").removeClass("hide-loader");
-        });
-
-        $("#btnCalculateKeys").click(function () {
-            $("#loader").removeClass("hide-loader");
-        });
-
-        $("#btnDecomposeAlternative").click(function () {
-            $("#loader").removeClass("hide-loader");
-        });
-
 
         </script>
     <script>

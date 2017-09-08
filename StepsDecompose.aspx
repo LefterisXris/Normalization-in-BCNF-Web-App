@@ -13,12 +13,34 @@
 
     <style>
         .highlight { background-color: #A1DCF2; }
+        .hide-loader{display:none;}
+        .loader {
+            position: absolute;
+            left: 45%;
+            top: 45%;
+            z-index: 2000;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid blue;
+            border-bottom: 16px solid blue;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
+            }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
     </style>
 </head>
 
 <body>
     <form id="form1" runat="server">
         <div class="container">
+
+            <div class="loader hide-loader" id="loader"></div>
 
             <%-- HEADER (τίτλο, όνομα κλπ) --%>
             <div class="page-header">
@@ -50,7 +72,7 @@
                         
                         <asp:HiddenField ID="gridViewRelationHiddenField" runat="server" Value="-3" />
 
-                        <asp:Button ID="btnShowBCNFtables" class="btn btn-info btn-lg" runat="server" Text="Προβολή BCNF πινάκων" Style="float: right;" OnClick="btnShowBCNFTablesClick" />
+                        <asp:Button ID="btnShowBCNFtables" class="btn btn-info btn-lg showLoader" runat="server" Text="Προβολή BCNF πινάκων" Style="float: right;" OnClick="btnShowBCNFTablesClick" />
 
                     </div>
                     <div style="margin-top: 35px;">
@@ -71,9 +93,9 @@
                         <asp:HiddenField ID="gridViewFDHiddenField" runat="server" Value="-3" />
 
                         <div class="row" style="float:right;">
-                            <asp:Button ID="btnNewFD" class="btn btn-info btn-sm" runat="server" Text="Προσθήκη" OnClick="btnNewFDClick" />
-                            <asp:Button ID="btnEditFD" class="btn btn-info btn-sm" runat="server" Text="Επεξεργασία" OnClick="btnEditFDClick" />
-                            <asp:Button ID="btnDeleteFD" class="btn btn-info btn-sm" runat="server" Text="Διαγραφή" OnClick="btnDeleteFDClick" />
+                            <asp:Button ID="btnNewFD" class="btn btn-info btn-sm showLoader" runat="server" Text="Προσθήκη" OnClick="btnNewFDClick" />
+                            <asp:Button ID="btnEditFD" class="btn btn-info btn-sm showLoader" runat="server" Text="Επεξεργασία" OnClick="btnEditFDClick" />
+                            <asp:Button ID="btnDeleteFD" class="btn btn-info btn-sm showLoader" runat="server" Text="Διαγραφή" OnClick="btnDeleteFDClick" />
                         </div>
 
                     <!-- Modal νέας συναρτησιακής εξάρτησης -->
@@ -132,7 +154,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnNewFDOK" Text="OK" class="btn btn-default" OnClick="btnNewFDOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnNewFDOK" Text="OK" class="btn btn-default showLoader" OnClick="btnNewFDOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
@@ -195,7 +217,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnEditFDOK" Text="Ενημέρωση" class="btn btn-default" OnClick="btnEditFDΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnEditFDOK" Text="Ενημέρωση" class="btn btn-default showLoader" OnClick="btnEditFDΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
@@ -244,7 +266,7 @@
                 <div class="col-md-2 col-sm-2"></div>
                 <div class="col-md-6 col-sm-6">
 
-                    <asp:Button ID="btnPreview" class="btn btn-info btn-lg" runat="server" Text="Προεπισκόπηση" OnClick="btnPreview_Click" />
+                    <asp:Button ID="btnPreview" class="btn btn-info btn-lg showLoader" runat="server" Text="Προεπισκόπηση" OnClick="btnPreview_Click" />
 
                     <!-- Modal Προεπισκόπησης-->
                     <div class="modal fade" id="modalPreview" role="dialog">
@@ -269,14 +291,14 @@
                     <!-- Modal -->
 
 
-                    <asp:Button ID="btnDecompose" class="btn btn-info btn-lg" runat="server" Text="Διάσπαση" OnClick="btnDecompose_Click" />
-                    <asp:Button ID="btnClearResults" class="btn btn-info btn-lg" runat="server" Text="Καθαρισμός" OnClick="btnClearResults_Click" />
+                    <asp:Button ID="btnDecompose" class="btn btn-info btn-lg showLoader" runat="server" Text="Διάσπαση" OnClick="btnDecompose_Click" />
+                    <asp:Button ID="btnClearResults" class="btn btn-info btn-lg showLoader" runat="server" Text="Καθαρισμός" OnClick="btnClearResults_Click" />
                 </div>
                 <div class="col-md-2 col-sm-2">
-                    <asp:Button ID="btnReset" class="btn btn-info btn-lg" runat="server" Text="Reset" OnClick="btnResetClick" />
+                    <asp:Button ID="btnReset" class="btn btn-info btn-lg showLoader" runat="server" Text="Reset" OnClick="btnResetClick" />
                 </div>
                 <div class="col-md-2 col-sm-2">
-                    <asp:Button ID="btnCloseStepsDecompose" class="btn btn-danger btn-lg" runat="server" Text="Κλείσιμο" Style="width: 100%;" OnClick="btnCloseStepsDecompose_Click" />
+                    <asp:Button ID="btnCloseStepsDecompose" class="btn btn-danger btn-lg showLoader" runat="server" Text="Κλείσιμο" Style="width: 100%;" OnClick="btnCloseStepsDecompose_Click" />
                 </div>
 
             </div>
@@ -462,7 +484,13 @@
             var rowId = parseInt($("#gridViewFDHiddenField").val()) + 2;
             $("#gridViewFD tr:nth-child(" + rowId + ")").addClass("highlight");
         });
-        </script>
+
+        // Τα elements αυτής της κλάσης, στο κλικ προκαλούν την εμφάνιση του Loader. Αποκρύπτεται αυτόματα κατά την ολοκλήρωση του PostBack.   
+        $(".showLoader").click(function () {
+            $("#loader").removeClass("hide-loader");
+        });
+
+    </script>
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
