@@ -40,7 +40,8 @@
             100% { transform: rotate(360deg); }
         }
         
-        
+        th, td {padding-left: 5px;}
+        tbody tr:hover {background-color: #A1DCF2;}
     </style>
 
 </head>
@@ -138,15 +139,15 @@
 
             <br />
 
-            <%-- ROW με panel Γνωρισμάτων και Συναρτησιακών εξαρτήσεων. --%>
+            <%-- ROW με Grid Γνωρισμάτων και Συναρτησιακών εξαρτήσεων. --%>
             <div class="row">
 
                 <%--Γνωρίσματα--%>
                 <div class="col-md-6">
                 <p><b>Γνωρίσματα </b></p>
 
-                <asp:GridView ID="gridViewAttr" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
-                    runat="server" AutoGenerateColumns="false"  Width="100%" >
+                <asp:GridView CssClass="" ID="gridViewAttr" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+                     runat="server" AutoGenerateColumns="false"  Width="100%" >
 
                     <Columns>
                         <asp:BoundField DataField="Name" HeaderText=" Όνομα" ItemStyle-Width="55%"/>
@@ -279,7 +280,8 @@
                                    
                                     <div class="form-horizontal">
                                         <div class="col-md-6">
-                                            <asp:GridView ID="gridViewLeftFD" runat="server" AutoGenerateColumns="false" Width="100%">
+                                            <asp:GridView ID="gridViewLeftFD" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+                                                runat="server" AutoGenerateColumns="false" Width="100%">
                        
                                                  <Columns>
                                                      <asp:templatefield HeaderText="Επιλογή" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
@@ -291,9 +293,11 @@
                                                 </Columns>
 
                                             </asp:GridView>
+                                            <asp:HiddenField ID="gridViewLeftFDHiddenField" runat="server" Value="-3"/>
                                         </div>
                                         <div class="col-md-6">
-                                            <asp:GridView ID="gridViewRightFD" runat="server" AutoGenerateColumns="false" Width="100%" >
+                                            <asp:GridView ID="gridViewRightFD" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+                                                runat="server" AutoGenerateColumns="false" Width="100%" >
                        
                                                  <Columns>
                                                      <asp:templatefield HeaderText="Επιλογή" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
@@ -304,9 +308,8 @@
                                                     <asp:BoundField DataField="Eksartimenes" HeaderText="Εξαρτημένες" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80%" />
                                                 </Columns>
 
-                                                
-
                                             </asp:GridView>
+                                            <asp:HiddenField ID="gridViewRightFDHiddenField" runat="server" Value="-3"/>
                                         </div>
                                     </div>
 
@@ -354,6 +357,7 @@
                                                 </Columns>
 
                                             </asp:GridView>
+                                            <asp:HiddenField ID="gridViewEditLeftFDHiddenField" runat="server" Value="-3"/>
                                         </div>
                                         <div class="col-md-6">
                                             <asp:GridView ID="gridViewEditRightFD" runat="server" AutoGenerateColumns="false" Width="100%" >
@@ -367,9 +371,9 @@
                                                     <asp:BoundField DataField="Eksartimenes" HeaderText="Εξαρτημένες" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80%" />
                                                 </Columns>
 
-                                                
-
                                             </asp:GridView>
+                                            <asp:HiddenField ID="gridViewEditRightFDHiddenField" runat="server" Value="-3"/>
+
                                         </div>
                                     </div>
 
@@ -396,7 +400,7 @@
 
             </div>
 
-            <%-- ROW με Logging Console και Load Button --%>
+            <%-- ROW με Logging Console και New, Load Button --%>
             <div class="row">
 
                 <%-- Logging Console --%>
@@ -688,32 +692,6 @@
             }
         });
 
-        // Για αλλαγή χρώματος και επιλεγμένης γραμμής του πίνακα gridViewAttr.
-        $("#gridViewAttr tr").click(function () {
-            var selected = $(this).hasClass("highlight");
-            $("#gridViewAttr tr").removeClass("highlight");
-            if (!selected){
-                $(this).addClass("highlight");
-                $("#gridViewAttrHiddenField").val($(this).index()-1);
-            }
-            else {
-                $("#gridViewAttrHiddenField").val(-3);
-            }
-        });
-
-        // Για αλλαγή χρώματος και επιλεγμένης γραμμής του πίνακα gridViewFD.
-        $("#gridViewFD tr").click(function () {
-            var selected = $(this).hasClass("highlight");
-            $("#gridViewFD tr").removeClass("highlight");
-            if (!selected) {
-                $(this).addClass("highlight");
-                $("#gridViewFDHiddenField").val($(this).index() - 1);
-            }
-            else {
-                $("#gridViewFDHiddenField").val(-3);
-            }
-        });
-
         // Κατά την φόρτωση (και επαναφόρτωση) της σελίδας, χρωματίζεται η τελευταία επιλεγμένη γραμμή των gridView
         $(document).ready(function () {
             var rowId = parseInt($("#gridViewAttrHiddenField").val()) + 2;
@@ -726,6 +704,22 @@
         // Τα elements αυτής της κλάσης, στο κλικ προκαλούν την εμφάνιση του Loader. Αποκρύπτεται αυτόματα κατά την ολοκλήρωση του PostBack.   
         $(".showLoader").click(function () {
             $("#loader").removeClass("hide-loader");
+        });
+
+        // Αντί να βάλω listeners στο κάθε GridView ξεχωριστά, βάζω έναν και αναγνωρίζω σε ποιο απευθύνεται.     
+        $("table tr").click(function () {
+            var selected = $(this).hasClass("highlight");
+            var gridView = $(this).closest("table").attr("id");
+            var hiddenField = gridView.concat("HiddenField");
+
+            $("#"+ gridView +" tr").removeClass("highlight");
+            if (!selected) {
+                $(this).addClass("highlight");
+                $("#" + hiddenField).val($(this).index() - 1);
+            }
+            else {
+                $("#" + hiddenField).val(-3);
+            }
         });
 
         </script>

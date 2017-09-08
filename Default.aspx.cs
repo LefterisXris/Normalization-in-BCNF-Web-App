@@ -1261,7 +1261,6 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
     // TODO: Επεξεργασία με double click.
     // TODO: Δυνατότητα μηδενισμού στατιστικών.
-    // TODO: Πρόσθεσε CssClass="table table-hover table-striped" σε κάποια gridviews γιατί διορθώνει το style.
 
 
     protected void btnGetSchemasClick(object sender, EventArgs e)

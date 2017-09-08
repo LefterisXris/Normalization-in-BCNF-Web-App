@@ -114,7 +114,16 @@ public partial class StepsDecompose : System.Web.UI.Page
     protected void btnPreview_Click(object sender, EventArgs e)
     {
         if (CheckTick())
+        {
             DecomposeInSteps(true);
+
+            // Ελέγχονται και ενημερώνονται οι πίνακες που είναι σε BCNF μορφή.
+            CheckBCNF();
+            UpdateExcludedFD();
+
+            populateRelationGridView(relList);
+            populateFdGridView(fdList);
+        }
         
         ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
 
@@ -126,7 +135,17 @@ public partial class StepsDecompose : System.Web.UI.Page
     protected void btnDecompose_Click(object sender, EventArgs e)
     {
         if (CheckTick())
+        {
             DecomposeInSteps(false);
+
+            // Ελέγχονται και ενημερώνονται οι πίνακες που είναι σε BCNF μορφή.
+            CheckBCNF();
+            UpdateExcludedFD();
+
+            populateRelationGridView(relList);
+            populateFdGridView(fdList);
+        }
+            
 
         ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
     }
@@ -266,12 +285,7 @@ public partial class StepsDecompose : System.Web.UI.Page
                 log.InnerText += "==============================\n\n";
             }
 
-            // Ελέγχονται και ενημερώνονται οι πίνακες που είναι σε BCNF μορφή.
-            CheckBCNF();
-            UpdateExcludedFD();
-
-            populateRelationGridView(relList);
-            populateFdGridView(fdList);
+            
 
         }
         else // σε διαφορετική περίπτωση η BCNF δεν παραβιάζεται και εμφανίζεται σχετικό μήνυμα
