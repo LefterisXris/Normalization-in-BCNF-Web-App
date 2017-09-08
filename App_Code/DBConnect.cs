@@ -16,6 +16,7 @@ namespace Normalization
         private string database;
         private string uid;
         private string password;
+        bool canGetConnection = false;
 
         public DBConnect()
         {
@@ -23,6 +24,30 @@ namespace Normalization
             MySqlDbInit();
         }
 
+        /// <summary>
+        /// Εναλλακτικός κατασκευαστής για χρήση του ConnectionString.
+        /// </summary>
+        /// <param name="getConn">Αν θέλει το connection</param>
+        public DBConnect(bool getConn)
+        {
+            MySqlDbInit();
+            
+            canGetConnection = getConn; 
+            
+        }
+
+        /// <summary>
+        /// Μέθοδος που επιστρέφει το Connection.
+        /// </summary>
+        public MySqlConnection getC()
+        {
+            if (canGetConnection)
+            {
+                return connection;
+            }
+            return null;
+        }
+        
         //Initialize values
         private void Initialize()
         {
@@ -441,7 +466,6 @@ namespace Normalization
             }
             return res;
         }
-
 
         /* SELECT
         //Select statement

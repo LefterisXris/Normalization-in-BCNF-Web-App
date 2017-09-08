@@ -537,8 +537,9 @@
                 </div>
 
             </div>
-
             
+            <asp:HyperLink ID="StatisticsHyperLink" runat="server" NavigateUrl="~/MemberPages/Statistics.aspx" Visible="False">Εμφάνιση στατιστικών</asp:HyperLink>
+            <asp:HyperLink ID="AdminPageHyperLink" runat="server" NavigateUrl="~/MemberPages/Admin.aspx" Visible="False">Back to Admin Page</asp:HyperLink>
 
         </div>
     </form>

@@ -25,7 +25,7 @@
         </p>
 
         <p>
-            <asp:HyperLink ID="HyperLink2" runat="server" NavigateUrl="~/MemberPages/Stats.aspx">Εμφάνιση στατιστικών</asp:HyperLink>
+            <asp:HyperLink ID="StatisticsHyperLink" runat="server" NavigateUrl="~/MemberPages/Statistics.aspx">Εμφάνιση στατιστικών</asp:HyperLink>
         </p>
     
     </div>

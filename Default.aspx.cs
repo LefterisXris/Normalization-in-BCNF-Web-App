@@ -61,22 +61,7 @@ public partial class _Default : System.Web.UI.Page
 
 
         // Εάν έχει συνδεθεί ο Admin τότε εμφανίζονται οι εξτρά δυνατότητες.
-        if (HttpContext.Current.User.Identity.IsAuthenticated)
-        {
-            
-            LoginStatus1.Visible = true;
-            btnSaveSchema.Visible = true;
-            btnSetDefaultSchema.Visible = true;
-            btnLoadDB.Visible = true;
-        }
-        else
-        {
-            LoginStatus1.Visible = false;
-            btnSaveSchema.Visible = false;
-            btnSetDefaultSchema.Visible = false;
-            btnLoadDB.Visible = false;
-        }
-
+        setVisibleItemsForAdmin(HttpContext.Current.User.Identity.IsAuthenticated);
 
     }
 
@@ -90,6 +75,20 @@ public partial class _Default : System.Web.UI.Page
         ViewState.Add("fdListVS", fdList);
         ViewState.Add("logVS", msg);
 
+    }
+
+    /// <summary>
+    /// Ανάλογα με το αν είναι συνδεδεμένος ένας χρήστης, εμφανίζει ή αποκρύπτει τα στοιχεία που πρέπει.
+    /// </summary>
+    /// <param name="visible"></param>
+    private void setVisibleItemsForAdmin(bool visible)
+    {
+        AdminPageHyperLink.Visible = visible;
+        StatisticsHyperLink.Visible = visible;
+        LoginStatus1.Visible = visible;
+        btnSaveSchema.Visible = visible;
+        btnSetDefaultSchema.Visible = visible;
+        btnLoadDB.Visible = visible;
     }
 
     #region ADD NEW (Attr & Fd)
@@ -1260,11 +1259,9 @@ public partial class _Default : System.Web.UI.Page
     // TODO: Αναίρεση ή ενσωμάτωση enter. 
     // TODO: Διαγραφή περιτών κομματιών (κλάσεις, μεθόδους, μεταβλητές).
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
-    // TODO: Προσθήκη δυνατότητητας επεξεργασίας FD στην StepsDecompose
-    // TODO: Bug στο σχήμα stockExchange, 2_04, 2_05, 3
     // TODO: Επεξεργασία με double click.
-    // TODO: Η διαγραφή δουλεύει μόνο σε ταξινομημένα. Διόρθωσε.
-    // TODO: Μέτρηση σενδέσεων admin
+    // TODO: Δυνατότητα μηδενισμού στατιστικών.
+    // TODO: Πρόσθεσε CssClass="table table-hover table-striped" σε κάποια gridviews γιατί διορθώνει το style.
 
 
     protected void btnGetSchemasClick(object sender, EventArgs e)
