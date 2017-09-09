@@ -15,6 +15,12 @@ public partial class MemberPages_Statistics : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         getTableFromDB();
+
+        List<string>[] list = dbConnect.getStatsforPies("nLoad");
+
+        lbl_crct.Text = "50";
+        lbl_incrct.Text = "40";
+        lbl_incrct2.Text = "10";
     }
 
     /// <summary>
@@ -41,5 +47,5 @@ public partial class MemberPages_Statistics : System.Web.UI.Page
         }
         
     }
-
+    
 }
