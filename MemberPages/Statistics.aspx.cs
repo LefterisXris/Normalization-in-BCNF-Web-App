@@ -14,22 +14,28 @@ public partial class MemberPages_Statistics : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        getTableFromDB();
 
-        List<string> schemaNames = dbConnect.getSchemaNames();
-        List<string> actions = new List<string> { "nLoad", "nClosure", "nFindKeys", "nDecompose", "nStepsDecompose" };
-        List<string> chartTypes = new List<string> { "bar", "pie", "doughnut" };
+        if (!IsPostBack)
+        {
+            getTableFromDB();
 
-        foreach (string s in schemaNames)
-            SchemaNamesDropDownList.Items.Add(s);
-        
-        foreach (string s in actions)
-            ActionsDropDownList.Items.Add(s);
-        
-        foreach (string s in chartTypes)
-            ChartTypeDropDownList.Items.Add(s);
-        
+            List<string> schemaNames = dbConnect.getAllSchemaNames();
+            List<string> actions = new List<string> { "nLoad", "nClosure", "nFindKeys", "nDecompose", "nStepsDecompose" };
+            List<string> chartTypes = new List<string> { "bar", "pie", "doughnut" };
+            List<string> source = new List<string> { "Per Action", "Per Schema" };
 
+            foreach (string s in schemaNames)
+                SchemaNamesDropDownList.Items.Add(s);
+
+            foreach (string s in actions)
+                ActionsDropDownList.Items.Add(s);
+
+            foreach (string s in chartTypes)
+                ChartTypeDropDownList.Items.Add(s);
+
+            foreach (string s in source)
+                SourceDropDownList.Items.Add(s);
+        }
     }
 
     /// <summary>
@@ -56,5 +62,5 @@ public partial class MemberPages_Statistics : System.Web.UI.Page
         }
         
     }
-    
+
 }

@@ -258,6 +258,31 @@ namespace Normalization
         }
 
         /// <summary>
+        /// Μέθοδος η οποία παίρνει τα ονόματα όλων των διαθέσιμων σχημάτων.
+        /// </summary>
+        /// <returns>Λίστα με τα ονόματα αυτά.</returns>
+        public List<string> getAllSchemaNames()
+        {
+            string query = "SELECT `name` FROM `Schemas`";
+            List<string> names = new List<string>();
+
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader dataReader = cmd.ExecuteReader();                
+
+                while (dataReader.Read())
+                {
+                    names.Add(dataReader["name"] + "");
+                }
+                
+                dataReader.Close();
+                this.CloseConnection();
+            }
+            return names;
+        }
+
+        /// <summary>
         /// Αποθηκεύει το όνομα του νέου σχήματος στην ΒΔ.
         /// </summary>
         /// <param name="schemaName">Όνομα νέου σχήματος</param>

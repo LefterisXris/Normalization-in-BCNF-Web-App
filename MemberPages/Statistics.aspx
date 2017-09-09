@@ -18,18 +18,22 @@
     <form id="form1" runat="server">
     <div class="container">
     
-        <%-- HEADER (τίτλο, όνομα κλπ) --%>
+        <%-- HEADER (Τίτλο, Pager) --%>
         <div class="page-header">
             <h1>Δεδομένα χρήσης Εφαρμογής
                 <small>Στατιστικά και μετρήσεις</small></h1>
+            <!-- Pager menu -->
             <ul class="nav nav-pills">
-		    <li><a data-toggle="pill" href="#Stats">Πίνακας Στατιστικών</a></li>
-		    <li class="active"><a data-toggle="pill" href="#charts">Γραφήματα</a></li>
-		</ul>
+		        <li class="active"><a data-toggle="pill" href="#Stats">Πίνακας Στατιστικών</a></li>
+		        <li><a data-toggle="pill" href="#charts">Γραφήματα</a></li>
+		    </ul>
+            <!-- Pager menu -->
         </div>
 
 		<div class="tab-content">
-			<div id="Stats" class="tab-pane fade in">
+
+            <!-- Πίνακας με δεδομένα -->
+			<div id="Stats" class="tab-pane fade in active">
 				<h3>Πίνακας Στατιστικών</h3>
                     
                 <asp:GridView CssClass="table table-hover table-striped" ID="gridViewDatabase" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White" runat="server" Width="100%" BorderStyle="Solid" BorderWidth="2px">            
@@ -38,26 +42,32 @@
                     </Columns>
                 </asp:GridView>
 
-                <div>
-                        <asp:HyperLink ID="AdminPageHyperLink" runat="server" NavigateUrl="~/MemberPages/Admin.aspx">Back to Admin Page</asp:HyperLink>
-                </div>
-
 			</div>
 
-			<div id="charts" class="tab-pane fade in active">
+            <!-- Γραφήματα -->
+			<div id="charts" class="tab-pane fade in">
 				<h3>Γραφήματα</h3>
+                
+                <div id="chartSpace">
+                    <canvas id="myChart" ></canvas>          
+                </div>
+                     
+			    <!-- Λίστες για επιλογή γραφημάτων -->
+                <h5><asp:Label ID="lblSchemaDescription" runat="server" Text="Επιλογές για γράφημα:" Font-Italic="True" ForeColor="#669999"></asp:Label></h5>
+                <asp:DropDownList ID="SourceDropDownList" runat="server" ></asp:DropDownList>
+                <asp:DropDownList ID="SchemaNamesDropDownList" runat="server"></asp:DropDownList>
+                <asp:DropDownList ID="ActionsDropDownList" runat="server"></asp:DropDownList>
+                <asp:DropDownList ID="ChartTypeDropDownList" runat="server"></asp:DropDownList>
+                <button type="button" class="btn btn-info btn-lg" id="btnGenerateChart">Δημιουργία γραφήματος!</button>
 
-                 <canvas id="myChart" ></canvas>              
-			</div>
-            <asp:DropDownList ID="SchemaNamesDropDownList" runat="server"></asp:DropDownList>
-            <asp:DropDownList ID="ActionsDropDownList" runat="server"></asp:DropDownList>
-            <asp:DropDownList ID="ChartTypeDropDownList" runat="server"></asp:DropDownList>
-            <button type="button" id="btn1">Click To create bar chart!</button>
+            </div>
+
+            <!-- Σύνδεσμος για Admin Page -->
+            <div>
+                <asp:HyperLink ID="AdminPageHyperLink" runat="server" NavigateUrl="~/MemberPages/Admin.aspx">Back to Admin Page</asp:HyperLink>
+            </div>
+
 		</div>
-
-        
-        <br />
-        
 
     </div>
     </form>
@@ -65,41 +75,38 @@
 
     <script>
 	    
+        // Η συνάρτηση ενημερώνει την ορατότητα των λιστών ανάλογα με την επιλογή του χρήστη. 
+        function setVisibilityOnDDLs() {
+            var selectedVal = $('#SourceDropDownList option:selected').attr('value');
+            var isActionSelected = selectedVal[4] == "A";
+
+            if (isActionSelected) {
+                $("#SchemaNamesDropDownList").hide();
+                $("#ActionsDropDownList").show();
+            }
+            else {
+                $("#ActionsDropDownList").hide();
+                $("#SchemaNamesDropDownList").show();
+            }
+        }
+
 	    $(document).ready(function () {
-	        $("table tr th").click(function () {
-	            $(this).html("Marketting Document/URL");
-	            alert("Data: " + $(this).text());
-	        });
-
-	        var dbData = new Array();
-
-	        var table = $("table");
-	        table.find('tr').each(function (i, el) {
-	            var $tds = $(this).find('td'),
-                    id = $tds.eq(0).text(),
-                    sc_name = $tds.eq(1).text(),
-                    sc_nLoad = $tds.eq(2).text(),
-                    sc_nClosure = $tds.eq(3).text(),
-                    sc_nFindKeys = $tds.eq(4).text(),
-                    sc_nDecompose = $tds.eq(5).text(),
-                    sc_nStepsDecompose = $tds.eq(6).text();
-	            // do something with productId, product, Quantity
-	            // alert("id: " + id + " name: " + name + " nLoad: " + nLoad + " i =" + i);
-	            dbData.push({ name: sc_name, nLoad: sc_nLoad, nClosure: sc_nClosure, nFindKeys: sc_nFindKeys, nDecompose: sc_nDecompose, nStepsDecompose: sc_nStepsDecompose });
-	            //alert("Schema: " + dbData[i]["name"] + " nLoad = " + dbData[i]["nLoad"]);
-	        });
-
-
-
-
+	        setVisibilityOnDDLs();
 	    });
 
-	    $("#btn1").click(function () {
+        // Δημιουργία γραφήματος.
+	    $("#btnGenerateChart").click(function () {
 
-	        var dbData = new Array();
-	        var action = $("#ActionsDropDownList option:selected").text();
-	        var chartType = $("#ChartTypeDropDownList option:selected").text();
+	        var dbData = new Array(); // Ο πίνακας στον οποίο θα αποθηκευτούν τα δεδομένα.
+	        var source = $("#SourceDropDownList option:selected").text(); // Η επιλογή για το είδος απεικόνισης.
 
+	        var isAction = source[4] == "A"; // Αν έχει επιλεγει Per Action=αληθής.
+
+	        var selectedSchemaName = $("#SchemaNamesDropDownList option:selected").text(); // Το επιλεγμένο σχήμα.
+	        var action = $("#ActionsDropDownList option:selected").text(); // Η επιλογή ενέργειας για οπτικοποίηση (nLoad κλπ).
+	        var chartType = $("#ChartTypeDropDownList option:selected").text(); // Ο τύπος του γραφήματος.
+	        
+            // Για κάθε γραμμή του πίνακα, κρατάω τα δεδομένα που με ενδιαφέρουν ώστε να τα απεικονίσω.
 	        var table = $("table");
 	        table.find('tr').each(function (i, el) {
 	            var $tds = $(this).find('td'),
@@ -110,114 +117,105 @@
                     sc_nFindKeys = $tds.eq(4).text(),
                     sc_nDecompose = $tds.eq(5).text(),
                     sc_nStepsDecompose = $tds.eq(6).text();
-	            // do something with productId, product, Quantity
-	            // alert("id: " + id + " name: " + name + " nLoad: " + nLoad + " i =" + i);
+	            
+                // Αποθηκεύω στον πίνακα, αντικείμενα με τρόπο key=value.
 	            dbData.push({ name: sc_name, nLoad: sc_nLoad, nClosure: sc_nClosure, nFindKeys: sc_nFindKeys, nDecompose: sc_nDecompose, nStepsDecompose: sc_nStepsDecompose });
-	            //alert("Schema: " + dbData[i]["name"] + " nLoad = " + dbData[i]["nLoad"]);
+	           
 	        });
 	        
+            // Επειδή δεν δουλεύει η ανανέωση του γραφήματος, κάθε φορά διαγράφω τον καμβά και φτιάχνω άλλον.
 	        $("#myChart").remove(); 
-	        $('#charts').append('<canvas id="myChart" height="100%"><canvas>');
-
-
-
-
-	        var ctx = document.getElementById("myChart").getContext('2d');
+	        $('#chartSpace').append('<canvas id="myChart" height="100%"><canvas>');
 	        
+	        var names = []; // Τα δεδομένα για τον άξονα X.
+	        var values = []; // Τα δεδομένα για τον άξονα Y.
+	        var chartLabel;
+
+	        if (isAction) {
+	            for (i = 1; i < dbData.length; i++) {
+	                names.push(dbData[i]["name"]);
+	                values.push(dbData[i][action]);
+	            }
+	            chartLabel = "Number of " + action;
+	        }
+	        else { // Όταν βρεθεί το σχήμα, πάρε τις τιμές που θέλεις.
+	            for (i = 1; i < dbData.length; i++) {
+	                if (dbData[i]["name"] == selectedSchemaName) {
+	                    names = ["nLoad", "nClosure", "nFindKeys", "nDecompose", "nStepsDecompose"];
+	                    for (j = 0; j < names.length; j++)
+	                        values.push(dbData[i][names[j]]);
+	                }
+	            }
+	            chartLabel = "Schema " + selectedSchemaName + " metrics";
+	        }
+	        
+	        var ctx = document.getElementById("myChart").getContext('2d'); // παίρνω τον καμβά που θα μπει το γράφημα.
+	        
+            // Δημιουργία γραφήματος
 	        var myChart = new Chart(ctx, {
-	            type: chartType, // 'bar' 'doughnut'
+	            type: chartType, // Τύπος του γραφήματος.
 	            data: {
-	                labels: [dbData[0]["name"], dbData[1]["name"], dbData[2]["name"], dbData[3]["name"], dbData[4]["name"], dbData[5]["name"], dbData[6]["name"], dbData[7]["name"], dbData[8]["name"], dbData[9]["name"]],
+	                labels: names, // tooltips για κάθε δεδομένο.
 	                datasets: [{
-	                    label: 'number of ' + action,
-	                    data: [dbData[0][action], dbData[1][action], dbData[2][action], dbData[3][action], dbData[4][action], dbData[5][action], dbData[6][action], dbData[7][action], dbData[8][action], dbData[9][action]],
+	                    label: chartLabel,//'number of ' + action, // ετικέτα ως τίτλος και ως tooltip.
+	                    data: values, // Τα δεδομένα φορτώνονται από εδώ.
 	                    backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
+                            'rgba(98, 255, 236, 0.2)',
+                            'rgba(155, 255, 0, 0.2)',
+                            'rgba(21, 37, 211, 0.2)',
+                            'rgba(98, 151, 255, 0.2)',
+                            'rgba(109, 255, 98, 0.2)',
+                            'rgba(255, 101, 98, 0.2)',
+                            'rgba(184, 98, 255, 0.2)',
+                            'rgba(255, 168, 30, 0.2)',
+                            'rgba(202, 255, 30, 0.2)',
+                            'rgba(98, 255, 236, 0.2)',
+                            'rgba(187, 0, 255, 0.2)',
+                            'rgba(195, 255, 98, 0.2)',
+                            'rgba(255, 98, 239, 0.2)',
+                            'rgba(98, 151, 255, 0.2)',
+                            'rgba(109, 255, 98, 0.2)',
+                            'rgba(255, 101, 98, 0.2)',
+                            'rgba(184, 98, 255, 0.2)',
+                            'rgba(255, 168, 30, 0.2)',
+                            'rgba(202, 255, 30, 0.2)'
 	                    ],
 	                    borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(98, 255, 236, 1)',
+                            'rgba(155, 255, 0, 1)',
+                            'rgba(21, 37, 211, 1)',
+                            'rgba(98, 151, 255, 1)',
+                            'rgba(109, 255, 98, 1)',
+                            'rgba(255, 101, 98, 1)',
+                            'rgba(184, 98, 255, 1)',
+                            'rgba(255, 168, 30, 1)',
+                            'rgba(202, 255, 30, 1)',
+                            'rgba(98, 255, 236, 1)',
+                            'rgba(187, 0, 255, 1)',
+                            'rgba(195, 255, 98, 1)',
+                            'rgba(255, 98, 239, 1)',
+                            'rgba(98, 151, 255, 1)',
+                            'rgba(109, 255, 98, 1)',
+                            'rgba(255, 101, 98, 1)',
+                            'rgba(184, 98, 255, 1)',
+                            'rgba(255, 168, 30, 1)',
+                            'rgba(202, 255, 30, 1)'
 	                    ],
 	                    borderWidth: 1
 	                }]
 	            },
-	            options: {
-	            }
+	            options: {} 
 	        });
-	        
-	        
+	         
 	    });
 
-
-        
-        /*
-	    var ctx = document.getElementById("myChart").getContext('2d');
-	   /* var chart = new Chart(ctx, {
-	        // The type of chart we want to create
-	        type: 'line',
-
-	        // The data for our dataset
-	        data: {
-	            labels: ["January", "February", "March", "April", "May", "June", "July"],
-	            datasets: [{
-	                label: "My First dataset",
-	                backgroundColor: 'rgb(255, 99, 132)',
-	                borderColor: 'rgb(255, 99, 132)',
-	                data: [0, 10, 5, 2, 20, 30, 45],
-	            }]
-	        },
-
-	        // Configuration options go here
-	        options: {}
-	    });*/
-
-	/*    var myChart = new Chart(ctx, {
-	        type: 'bar',
-	        data: {
-	            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-	            datasets: [{
-	                label: '# of Votes',
-	                data: [12, 19, 3, 5, 2, 3],
-	                backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-	                ],
-	                borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-	                ],
-	                borderWidth: 1
-	            }]
-	        },
-	        options: {
-	            scales: {
-	                yAxes: [{
-	                    ticks: {
-	                        beginAtZero: true
-	                    }
-	                }]
-	            }
-	        }
+        // Κατά την αλλαγή της επιλογής Per Action - Per Schema ενημερώνεται η ορατότητα των αντίστοιχων λιστών.
+	    $('#SourceDropDownList').change(function () {
+	        setVisibilityOnDDLs();
 	    });
-        */
-        </script>
 
+ </script>
 
 </html>
