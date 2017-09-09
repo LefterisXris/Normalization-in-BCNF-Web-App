@@ -16,11 +16,20 @@ public partial class MemberPages_Statistics : System.Web.UI.Page
     {
         getTableFromDB();
 
-        List<string>[] list = dbConnect.getStatsforPies("nLoad");
+        List<string> schemaNames = dbConnect.getSchemaNames();
+        List<string> actions = new List<string> { "nLoad", "nClosure", "nFindKeys", "nDecompose", "nStepsDecompose" };
+        List<string> chartTypes = new List<string> { "bar", "pie", "doughnut" };
 
-        lbl_crct.Text = "50";
-        lbl_incrct.Text = "40";
-        lbl_incrct2.Text = "10";
+        foreach (string s in schemaNames)
+            SchemaNamesDropDownList.Items.Add(s);
+        
+        foreach (string s in actions)
+            ActionsDropDownList.Items.Add(s);
+        
+        foreach (string s in chartTypes)
+            ChartTypeDropDownList.Items.Add(s);
+        
+
     }
 
     /// <summary>
