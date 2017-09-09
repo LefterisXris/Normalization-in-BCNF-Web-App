@@ -35,6 +35,10 @@
         
         th, td {padding-left: 5px;}
         tbody tr:hover {background-color: #A1DCF2;}
+        .btn, .alert{
+            margin-left: 5px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 
@@ -46,7 +50,6 @@
 
             <%-- HEADER (τίτλο, όνομα κλπ) --%>
             <div class="page-header">
-                <%--TODO: Στην δημιουργία σχήματος να περνάς το όνομα εδώ στο label --%>
                 <h1>Σταδιακή διάσπαση:
                     <asp:Label ID="lblSchemaName" runat="server" Text="Default"></asp:Label>
                     <small>γνωρίσματα και συναρτησιακές εξαρτήσεις. </small></h1>
@@ -95,9 +98,9 @@
                         <asp:HiddenField ID="gridViewFDHiddenField" runat="server" Value="-3" />
 
                         <div class="row" style="float:right;">
-                            <asp:Button ID="btnNewFD" class="btn btn-info btn-sm showLoader" runat="server" Text="Προσθήκη" OnClick="btnNewFDClick" />
-                            <asp:Button ID="btnEditFD" class="btn btn-info btn-sm showLoader" runat="server" Text="Επεξεργασία" OnClick="btnEditFDClick" />
-                            <asp:Button ID="btnDeleteFD" class="btn btn-info btn-sm showLoader" runat="server" Text="Διαγραφή" OnClick="btnDeleteFDClick" />
+                            <asp:Button ID="btnNewFD" class="btn btn-info btn-md showLoader" runat="server" Text="Προσθήκη" OnClick="btnNewFDClick" />
+                            <asp:Button ID="btnEditFD" class="btn btn-info btn-md showLoader" runat="server" Text="Επεξεργασία" OnClick="btnEditFDClick" />
+                            <asp:Button ID="btnDeleteFD" class="btn btn-info btn-md showLoader" runat="server" Text="Διαγραφή" OnClick="btnDeleteFDClick" />
                         </div>
 
                     <!-- Modal νέας συναρτησιακής εξάρτησης -->
@@ -271,7 +274,7 @@
                 <div class="col-md-2 col-sm-2"></div>
                 <div class="col-md-6 col-sm-6">
 
-                    <asp:Button ID="btnPreview" class="btn btn-info btn-lg showLoader" runat="server" Text="Προεπισκόπηση" OnClick="btnPreview_Click" />
+                    <asp:Button ID="btnPreview" class="btn btn-success btn-lg showLoader" runat="server" Text="Προεπισκόπηση" OnClick="btnPreview_Click" />
 
                     <!-- Modal Προεπισκόπησης-->
                     <div class="modal fade" id="modalPreview" role="dialog">
@@ -296,11 +299,11 @@
                     <!-- Modal -->
 
 
-                    <asp:Button ID="btnDecompose" class="btn btn-info btn-lg showLoader" runat="server" Text="Διάσπαση" OnClick="btnDecompose_Click" />
-                    <asp:Button ID="btnClearResults" class="btn btn-info btn-lg showLoader" runat="server" Text="Καθαρισμός" OnClick="btnClearResults_Click" />
+                    <asp:Button ID="btnDecompose" class="btn btn-success btn-lg showLoader" runat="server" Text="Διάσπαση" OnClick="btnDecompose_Click" />
+                    <asp:Button ID="btnClearResults" class="btn btn-success btn-lg showLoader" runat="server" Text="Καθαρισμός" OnClick="btnClearResults_Click" />
                 </div>
                 <div class="col-md-2 col-sm-2">
-                    <asp:Button ID="btnReset" class="btn btn-info btn-lg showLoader" runat="server" Text="Reset" OnClick="btnResetClick" />
+                    <asp:Button ID="btnReset" class="btn btn-success btn-lg showLoader" runat="server" Text="Reset" OnClick="btnResetClick" />
                 </div>
                 <div class="col-md-2 col-sm-2">
                     <asp:Button ID="btnCloseStepsDecompose" class="btn btn-danger btn-lg showLoader" runat="server" Text="Κλείσιμο" Style="width: 100%;" OnClick="btnCloseStepsDecompose_Click" />
@@ -454,46 +457,23 @@
                 
             }
         });
-/*
-        // Για αλλαγή χρώματος και επιλεγμένης γραμμής του πίνακα gridViewRelation.
-        $("#gridViewRelation tr").click(function () {
-            var selected = $(this).hasClass("highlight");
-            $("#gridViewRelation tr").removeClass("highlight");
-            if (!selected) {
-                $(this).addClass("highlight");
-                $("#gridViewRelationHiddenField").val($(this).index() - 1);
-            }
-            else {
-                $("#gridViewRelationHiddenField").val(-3);
-            }
-        });
 
-        // Για αλλαγή χρώματος και επιλεγμένης γραμμής του πίνακα gridViewFD.
-        $("#gridViewFD tr").click(function () {
-            var selected = $(this).hasClass("highlight");
-            $("#gridViewFD tr").removeClass("highlight");
-            if (!selected) {
-                $(this).addClass("highlight");
-                $("#gridViewFDHiddenField").val($(this).index() - 1);
-            }
-            else {
-                $("#gridViewFDHiddenField").val(-3);
-            }
-        });
-    */
         // Αντί να βάλω listeners στο κάθε GridView ξεχωριστά, βάζω έναν και αναγνωρίζω σε ποιο απευθύνεται.     
         $("table tr").click(function () {
             var selected = $(this).hasClass("highlight");
             var gridView = $(this).closest("table").attr("id");
             var hiddenField = gridView.concat("HiddenField");
 
-            $("#" + gridView + " tr").removeClass("highlight");
-            if (!selected) {
-                $(this).addClass("highlight");
-                $("#" + hiddenField).val($(this).index() - 1);
-            }
-            else {
-                $("#" + hiddenField).val(-3);
+            if (gridView == "gridViewRelation" || gridView == "gridViewFD") {
+
+                $("#" + gridView + " tr").removeClass("highlight");
+                if (!selected) {
+                    $(this).addClass("highlight");
+                    $("#" + hiddenField).val($(this).index() - 1);
+                }
+                else {
+                    $("#" + hiddenField).val(-3);
+                }
             }
         });
 

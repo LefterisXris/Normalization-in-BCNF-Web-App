@@ -11,6 +11,7 @@ using MySql.Data.MySqlClient;
 public partial class MemberPages_Statistics : System.Web.UI.Page
 {
     DBConnect dbConnect = new DBConnect(true); // Αντικείμενο που επιτρέπει την κλήση μεθόδου που παίρνει το connectionString.
+    List<string> actions = new List<string> { "nLoad", "nClosure", "nFindKeys", "nDecompose", "nStepsDecompose" };
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -20,21 +21,30 @@ public partial class MemberPages_Statistics : System.Web.UI.Page
             getTableFromDB();
 
             List<string> schemaNames = dbConnect.getAllSchemaNames();
-            List<string> actions = new List<string> { "nLoad", "nClosure", "nFindKeys", "nDecompose", "nStepsDecompose" };
             List<string> chartTypes = new List<string> { "bar", "pie", "doughnut" };
             List<string> source = new List<string> { "Per Action", "Per Schema" };
 
+            SchemaNamesDropDownList2.Items.Add("all");
+            ActionsDropDownList2.Items.Add("all");
+            
             foreach (string s in schemaNames)
+            {
                 SchemaNamesDropDownList.Items.Add(s);
+                SchemaNamesDropDownList2.Items.Add(s);
+            }
 
             foreach (string s in actions)
+            {
                 ActionsDropDownList.Items.Add(s);
-
+                ActionsDropDownList2.Items.Add(s);
+            }
+                
             foreach (string s in chartTypes)
                 ChartTypeDropDownList.Items.Add(s);
 
             foreach (string s in source)
                 SourceDropDownList.Items.Add(s);
+
         }
     }
 
@@ -63,4 +73,22 @@ public partial class MemberPages_Statistics : System.Web.UI.Page
         
     }
 
+
+    protected void btnClearData_Click(object sender, EventArgs e)
+    {
+        string schema = SchemaNamesDropDownList2.SelectedValue;
+        string action = ActionsDropDownList2.SelectedValue;
+
+
+        if(action.Equals("all"))
+        {
+            foreach (string s in actions)
+            {
+                dbConnect.ResetStatistics(schema, s);
+            }
+        }
+        else
+            dbConnect.ResetStatistics(schema, action);
+
+    }
 }

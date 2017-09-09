@@ -42,19 +42,60 @@
         
         th, td {padding-left: 5px;}
         tbody tr:hover {background-color: #A1DCF2;}
+        .logout{float:right;}
+        .btn, .alert{
+            margin-left: 5px;
+            margin-top: 5px;
+        }
+        
     </style>
 
 </head>
 
 <body>
     <form id="form1" runat="server">
+       <!-- Navigation menu fixed -->
+        <nav id="nav" class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top" runat="server">
+	        <div class="container-fluid">
+	        <div class="navbar-header">
+		        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        </button>
+		        <a class="navbar-brand" href="#">WebSiteName</a>
+	        </div>
+	        <div class="collapse navbar-collapse" id="myNavbar">
+		        <ul class="nav navbar-nav">
+		        <li class="active"><a href="#">Home</a></li>
+		        <li class="dropdown">
+			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1 <span class="caret"></span></a>
+			        <ul class="dropdown-menu">
+			        <li><a href="#">Page 1-1</a></li>
+			        <li><a href="#">Page 1-2</a></li>
+			        <li><a href="#">Page 1-3</a></li>
+			        </ul>
+		        </li>
+		        <li><a href="#">Page 2</a></li>
+		        <li><a href="#">Page 3</a></li>
+		        </ul>
+		        <ul class="nav navbar-nav navbar-right">
+		        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+		        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+		        </ul>
+	        </div>
+	        </div>
+        </nav>
+
         <div class="container">
 
             <div class="loader hide-loader" id="loader"></div>
 
+            
+
             <%-- HEADER (τίτλο, όνομα κλπ) --%>
             <div class="page-header">
-                <h1>Νέο σχήμα:
+                <h1>Σχήμα:
                     <asp:Label ID="lblSchemaName" runat="server" Text="Default"></asp:Label>
                     <asp:Label ID="lblSchemaId" runat="server" Text="" Hidden ="true"></asp:Label>
                     <small>γνωρίσματα και συναρτησιακές εξαρτήσεις.</small></h1>
@@ -83,7 +124,8 @@
                                    
                                     <div class="form-horizontal">
                                         <div class="col-md-10">
-                                            <asp:GridView ID="gridViewFindClosure" runat="server" AutoGenerateColumns="false" Width="100%">
+                                            <asp:GridView ID="gridViewFindClosure" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+                                                 runat="server" AutoGenerateColumns="false" Width="100%">
                        
                                                  <Columns>
                                                      <asp:templatefield HeaderText="Επιλογή" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
@@ -101,6 +143,7 @@
 
                                     <div class="row">
                                         <div class="col-md-10">
+                                            <br />
                                             Επιλέξτε τα γνωρίσματα που θέλετε για να υπολογιστεί ο εγκλεισμός τους.
                                         </div>
                                     </div>
@@ -158,6 +201,8 @@
                 <asp:HiddenField ID="gridViewAttrHiddenField" runat="server" Value="-3" />
 
                 <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/add new.jpg" Visible="False" />
+
+                <br />
 
                 <!-- Buttons -->
                 <div style="text-align: right; width: 100%;">
@@ -256,6 +301,8 @@
                     <asp:HiddenField ID="gridViewFDHiddenField" runat="server" Value="-3" />
                     <asp:Image ID="Image2" runat="server" ImageUrl="~/Images/add new.jpg" Visible="False" />
 
+                    <br />
+
                     <!-- Buttons -->
                     <div style="text-align: right; width: 100%;">
                        <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modalNewFD">+</button> -->
@@ -315,6 +362,7 @@
 
                                     <div class="row">
                                         <div class="col-md-10">
+                                            <br />
                                             <p>Τελική μορφή συναρτησιακής εξάρτησης: </p>
                                             <asp:Label ID="lblPreviewFDtoCreateLeft" runat="server" Text=""></asp:Label>
                                             <asp:Label ID="lblArrow" runat="server" Text=""></asp:Label>
@@ -345,7 +393,8 @@
                                    
                                     <div class="form-horizontal">
                                         <div class="col-md-6">
-                                            <asp:GridView ID="gridViewEditLeftFD" runat="server" AutoGenerateColumns="false" Width="100%">
+                                            <asp:GridView ID="gridViewEditLeftFD" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+                                                 runat="server" AutoGenerateColumns="false" Width="100%">
                        
                                                  <Columns>
                                                      <asp:templatefield HeaderText="Επιλογή" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
@@ -360,7 +409,8 @@
                                             <asp:HiddenField ID="gridViewEditLeftFDHiddenField" runat="server" Value="-3"/>
                                         </div>
                                         <div class="col-md-6">
-                                            <asp:GridView ID="gridViewEditRightFD" runat="server" AutoGenerateColumns="false" Width="100%" >
+                                            <asp:GridView ID="gridViewEditRightFD" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White"
+                                                runat="server" AutoGenerateColumns="false" Width="100%" >
                        
                                                  <Columns>
                                                      <asp:templatefield HeaderText="Επιλογή" HeaderStyle-CssClass="text-center" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
@@ -379,6 +429,7 @@
 
                                     <div class="row">
                                         <div class="col-md-10">
+                                            <br />
                                             <p>Τελική μορφή συναρτησιακής εξάρτησης:</p>
                                             <asp:Label ID="lblPreviewFDtoEditLeft" runat="server" Text=""></asp:Label>
                                             <asp:Label ID="lblArrow2" runat="server" Text=""></asp:Label>
@@ -405,7 +456,8 @@
 
                 <%-- Logging Console --%>
                 <div class="col-md-6">
-                    <button type="button" id="btnOpenResultsModal" class="btn btn-info btn-lg"  data-toggle="modal" data-target="#modalResults">Results</button>
+                    <br />
+                    <button type="button" id="btnOpenResultsModal" class="btn btn-success btn-lg"  data-toggle="modal" data-target="#modalResults">Παράθυρο αποτελεσμάτων</button>
 
                     <div class="alert alert-success fade in" id="alertBoxSuccess" hidden="hidden">
 				        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -449,8 +501,8 @@
                 <%-- Load Button --%>
                 <div class="col-md-6">
                     <div>
-                       
-                         <asp:Button ID="btnNewSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Νέο Σχήμα" OnClick="btnNewSchemaClick"/>
+                       <br />
+                        <asp:Button ID="btnNewSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Νέο Σχήμα" OnClick="btnNewSchemaClick"/>
                         
                         <!-- Modal νέο σχήμα -->
                         <div class="modal fade" id="modalNewSchema" role="dialog">
@@ -484,14 +536,8 @@
                         </div>
                         <!-- Modal -->
 
-                    </div>
-                    <div>
                         <asp:Button ID="btnLoadSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Φόρτωση Σχήματος" OnClick="btnLoadSchema_Click"  />
-                        <br />
-                        <asp:Button ID="btnSaveSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  />
-                        <br />
-                        <asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" OnClick="btnSetDefaultSchemaSelect" />
-                    
+
                         <!-- Modal φόρτωση σχήματος-->
                         <div class="modal fade" id="loadSchemaModal" role="dialog">
                             <div class="modal-dialog">
@@ -512,38 +558,46 @@
                         </div>
                         <!-- Modal -->
 
-                        <!-- Modal επιλογή προεπιλεγμένου σχήματος-->
-                        <div class="modal fade" id="SetDefaultSchemaModal" role="dialog">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title">Επιλογή Προεπιλεγμένου σχήματος</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>Διαλέξτε ένα παράδειγμα για προεπιλεγμενο</p>
-                                        <asp:DropDownList ID="SetSchemaDefaultDropDownList" runat="server"></asp:DropDownList>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <asp:Button runat="server" ID="btnSetSchema" Text="SET" class="btn btn-default showLoader" OnClick="btnSetDefaultSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Modal -->
-
-
-                        <br />
-                        <asp:LoginStatus ID="LoginStatus1" runat="server" />
-                        <br />
-                        <asp:Button ID="btnLoadDB" class="btn btn-success btn-lg" runat="server" Text="Paradeigmata"  OnClick="btnGetSchemasClick" />
+                        
                     </div>
                 </div>
 
             </div>
             
-            <asp:HyperLink ID="StatisticsHyperLink" runat="server" NavigateUrl="~/MemberPages/Statistics.aspx" Visible="False">Εμφάνιση στατιστικών</asp:HyperLink>
-            <asp:HyperLink ID="AdminPageHyperLink" runat="server" NavigateUrl="~/MemberPages/Admin.aspx" Visible="False">Back to Admin Page</asp:HyperLink>
+            <h3 id="adminActionsH3" style="color:#669999;" runat="server"> Επιλογές διαχειριστή:</h3> 
+            
+            <hr id="adminHR1" style="height:3px; background-color:grey;" runat="server"/>
+
+                <asp:Button ID="btnSaveSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  />
+                <asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" OnClick="btnSetDefaultSchemaSelect" />
+            
+                <asp:LoginStatus ID="LoginStatus1" runat="server" ForeColor="Red" CssClass="btn btn-danger btn-sm logout" />
+
+                <!-- Modal επιλογή προεπιλεγμένου σχήματος-->
+                <div class="modal fade" id="SetDefaultSchemaModal" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Επιλογή Προεπιλεγμένου σχήματος</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>Διαλέξτε ένα παράδειγμα για προεπιλεγμενο</p>
+                                <asp:DropDownList ID="SetSchemaDefaultDropDownList" runat="server"></asp:DropDownList>
+                            </div>
+                            <div class="modal-footer">
+                                <asp:Button runat="server" ID="btnSetSchema" Text="SET" class="btn btn-default showLoader" OnClick="btnSetDefaultSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal -->
+
+
+            <asp:HyperLink class="btn btn-success btn-lg" ID="StatisticsHyperLink" runat="server" NavigateUrl="~/MemberPages/Statistics.aspx" Visible="False">Εμφάνιση στατιστικών</asp:HyperLink>
+            <asp:HyperLink class="btn btn-success btn-lg" ID="AdminPageHyperLink" runat="server" NavigateUrl="~/MemberPages/Admin.aspx" Visible="False">Admin Page</asp:HyperLink>
+
+            <hr id="adminHR2" style="height:3px; background-color:grey;" runat="server"/>
 
         </div>
     </form>
@@ -708,18 +762,33 @@
 
         // Αντί να βάλω listeners στο κάθε GridView ξεχωριστά, βάζω έναν και αναγνωρίζω σε ποιο απευθύνεται.     
         $("table tr").click(function () {
+           
             var selected = $(this).hasClass("highlight");
             var gridView = $(this).closest("table").attr("id");
             var hiddenField = gridView.concat("HiddenField");
 
-            $("#"+ gridView +" tr").removeClass("highlight");
-            if (!selected) {
-                $(this).addClass("highlight");
-                $("#" + hiddenField).val($(this).index() - 1);
+            if (gridView == "gridViewAttr" || gridView == "gridViewFD") {
+
+                $("#"+ gridView +" tr").removeClass("highlight");
+                if (!selected) {
+                    $(this).addClass("highlight");
+                    $("#" + hiddenField).val($(this).index() - 1);
+                }
+                else {
+                    $("#" + hiddenField).val(-3);
+                }
             }
-            else {
-                $("#" + hiddenField).val(-3);
-            }
+
+          /*  if (gridView == "gridViewLeftFD" || gridView == "gridViewRightFD" || gridView == "gridViewEditLeftFD" || gridView == "gridViewEditRightFD" || gridView == "gridViewFindClosure") {
+
+                var checkbox = $(this).find('input:checkbox')[0];
+                alert(checkbox);
+                if (checkbox.checked)
+                    checkbox.checked = false;
+                else
+                    checkbox.checked = true;
+            }*/
+
         });
 
         </script>

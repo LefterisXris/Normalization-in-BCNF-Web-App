@@ -31,7 +31,7 @@ public partial class _Default : System.Web.UI.Page
         }
 
         // Αρχικοποίηση της Logging Console.
-        msg += "Logging Console...";
+        msg += "Εδώ θα εμφανίζονται τα αποτελέσματα";
         log.InnerText = msg;
 
         // Φόρτωση του default σχήματος.
@@ -88,7 +88,10 @@ public partial class _Default : System.Web.UI.Page
         LoginStatus1.Visible = visible;
         btnSaveSchema.Visible = visible;
         btnSetDefaultSchema.Visible = visible;
-        btnLoadDB.Visible = visible;
+        adminActionsH3.Visible = visible;
+        adminHR1.Visible = visible;
+        adminHR2.Visible = visible;
+        nav.Visible = visible;
     }
 
     #region ADD NEW (Attr & Fd)
@@ -1253,15 +1256,18 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
-    // TODO: Extra desktop εφαρμογή για Στατιστικά.
-    // TODO: Φτιάξε το design.    
+
     // TODO: Βάλε έλεγχο εισαγωγής στα διάφορα inputs.
     // TODO: Αναίρεση ή ενσωμάτωση enter. 
     // TODO: Διαγραφή περιτών κομματιών (κλάσεις, μεθόδους, μεταβλητές).
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
     // TODO: Επεξεργασία με double click.
-    // TODO: Δυνατότητα μηδενισμού στατιστικών.
+    // TODO: Change DBqueries with prepare.
 
+    // TODO: Μορφοποίηση login page
+    // TODO: Μορφοποίηση modal και όλα τα άλλα.
+    // TODO: Δυνατότητες διαχειριστή στο μενού.
+    // TODO: Fouter.
 
     protected void btnGetSchemasClick(object sender, EventArgs e)
     {

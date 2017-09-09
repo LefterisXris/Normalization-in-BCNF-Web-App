@@ -145,7 +145,6 @@ public partial class StepsDecompose : System.Web.UI.Page
             populateRelationGridView(relList);
             populateFdGridView(fdList);
         }
-            
 
         ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
     }

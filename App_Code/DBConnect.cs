@@ -69,7 +69,15 @@ namespace Normalization
             password = "";
 
             string connectionString = "Server=" + server + ";" +"Port=3306;" + "Database=" + database + ";" + "Uid=" + uid + ";" + "Pwd=" + password + ";" + "CharSet = greek;" ;
-            connection = new MySqlConnection(connectionString);
+
+            try
+            {
+                connection = new MySqlConnection(connectionString);
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine("Exception :" + e.Message);
+            }
         }
 
         //open connection to database
@@ -129,28 +137,35 @@ namespace Normalization
             //Open connection
             if (this.OpenConnection() == true)
             {
-                //Create Command
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-
-                //Create a data reader and Execute the command
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                //Read the data and store them in the list
-                 /* while (dataReader.Read())
-                  {
-                      list[0].Add(dataReader["id"] + "");
-                      list[1].Add(dataReader["name"] + "");
-                  }*/
                 List<string> yo = new List<string>();
-                while (dataReader.Read())
+                try
                 {
-                    //yo.Add(dataReader["id"] + "");
-                    yo.Add(dataReader["name"] + "");
-                }
-                    
-                //close Data Reader
-                dataReader.Close();
+                    //Create Command
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
 
+                    //Create a data reader and Execute the command
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                    //Read the data and store them in the list
+                    /* while (dataReader.Read())
+                     {
+                         list[0].Add(dataReader["id"] + "");
+                         list[1].Add(dataReader["name"] + "");
+                     }*/
+                    
+                    while (dataReader.Read())
+                    {
+                        //yo.Add(dataReader["id"] + "");
+                        yo.Add(dataReader["name"] + "");
+                    }
+
+                    //close Data Reader
+                    dataReader.Close();
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
+                }
                 //close Connection
                 this.CloseConnection();
 
@@ -179,17 +194,18 @@ namespace Normalization
             //Open connection
             if (this.OpenConnection() == true)
             {
-                //create mysql command
-                MySqlCommand cmd = new MySqlCommand();
-
-                //Assign the query using CommandText
-                cmd.CommandText = query;
-
-                //Assign the connection using Connection
-                cmd.Connection = connection;
-
-                //Execute query
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    //create mysql command
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    
+                    //Execute query
+                    cmd.ExecuteNonQuery();
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
+                }
 
                 // Ενημέρωση ημερομηνίας.
                 lastEditSet(schemaId);
@@ -207,17 +223,18 @@ namespace Normalization
         {
             int id = Int32.Parse(schemaId);
             string query = "UPDATE `Schemas` SET `lastEdit`= now() WHERE `id`=" + id + "";
-            //UPDATE `Schemas` SET `lastEdit`=now() WHERE 1
 
-            //create mysql command
-            MySqlCommand cmd = new MySqlCommand();
-            //Assign the query using CommandText
-            cmd.CommandText = query;
-            //Assign the connection using Connection
-            cmd.Connection = connection;
-
-            //Execute query
-            cmd.ExecuteNonQuery();
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                
+                //Execute query
+                cmd.ExecuteNonQuery();
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine("Exception :" + e.Message);
+            }
         }
         
         /// <summary>
@@ -227,25 +244,31 @@ namespace Normalization
         public List<string> getSchemaNames()
         {
             string query = "SELECT `name` FROM `Schemas` WHERE `createdBy` = 'admin'";
-
+            List<string> names = new List<string>(); //Read the data and store them in the list
+            
             //Open connection
             if (this.OpenConnection() == true)
             {
-                //Create Command
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-
-                //Create a data reader and Execute the command
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                //Read the data and store them in the list
-                List<string> names = new List<string>();
-                while (dataReader.Read())
+                try
                 {
-                    names.Add(dataReader["name"] + "");
-                }
+                    //Create Command
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
 
-                //close Data Reader
-                dataReader.Close();
+                    //Create a data reader and Execute the command
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+                    
+                    while (dataReader.Read())
+                    {
+                        names.Add(dataReader["name"] + "");
+                    }
+
+                    //close Data Reader
+                    dataReader.Close();
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
+                }
 
                 //close Connection
                 this.CloseConnection();
@@ -268,15 +291,23 @@ namespace Normalization
 
             if (this.OpenConnection() == true)
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();                
-
-                while (dataReader.Read())
+                try
                 {
-                    names.Add(dataReader["name"] + "");
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        names.Add(dataReader["name"] + "");
+                    }
+
+                    dataReader.Close();
                 }
-                
-                dataReader.Close();
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
+                }
+
                 this.CloseConnection();
             }
             return names;
@@ -293,12 +324,15 @@ namespace Normalization
             //open connection
             if (this.OpenConnection() == true)
             {
-                //create command and assign the query and connection from the constructor
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-
-                //Execute command
-                cmd.ExecuteNonQuery();
-
+                try
+                {
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.ExecuteNonQuery();
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
+                }
                 //close connection
                 this.CloseConnection();
             }
@@ -317,17 +351,24 @@ namespace Normalization
             //open connection
             if (this.OpenConnection() == true)
             {
-                //create command and assign the query and connection from the constructor
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-
-                //Execute command
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                while (dataReader.Read())
+                try
                 {
-                    name = dataReader["name"] + "";
+                    //create command and assign the query and connection from the constructor
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                    //Execute command
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        name = dataReader["name"] + "";
+                    }
+                    dataReader.Close();
                 }
-                
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
+                }
                 //close connection
                 this.CloseConnection();
                 return name;
@@ -342,18 +383,26 @@ namespace Normalization
         {
             string query = "SELECT * FROM `Schemas` WHERE `name`='"+ schemaName  +"' ORDER BY `Schemas`.`dateCreated` DESC";
             int id = 0;
+
             //open connection
             if (this.OpenConnection() == true)
             {
-                //create command and assign the query and connection from the constructor
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                try
+                {
+                    //create command and assign the query and connection from the constructor
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
 
-                //Execute command
-                MySqlDataReader dataReader = cmd.ExecuteReader();
+                    //Execute command
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
 
-                dataReader.Read();
-                id = (int) dataReader["id"];
-                
+                    dataReader.Read();
+                    id = (int)dataReader["id"];
+                    dataReader.Close();
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
+                }
 
                 //close connection
                 this.CloseConnection();
@@ -375,16 +424,22 @@ namespace Normalization
             //Open connection
             if (this.OpenConnection() == true)
             {
-                //create mysql command
-                MySqlCommand cmd = new MySqlCommand();
-                //Assign the query using CommandText
-                cmd.CommandText = query;
-                //Assign the connection using Connection
-                cmd.Connection = connection;
+                try
+                {
+                    //create mysql command
+                    MySqlCommand cmd = new MySqlCommand();
+                    //Assign the query using CommandText
+                    cmd.CommandText = query;
+                    //Assign the connection using Connection
+                    cmd.Connection = connection;
 
-                //Execute query
-                cmd.ExecuteNonQuery();
-
+                    //Execute query
+                    cmd.ExecuteNonQuery();
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
+                }
                 // Ενημέρωση ημερομηνίας.
                 lastEditSet(schemaId);
 
@@ -404,16 +459,22 @@ namespace Normalization
             //Open connection
             if (this.OpenConnection() == true)
             {
-                MySqlCommand cmd = new MySqlCommand();
-                cmd.CommandText = query;
-                cmd.Connection = connection;
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    MySqlCommand cmd = new MySqlCommand();
+                    cmd.CommandText = query;
+                    cmd.Connection = connection;
+                    cmd.ExecuteNonQuery();
 
-                query = "UPDATE `lefterisxris`.`Schemas` SET `isDefault` = 1 WHERE `name`='"+ schemaName +"'";
-                cmd.CommandText = query;
-                cmd.Connection = connection;
-                cmd.ExecuteNonQuery();
-
+                    query = "UPDATE `lefterisxris`.`Schemas` SET `isDefault` = 1 WHERE `name`='" + schemaName + "'";
+                    cmd.CommandText = query;
+                    cmd.Connection = connection;
+                    cmd.ExecuteNonQuery();
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
+                }
                 //close connection
                 this.CloseConnection();
             }
@@ -434,19 +495,25 @@ namespace Normalization
             //open connection
             if (this.OpenConnection() == true)
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                while (dataReader.Read())
+                try
                 {
-                    int r = Int32.Parse(dataReader["result"] + "");
-                    if (r == 1)
-                        authenticationResult = true;
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        int r = Int32.Parse(dataReader["result"] + "");
+                        if (r == 1)
+                            authenticationResult = true;
+                    }
+
+                    dataReader.Close(); // κλείνει η ανοιχτή σύνδεση ώστε να γίνουν τα επόμενα.
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
                 }
 
-                dataReader.Close(); // κλείνει η ανοιχτή σύνδεση ώστε να γίνουν τα επόμενα.
-
-                
                 this.CloseConnection();
             }
 
@@ -467,30 +534,70 @@ namespace Normalization
             //open connection
             if (this.OpenConnection() == true)
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                while (dataReader.Read())
+                try
                 {
-                    res = dataReader["lastLogin"] + "";
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        res = dataReader["lastLogin"] + "";
+                    }
+
+                    dataReader.Close(); // κλείνει η ανοιχτή σύνδεση ώστε να γίνουν τα επόμενα.
+
+                    // Ενημέρωση lastLogin
+                    query = "UPDATE `Admin` SET `lastLogin`= now() WHERE `name`='" + username + "' ";
+                    cmd = new MySqlCommand(query, connection);
+                    cmd.ExecuteNonQuery();
+
+                    // Ενημέρωση μετρητή
+                    query = "UPDATE `Admin` SET `loginCount`= `loginCount` + 1 WHERE `name`='" + username + "' ";
+                    cmd = new MySqlCommand(query, connection);
+                    cmd.ExecuteNonQuery();
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
                 }
 
-                dataReader.Close(); // κλείνει η ανοιχτή σύνδεση ώστε να γίνουν τα επόμενα.
-
-                // Ενημέρωση lastLogin
-                query = "UPDATE `Admin` SET `lastLogin`= now() WHERE `name`='" + username + "' ";
-                cmd = new MySqlCommand(query, connection);
-                cmd.ExecuteNonQuery();
-
-                // Ενημέρωση μετρητή
-                query = "UPDATE `Admin` SET `loginCount`= `loginCount` + 1 WHERE `name`='" + username + "' ";
-                cmd = new MySqlCommand(query, connection);
-                cmd.ExecuteNonQuery();
-                
                 this.CloseConnection();
             }
             return res;
         }
+
+        
+        public void ResetStatistics(string schemaName, string action)
+        {
+            string query = "";
+
+            if (schemaName.Equals("all"))
+                query = "UPDATE `lefterisxris`.`Schemas` SET `" + action + "` = 0";
+            else 
+                query = "UPDATE `lefterisxris`.`Schemas` SET `" + action + "` = 0 WHERE `name` = '" + schemaName + "'";
+
+            
+            //Open connection
+            if (this.OpenConnection() == true)
+            {
+                try
+                {
+                    MySqlCommand cmd = new MySqlCommand();
+                    cmd.CommandText = query;
+                    cmd.Connection = connection;
+                    cmd.ExecuteNonQuery();
+                }
+                catch(MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
+                }
+                
+                //close connection
+                this.CloseConnection();
+            }
+
+        }
+
 
         /* SELECT
         //Select statement
