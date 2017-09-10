@@ -12,6 +12,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="../Scripts/Chart.js"></script>
     <script src="../Scripts/Chart.min.js"></script>
+
+    <style>
+        .highlight { background-color: #A1DCF2; }
+        #gridViewDatabase tr:hover{background-color: #A1DCF2;}
+    </style>
 </head>
 
 <body>
@@ -37,11 +42,13 @@
 			<div id="Stats" class="tab-pane fade in active">
 				<h3>Πίνακας Στατιστικών</h3>
                     
-                <asp:GridView CssClass="table table-hover table-striped" ID="gridViewDatabase" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White" runat="server" Width="100%" BorderStyle="Solid" BorderWidth="2px">            
+                <asp:GridView CssClass="table" ID="gridViewDatabase" HeaderStyle-BackColor="#3AC0F2" HeaderStyle-ForeColor="White" runat="server" Width="100%" BorderStyle="Solid" BorderWidth="2px">            
                     <Columns>
                 
                     </Columns>
                 </asp:GridView>
+
+                <asp:HiddenField ID="gridViewDatabaseHiddenField" runat="server" Value="-3" />
 
 			</div>
 
@@ -50,6 +57,7 @@
 				<h3>Γραφήματα</h3>
                 
                 <div id="chartSpace">
+                    <h3 id="protropiH3"><small>(Επιλέξτε από τις διαθέσιμες επιλογές, για δημιουργία γραφήματος)</small></h3>
                     <canvas id="myChart" ></canvas>          
                 </div>
                      
@@ -66,6 +74,7 @@
             <!-- Διαχείριση δεδομένων -->
 			<div id="Manage" class="tab-pane fade in">
 				<h3>Διαχείριση Δεδομένων</h3>
+                <h3><small>Επιλέξτε δεδομένα για μηδενισμό</small></h3>
 
                 Επιλογή: <asp:DropDownList ID="SchemaNamesDropDownList2" runat="server"></asp:DropDownList>
                 <asp:DropDownList ID="ActionsDropDownList2" runat="server"></asp:DropDownList>
@@ -108,6 +117,7 @@
     // Δημιουργία γραφήματος.
 	$("#btnGenerateChart").click(function () {
 
+	    $("#protropiH3").hide();
 	    var dbData = new Array(); // Ο πίνακας στον οποίο θα αποθηκευτούν τα δεδομένα.
 	    var source = $("#SourceDropDownList option:selected").text(); // Η επιλογή για το είδος απεικόνισης.
 
@@ -227,6 +237,22 @@
 	    setVisibilityOnDDLs();
 	});
 
+	$("table tr").click(function () {
+
+	    var selected = $(this).hasClass("highlight");
+	    var gridView = $(this).closest("table").attr("id");
+	    var hiddenField = gridView.concat("HiddenField");
+
+	    $("#" + gridView + " tr").removeClass("highlight");
+	    if (!selected) {
+	        $(this).addClass("highlight");
+	        $("#" + hiddenField).val($(this).index() - 1);
+	    }
+	    else {
+	        $("#" + hiddenField).val(-3);
+	    }
+	    
+	});
 </script>
 
 </html>

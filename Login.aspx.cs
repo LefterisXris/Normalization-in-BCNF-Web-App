@@ -29,9 +29,4 @@ public partial class Login : System.Web.UI.Page
             Msg.Text = "Login failed. Please check your user name and password and try again.";
         }
 
-    protected void Button1_Click(object sender, EventArgs e)
-    {
-        //  Response.Redirect("http://ilust.uom.gr:9000/Default.aspx");
-        Response.Redirect("Default.aspx");
-    }
 }

@@ -29,23 +29,23 @@
             </h1>
         </div>
         
+        <!-- Row με Ημ/νία -->
         <div class="row">
             <div class="col-md-8">
                 <asp:Label ID="Label1" runat="server" Text="Ημερομηνία τελευταίας πρόσβασης: "></asp:Label>
-                <asp:Label ID="lblLastLogin" runat="server" Text=""></asp:Label><br />
+                <asp:Label ID="lblLastLogin" runat="server" Text=""></asp:Label>
 
-                <br /><br />
-                
-                
+                <br /> <br /> <br />
             </div>
         </div>
 
         <h3 style="color:#669999;"> Επιλογές διαχειριστή:</h3> 
         <hr style="height:2px; background-color:grey;"/>
 
+        <!-- Row με επιλογές διαχειριστή -->
          <div class="row">
             <div class="col-md-12">
-                <asp:HyperLink class="btn btn-success btn-lg" ID="HyperLink1" runat="server" NavigateUrl="~/Default.aspx">Διαχείριση αρχικής σελίδας</asp:HyperLink>
+                <asp:HyperLink class="btn btn-success btn-lg" ID="HyperLink1" runat="server" NavigateUrl="~/Default.aspx" ToolTip="Εξτρά δυνατότητες ">Διαχείριση αρχικής σελίδας</asp:HyperLink>
                 <asp:HyperLink class="btn btn-success btn-lg" ID="StatisticsHyperLink" runat="server" NavigateUrl="~/MemberPages/Statistics.aspx">Εμφάνιση στατιστικών</asp:HyperLink>
 
                 <asp:LoginStatus ID="LoginStatus1" runat="server" ForeColor="Red" CssClass="btn btn-danger btn-lg logout" />
