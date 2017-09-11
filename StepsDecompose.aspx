@@ -10,82 +10,103 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="Style/bcnfStyle.css"/>
 
-    <style>
-        .highlight { background-color: #A1DCF2; }
-        .hide-loader{display:none;}
-        .loader {
-            position: absolute;
-            left: 45%;
-            top: 45%;
-            z-index: 2000;
-            border: 16px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 16px solid blue;
-            border-bottom: 16px solid blue;
-            width: 120px;
-            height: 120px;
-            -webkit-animation: spin 1s linear infinite;
-            animation: spin 1s linear infinite;
-            }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        th, td {padding-left: 5px;}
-        tbody tr:hover {background-color: #A1DCF2;}
-        .btn, .alert{
-            margin-left: 5px;
-            margin-top: 5px;
-        }
-        .nav>li>a{display:inline-block !important; padding-left: 0 !important;}
-        .myGlyph{color:white;}
-        .hea{
-            margin-top:10px !important;
-        }
-
-        .fixed-top{position:fixed; right:0; left:0; z-index:1030;}
-        .page-header {margin: 100px 0 20px;}
-    </style>
+    
 </head>
 
 <body>
     <form id="form1" runat="server">
 
-         <!-- Navigation menu fixed -->
+         <!-- Navigation menu fixed for Admins -->
         <nav id="nav" class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top" runat="server">
 	        <div class="container-fluid">
-	        <div class="navbar-header">
-		        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+	        
+                <div class="navbar-header">
+		            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+		            <span class="icon-bar"></span>
+		            <span class="icon-bar"></span>
+		            <span class="icon-bar"></span>
+		            </button>
+		            <a class="navbar-brand navTitle" href="#">Επιλογές Διαχειριστή</a>
+	            </div>
+
+	            <div class="collapse navbar-collapse" id="myNavbar">
+
+                    <!-- Admin Buttons -->
+		            <ul class="nav navbar-nav">
+                        <li><a href="../Default.aspx"><span class="glyphicon glyphicon-home"></span></a></li>
+		                <li><asp:Button ID="btnSaveSchema" class="btn btn-success btn-sm headerButtons" runat="server" Text="Αποθήκευση Σχήματος" Enabled="False" /></li>
+		                <li><asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-sm headerButtons showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" Enabled="False" /></li>
+		                <li><asp:Button ID="btnStatistics" class="btn btn-success btn-sm headerButtons" runat="server" PostBackUrl="~/MemberPages/Statistics.aspx" Text="Εμφάνιση στατιστικών"/></li>
+                        <li><asp:Button ID="btnAdmin" class="btn btn-success btn-sm headerButtons" runat="server" Text="Admin Page" PostBackUrl="~/MemberPages/Admin.aspx" /></li>                
+		            </ul>
+		        
+                    <!-- Admin Login Status -->
+                    <ul class="nav navbar-nav navbar-right">
+		                <li><a href="#"><span class="glyphicon glyphicon-user"></span>
+                            <asp:LoginName ID="LoginName2" runat="server" />
+                            </a>
+		                </li>
+		                <li id="lgout">
+                            <span class="glyphicon glyphicon-log-out"></span> 
+                            <asp:LoginStatus ID="LoginStatus2" runat="server"  />
+		                </li>
+		            </ul>
+
+	            </div>
+	        </div>
+        </nav>
+
+        <!-- Navigation menu fixed for Users -->
+        <nav id="navUsers" class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top" runat="server">
+	        <div class="container-fluid">
+	        
+            <div class="navbar-header">
+		        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbarUser">
 		        <span class="icon-bar"></span>
 		        <span class="icon-bar"></span>
 		        <span class="icon-bar"></span>
 		        </button>
-		        <a class="navbar-brand" href="#" style="color:#669999;">Επιλογές Διαχειριστή</a>
+		        <a class="navbar-brand navTitle" href="#">Normalization BCNF</a>
 	        </div>
 
             
-	        <div class="collapse navbar-collapse" id="myNavbar">
+	        <div class="collapse navbar-collapse" id="myNavbarUser">
 
-                <!-- Admin Buttons -->
+                <!-- User Buttons -->
 		        <ul class="nav navbar-nav">
-                    <li><a href="../Default.aspx"><span class="glyphicon glyphicon-home"></span></a></li>
-		            <li><asp:Button ID="btnSaveSchema" class="btn btn-success btn-sm hea" runat="server" Text="Αποθήκευση Σχήματος" Enabled="False" /></li>
-		            <li><asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-sm hea showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" Enabled="False" /></li>
-		            <li><asp:Button class="btn btn-success btn-sm hea" ID="Button1" runat="server" PostBackUrl="~/MemberPages/Statistics.aspx"  Text="Εμφάνιση στατιστικών"/></li>
-                    <li><asp:Button ID="Button2" class="btn btn-success btn-sm hea" runat="server" Text="Admin Page" PostBackUrl="~/MemberPages/Admin.aspx" /></li>                
+                    <li><a href="Default.aspx"><span class="glyphicon glyphicon-home"></span></a></li>
+		            <li class="dropdown">
+			          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Κανονικοποίηση <span class="caret"></span></a>
+			          <ul class="dropdown-menu">
+				        <li><a href="#"><i class="icon iconShowBCNF"></i> <asp:Button ID="btnNavShowBCNF" class="btn btn-success btn-sm navDropDownbtn showLoader" runat="server" Text="Προβολή BCNF πινάκων" OnClick="btnShowBCNFTablesClick" /></a></li>
+                        <li><a href="#"><i class="icon iconPreview"></i> <asp:Button ID="btnNavPreview" class="btn btn-success btn-sm navDropDownbtn showLoader" runat="server" Text="Προεπισκόπηση" OnClick="btnPreview_Click" /></a></li>
+				        <li><a href="#"><i class="icon iconDecompose"></i> <asp:Button ID="btnNavDecompose" class="btn btn-success btn-sm navDropDownbtn showLoader" runat="server" Text="Διάσπαση" OnClick="btnDecompose_Click" /></a></li>
+                        <li><a href="#"><i class="icon iconClear"></i> <asp:Button ID="btnNavClear" class="btn btn-success btn-sm navDropDownbtn showLoader" runat="server" Text="Καθαρισμός" OnClick="btnClearResults_Click" /></a></li>
+                        <li><a href="#"><i class="icon iconReset"></i> <asp:Button ID="btnNavReset" class="btn btn-success btn-sm navDropDownbtn showLoader" runat="server" Text="Reset" OnClick="btnResetClick" /></a></li>
+			          </ul>
+			        </li>
+		            <li class="dropdown">
+			          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Σχετικά <span class="caret"></span></a>
+			          <ul class="dropdown-menu">
+				        <li><a href="#"><i class="icon iconInfo"></i> Οδηγίες Χρήσης</a></li>
+				        <li><a href="#"><i class="icon iconDiplomatic"></i> Η εργασία</a></li>
+				        <li><a href="https://github.com/LefterisXris/Normalization-in-BCNF-Web-App"><i class="icon iconContribute"></i> Συνεισφορά</a></li>
+			          </ul>
+			        </li>
+		            <li><a href="#">Επικοινωνία</a></li>
 		        </ul>
 		        
                 <!-- Admin Login Status -->
                 <ul class="nav navbar-nav navbar-right">
 		            <li><a href="#"><span class="glyphicon glyphicon-user"></span>
-                        <asp:LoginName ID="LoginName2" runat="server" />
+                        <asp:LoginName ID="LoginName1" runat="server" />
                         </a>
 		            </li>
-		            <li id="lgout">
-                        <span class="glyphicon glyphicon-log-out" style="color:#9d9d9d"></span> 
-                        <asp:LoginStatus ID="LoginStatus2" runat="server"  />
+		            <li id="lgoutUser">
+                        <span class="glyphicon glyphicon-log-out"></span> 
+                        <asp:LoginStatus ID="LoginStatus1" runat="server"  />
 		            </li>
 		        </ul>
 
@@ -361,6 +382,18 @@
             </div>
 
         </div>
+   
+        <!-- Footer -->
+        <footer class="text-center">
+
+            <a class="up-arrow" href="#" data-toggle="tooltip" title="TO TOP">
+			<span class="glyphicon glyphicon-chevron-up"></span>
+		    </a>
+
+			<a href="http://www.uom.gr/index.php?tmima=6&categorymenu=2"><p>University of Macedonia &copy; 2017</p></a>
+		
+		</footer>
+
     </form>
 
     <script>

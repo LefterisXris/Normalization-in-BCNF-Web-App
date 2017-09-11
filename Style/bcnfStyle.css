@@ -1,0 +1,127 @@
+﻿
+/* Για την περίπτωση της εναλλακτικής διάσπασης μέσα στο μόνταλ αποτελεσμάτων.*/
+#together{max-width:45%;}
+    
+/* Για τον χρωματισμό κατά την επιλογή των γραμμών των gridViews. */
+.highlight { background-color: #A1DCF2; }
+
+/* Για την απόκρυψη του Loader. */
+.hide-loader{display:none;}
+
+/* Για την εμφάνιση του Loader. */
+.loader {
+    position: absolute; /* Στο κέντρο της σελίδας. */
+    left: 45%;
+    top: 45%;
+    z-index: 2000; /* Πάνω από όλα (ακόμα και από τα μόνταλ). */
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid blue;
+    border-bottom: 16px solid blue;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 1s linear infinite;  /* Για συμβατότητα με άλλους Broswers. */
+    animation: spin 1s linear infinite; /* Το animation ορίζεται παρακάτω με όνομα spin. */
+    }
+
+/* Για την κίνηση του Loader. Επαναλαμβάνεται η ίδια κίνηση με τη βοήθεια του rotate. */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Για το κενό στα κελιά από την αριστερή μεριά (gridViews). */        
+th, td {padding-left: 5px;}
+
+/* Για τον χρωματισμό κατά το hover των γραμμών των gridViews. */
+tbody tr:hover {background-color: #A1DCF2;}
+
+/* Τόσο στα buttons όσο και στα alerts αφήνω αποστάσεις από τα υπόλοιπα. */
+.btn, .alert{
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+/* Όλοι οι σύνδεσμοι στα navs πρέπει να είναι σε σειρά, και με κανένα κενό μεταξύ τους. important γιατί έχουν default τιμή από bootstrap. */
+.nav>li>a{
+    display:inline-block !important; 
+    padding-left: 0 !important;
+}
+
+/* Για τον χρωματισμό κατά το hover άλλου element. Προσθέτω η αφαιρώ ανάλογα αυτήν την κλάση. */
+.myGlyph{color:white;}
+
+/* Για τα buttons που βρίσκονται στο navbar, αφήνω κενό επάνω για ευθυγράμμιση. important γιατί από default έχουν 5px. */
+.headerButtons{margin-top:10px !important;}
+
+/* Συγκεκριμένα για το navbar οι σύνδεσμοι να έχουν περιθώρια. important γιατί έχουν default τιμή από bootstrap. */
+.navbar-nav>li>a{ padding:15px 15px !important;}
+
+/* Για τις επιλογές των χρηστών, ορίζεται η εμφάνιση των εικονιδίων. */
+.icon {
+    height: 16px;
+    width: 16px;
+    display: inline-block;
+}
+
+/* Εικονίδιο Εγλεισμού. */
+.iconClosure{background-image: url('../Images/closure.ico')}
+/* Εικονίδιο Κλειδιών. */
+.iconKeys{background-image: url('../Images/key.ico')}
+/* Εικονίδιο Διάσπασης. */
+.iconDecompose{background-image: url('../Images/bcnf.ico')}
+/* Εικονίδιο Σταδιακής Διάσπασης. */
+.iconStepsDecompose{background-image: url('../Images/steps.ico')}
+
+/* Εικονίδιο Οδηγιών. */
+.iconInfo{background-image: url('../Images/info.ico')}
+/* Εικονίδιο Εργασίας. */
+.iconDiplomatic{background-image: url('../Images/diplomatic.ico')}
+/* Εικονίδιο Συνεισφοράς. */
+.iconContribute{background-image: url('../Images/git.ico')}
+
+.iconShowBCNF{background-image: url('../Images/show.ico')}
+.iconPreview{background-image: url('../Images/preview.ico')}
+.iconClear{background-image: url('../Images/clear.ico')}
+.iconReset{background-image: url('../Images/reset.ico')}
+
+
+/* Για το nav, ορίζω την θέση του. */
+.fixed-top{
+    position:fixed; /* θέλω να είναι πάντα πάνω στην σελίδα (ανεξάρτητα του scroll). */
+    right:0; 
+    left:0; 
+    z-index:1030; /* Πάνω από όλα(εκτός μόνταλ). */
+}
+
+/* Αφήνω το απαραίτητο κενό για τον διαχωρισμό του nav και του container. */
+.page-header {margin: 100px 0 20px;}
+
+/* Για τον χρωματισμό του τίτλου του nav. important γιατί έχει default τιμή από bootstrap. */
+.navTitle{color:#669999 !important;}
+
+/* Για τον χρωματισμό του εικονιδίου σύνδεσης-αποσύνδεσης. */
+glyphicon-log-out{color:#9d9d9d;}
+
+/* Για τις καρτέλες στη σελίδα με τα Στατιστικά. */
+.nav-pills>li>a{padding: 10px 15px !important;}
+
+/* Για την θέση του logout button στην Admin Page. */
+.logoutRedBtn{float:right;}
+
+/* Για τα buttons στο dropdown menu της Κανονικοποίησης. */
+.navDropDownbtn{margin: 0; width: 85%;}
+
+/* Για την μορφοποίηση του footer. */
+footer 
+{
+	background-color: #292c2f;
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
+	box-sizing: border-box;
+	width: 100%;
+	text-align: left;
+	font: normal 16px sans-serif;
+
+	padding: 25px 50px;
+	margin-top: 50px;
+}

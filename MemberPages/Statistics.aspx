@@ -12,23 +12,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="../Scripts/Chart.js"></script>
     <script src="../Scripts/Chart.min.js"></script>
+    <link rel="stylesheet" href="../Style/bcnfStyle.css"/>
 
-    <style>
-        .highlight { background-color: #A1DCF2; }
-        #gridViewDatabase tr:hover{background-color: #A1DCF2;}
-        .btn, .alert{
-            margin-left: 5px;
-            margin-top: 5px;
-        }
-        .nav>li>a{display:inline-block !important; padding-left: 0 !important;}
-        .myGlyph{color:white;}
-        .hea{
-            margin-top:10px !important;
-        }
-        .nav-pills>li>a{padding: 10px 15px !important;}
-        .fixed-top{position:fixed; right:0; left:0; z-index:1030;}
-        .page-header {margin: 100px 0 20px;}
-    </style>
+
 </head>
 
 <body>
@@ -43,7 +29,7 @@
 		    <span class="icon-bar"></span>
 		    <span class="icon-bar"></span>
 		    </button>
-		    <a class="navbar-brand" href="#" style="color:#669999;">Επιλογές Διαχειριστή</a>
+		    <a class="navbar-brand navTitle" href="#">Επιλογές Διαχειριστή</a>
 	    </div>
 
             
@@ -52,10 +38,10 @@
             <!-- Admin Buttons -->
 		    <ul class="nav navbar-nav">
                 <li><a href="../Default.aspx"><span class="glyphicon glyphicon-home"></span></a></li>
-		        <li><asp:Button ID="btnSaveSchema" class="btn btn-success btn-sm hea" runat="server" Text="Αποθήκευση Σχήματος" Enabled="False" /></li>
-		        <li><asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-sm hea showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" Enabled="False" /></li>
-		        <li><asp:Button class="btn btn-success btn-sm hea" ID="StatisticsHyperLink" runat="server" PostBackUrl="~/MemberPages/Statistics.aspx"  Text="Εμφάνιση στατιστικών"/></li>
-                <li><asp:Button ID="Button1" class="btn btn-success btn-sm hea" runat="server" Text="Admin Page" PostBackUrl="~/MemberPages/Admin.aspx" /></li>                
+		        <li><asp:Button ID="btnSaveSchema" class="btn btn-success btn-sm headerButtons" runat="server" Text="Αποθήκευση Σχήματος" Enabled="False" /></li>
+		        <li><asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-sm headerButtons showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" Enabled="False" /></li>
+		        <li><asp:Button ID="StatisticsHyperLink" class="btn btn-success btn-sm headerButtons" runat="server" PostBackUrl="~/MemberPages/Statistics.aspx"  Text="Εμφάνιση στατιστικών"/></li>
+                <li><asp:Button ID="Button1" class="btn btn-success btn-sm headerButtons" runat="server" Text="Admin Page" PostBackUrl="~/MemberPages/Admin.aspx" /></li>                
 		    </ul>
 		        
             <!-- Admin Login Status -->
@@ -138,6 +124,19 @@
 		</div>
 
     </div>
+
+    <!-- Footer -->
+    <footer class="text-center">
+
+        <a class="up-arrow" href="#" data-toggle="tooltip" title="TO TOP">
+		<span class="glyphicon glyphicon-chevron-up"></span>
+		</a>
+
+		<a href="http://www.uom.gr/index.php?tmima=6&categorymenu=2"><p>University of Macedonia &copy; 2017</p></a>
+		
+
+	</footer>
+
     </form>
 </body>
 

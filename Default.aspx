@@ -12,64 +12,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-    <style>
-        
-        #together{
-            max-width:45%;
-        }
+    <link rel="stylesheet" href="Style/bcnfStyle.css"/>
     
-        .highlight { background-color: #A1DCF2; }
-        .hide-loader{display:none;}
-        .loader {
-            position: absolute;
-            left: 45%;
-            top: 45%;
-            z-index: 2000;
-            border: 16px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 16px solid blue;
-            border-bottom: 16px solid blue;
-            width: 120px;
-            height: 120px;
-            -webkit-animation: spin 1s linear infinite;
-            animation: spin 1s linear infinite;
-            }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        th, td {padding-left: 5px;}
-        tbody tr:hover {background-color: #A1DCF2;}
-        .btn, .alert{
-            margin-left: 5px;
-            margin-top: 5px;
-        }
-        .nav>li>a{display:inline-block !important; padding-left: 0 !important;}
-        .myGlyph{color:white;}
-        .hea{
-            margin-top:10px !important;
-        }
-        .navbar-nav>li>a{ padding:15px 15px !important;}
-        .icon {
-            height: 16px;
-            width: 16px;
-            display: inline-block;
-        }
-        .iconClosure{background-image: url('../Images/closure.ico')}
-        .iconKeys{background-image: url('../Images/key.ico')}
-        .iconDecompose{background-image: url('../Images/bcnf.ico')}
-        .iconStepsDecompose{background-image: url('../Images/steps.ico')}
-
-        .iconInfo{background-image: url('../Images/info.ico')}
-        .iconDiplomatic{background-image: url('../Images/diplomatic.ico')}
-        .iconContribute{background-image: url('../Images/git.ico')}
-
-        .fixed-top{position:fixed; right:0; left:0; z-index:1030;}
-        .page-header {margin: 100px 0 20px;}
-        </style>
-
 </head>
 
 <body>
@@ -84,7 +28,7 @@
 		        <span class="icon-bar"></span>
 		        <span class="icon-bar"></span>
 		        </button>
-		        <a class="navbar-brand" href="#" style="color:#669999;">Επιλογές Διαχειριστή</a>
+		        <a class="navbar-brand navTitle" href="#">Επιλογές Διαχειριστή</a>
 	        </div>
 
             
@@ -93,10 +37,10 @@
                 <!-- Admin Buttons -->
 		        <ul class="nav navbar-nav">
                     <li><a href="Default.aspx"><span class="glyphicon glyphicon-home"></span></a></li>
-		            <li><asp:Button ID="btnSaveSchema" class="btn btn-success btn-sm hea" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  /></li>
-		            <li><asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-sm hea showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" OnClick="btnSetDefaultSchemaSelect" /></li>
-		            <li><asp:Button class="btn btn-success btn-sm hea" ID="StatisticsHyperLink" runat="server" PostBackUrl="~/MemberPages/Statistics.aspx"  Text="Εμφάνιση στατιστικών"/></li>
-                    <li><asp:Button ID="AdminPageHyperLink" class="btn btn-success btn-sm hea" runat="server" Text="Admin Page" PostBackUrl="~/MemberPages/Admin.aspx" /></li>                
+		            <li><asp:Button ID="btnSaveSchema" class="btn btn-success btn-sm headerButtons" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  /></li>
+		            <li><asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-sm headerButtons showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" OnClick="btnSetDefaultSchemaSelect" /></li>
+		            <li><asp:Button class="btn btn-success btn-sm headerButtons" ID="StatisticsHyperLink" runat="server" PostBackUrl="~/MemberPages/Statistics.aspx"  Text="Εμφάνιση στατιστικών"/></li>
+                    <li><asp:Button ID="AdminPageHyperLink" class="btn btn-success btn-sm headerButtons" runat="server" Text="Admin Page" PostBackUrl="~/MemberPages/Admin.aspx" /></li>                
 		        </ul>
 		        
                 <!-- Admin Login Status -->
@@ -106,7 +50,7 @@
                         </a>
 		            </li>
 		            <li id="lgout">
-                        <span class="glyphicon glyphicon-log-out" style="color:#9d9d9d"></span> 
+                        <span class="glyphicon glyphicon-log-out"></span> 
                         <asp:LoginStatus ID="LoginStatus1" runat="server"  />
 		            </li>
 		        </ul>
@@ -115,7 +59,7 @@
 	        </div>
         </nav>
 
-        <!-- Navigation menu for Users -->
+        <!-- Navigation menu fixed for Users -->
         <nav id="navUsers" class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top" runat="server">
 	        <div class="container-fluid">
 	        <div class="navbar-header">
@@ -124,7 +68,7 @@
 		        <span class="icon-bar"></span>
 		        <span class="icon-bar"></span>
 		        </button>
-		        <a class="navbar-brand" href="#" style="color:#669999;">Normalization BCNF</a>
+		        <a class="navbar-brand navTitle" href="#">Normalization BCNF</a>
 	        </div>
 
             
@@ -136,10 +80,10 @@
 		            <li class="dropdown">
 			          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Κανονικοποίηση <span class="caret"></span></a>
 			          <ul class="dropdown-menu">
-				        <li><a href="#"><i class="icon iconClosure"></i> Εγλεισμός</a></li>
-				        <li><a href="#"><i class="icon iconKeys"></i> Κλειδιά</a></li>
-				        <li><a href="#"><i class="icon iconDecompose"></i> Διάσπαση</a></li>
-                        <li><a href="#"><i class="icon iconStepsDecompose"></i> Σταδιακή Διάσπαση</a></li>
+				        <li><a href="#"><i class="icon iconClosure"></i> <asp:Button ID="btnNavClosure" class="btn btn-success btn-sm navDropDownbtn showLoader" runat="server" Text="Εγλεισμός" OnClick="btnFindClosureClick" /></a></li>
+				        <li><a href="#"><i class="icon iconKeys"></i> <asp:Button ID="btnNavKeys" class="btn btn-success btn-sm navDropDownbtn showLoader" runat="server" Text="Κλειδιά" OnClick="btnCalculateKeysClick" /></a></li>
+				        <li><a href="#"><i class="icon iconDecompose"></i> <asp:Button ID="btnNavDecompose" class="btn btn-success btn-sm navDropDownbtn showLoader" runat="server" Text="Διάσπαση" OnClick="btnDecomposeClick" /></a></li>
+                        <li><a href="#"><i class="icon iconStepsDecompose"></i> <asp:Button ID="btnNavStepsDecompose" class="btn btn-success btn-sm navDropDownbtn showLoader" runat="server" Text="Σταδιακή Διάσπαση" OnClick="btnStepsDecomposeClick" /></a></li>
 			          </ul>
 			        </li>
 		            <li class="dropdown">
@@ -147,7 +91,7 @@
 			          <ul class="dropdown-menu">
 				        <li><a href="#"><i class="icon iconInfo"></i> Οδηγίες Χρήσης</a></li>
 				        <li><a href="#"><i class="icon iconDiplomatic"></i> Η εργασία</a></li>
-				        <li><a href="#"><i class="icon iconContribute"></i> Συνεισφορά</a></li>
+				        <li><a href="https://github.com/LefterisXris/Normalization-in-BCNF-Web-App"><i class="icon iconContribute"></i> Συνεισφορά</a></li>
 			          </ul>
 			        </li>
 		            <li><a href="#">Επικοινωνία</a></li>
@@ -160,7 +104,7 @@
                         </a>
 		            </li>
 		            <li id="lgoutUser">
-                        <span class="glyphicon glyphicon-log-out" style="color:#9d9d9d"></span> 
+                        <span class="glyphicon glyphicon-log-out"></span> 
                         <asp:LoginStatus ID="LoginStatus2" runat="server"  />
 		            </li>
 		        </ul>
@@ -666,7 +610,21 @@
             </div>
             <!-- Modal -->
 
+
         </div>
+    
+        <!-- Footer -->
+        <footer class="text-center fixed-bottom">
+
+            <a class="up-arrow" href="#" data-toggle="tooltip" title="TO TOP">
+			<span class="glyphicon glyphicon-chevron-up"></span>
+		    </a>
+			
+			<a href="http://www.uom.gr/index.php?tmima=6&categorymenu=2"><p>University of Macedonia &copy; 2017</p></a>
+			
+
+		</footer>
+        
     </form>
 
     <script>

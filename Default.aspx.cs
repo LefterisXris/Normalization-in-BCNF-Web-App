@@ -83,11 +83,6 @@ public partial class _Default : System.Web.UI.Page
     /// <param name="visible"></param>
     private void setVisibleItemsForAdmin(bool visible)
     {
-        /*AdminPageHyperLink.Visible = visible;
-        StatisticsHyperLink.Visible = visible;
-        LoginStatus1.Visible = visible;
-        btnSaveSchema.Visible = visible;
-        btnSetDefaultSchema.Visible = visible;*/
         nav.Visible = visible;
         navUsers.Visible = !visible;
     }

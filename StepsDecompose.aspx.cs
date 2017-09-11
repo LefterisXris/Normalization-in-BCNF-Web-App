@@ -55,6 +55,9 @@ public partial class StepsDecompose : System.Web.UI.Page
 
         }
 
+        // Εάν έχει συνδεθεί ο Admin τότε εμφανίζονται οι εξτρά δυνατότητες.
+        setVisibleItemsForAdmin(HttpContext.Current.User.Identity.IsAuthenticated);
+
     }
 
     /// <summary>
@@ -68,6 +71,16 @@ public partial class StepsDecompose : System.Web.UI.Page
         ViewState.Add("keyListVS", keyList);
         ViewState.Add("relListVS", relList);
 
+    }
+
+    /// <summary>
+    /// Ανάλογα με το αν είναι συνδεδεμένος ένας χρήστης, εμφανίζει ή αποκρύπτει τα στοιχεία που πρέπει.
+    /// </summary>
+    /// <param name="visible"></param>
+    private void setVisibleItemsForAdmin(bool visible)
+    {
+        nav.Visible = visible;
+        navUsers.Visible = !visible;
     }
 
     /// <summary>
