@@ -13,11 +13,64 @@
 
     <style>
         .logout{float:right;}
+        .btn, .alert{
+            margin-left: 5px;
+            margin-top: 5px;
+        }
+        .nav>li>a{display:inline-block !important; padding-left: 0 !important;}
+        .myGlyph{color:white;}
+        .hea{
+            margin-top:10px !important;
+        }
+        .fixed-top{position:fixed; right:0; left:0; z-index:1030;}
+        .page-header {margin: 100px 0 20px;}
+        
     </style>
 </head>
 
 <body>
     <form id="form1" runat="server">
+
+    <!-- Navigation menu fixed -->
+    <nav id="nav" class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top" runat="server">
+	    <div class="container-fluid">
+	    <div class="navbar-header">
+		    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+		    <span class="icon-bar"></span>
+		    <span class="icon-bar"></span>
+		    <span class="icon-bar"></span>
+		    </button>
+		    <a class="navbar-brand" href="#" style="color:#669999;">Επιλογές Διαχειριστή</a>
+	    </div>
+
+            
+	    <div class="collapse navbar-collapse" id="myNavbar">
+
+            <!-- Admin Buttons -->
+		    <ul class="nav navbar-nav">
+                <li><a href="../Default.aspx"><span class="glyphicon glyphicon-home"></span></a></li>
+		        <li><asp:Button ID="btnSaveSchema" class="btn btn-success btn-sm hea" runat="server" Text="Αποθήκευση Σχήματος" Enabled="False" /></li>
+		        <li><asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-sm hea showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" Enabled="False" /></li>
+		        <li><asp:Button class="btn btn-success btn-sm hea" ID="Button1" runat="server" PostBackUrl="~/MemberPages/Statistics.aspx"  Text="Εμφάνιση στατιστικών"/></li>
+                <li><asp:Button ID="Button2" class="btn btn-success btn-sm hea" runat="server" Text="Admin Page" PostBackUrl="~/MemberPages/Admin.aspx" /></li>                
+		    </ul>
+		        
+            <!-- Admin Login Status -->
+            <ul class="nav navbar-nav navbar-right">
+		        <li><a href="#"><span class="glyphicon glyphicon-user"></span>
+                    <asp:LoginName ID="LoginName2" runat="server" />
+                    </a>
+		        </li>
+		        <li id="lgout">
+                    <span class="glyphicon glyphicon-log-out" style="color:#9d9d9d"></span> 
+                    <asp:LoginStatus ID="LoginStatus2" runat="server"  />
+		        </li>
+		    </ul>
+
+	    </div>
+	    </div>
+    </nav>
+
     <div class="container">
         
         <!-- Header -->
@@ -57,5 +110,16 @@
     </div>
     </form>
 
+    <script>
+        // Χρωματισμός του glyphicon
+        $(".nav>#lgout>a").mouseover(function () {
+            $(".glyphicon-log-out").css("color", "white");
+        });
+
+        // Αναίρεση χρωματισμού του glyphicon
+        $(".nav>#lgout>a").mouseout(function () {
+            $(".glyphicon-log-out").css("color", "#9d9d9d"); //
+        });
+    </script>
 </body>
 </html>

@@ -83,15 +83,13 @@ public partial class _Default : System.Web.UI.Page
     /// <param name="visible"></param>
     private void setVisibleItemsForAdmin(bool visible)
     {
-        AdminPageHyperLink.Visible = visible;
+        /*AdminPageHyperLink.Visible = visible;
         StatisticsHyperLink.Visible = visible;
         LoginStatus1.Visible = visible;
         btnSaveSchema.Visible = visible;
-        btnSetDefaultSchema.Visible = visible;
-        adminActionsH3.Visible = visible;
-        adminHR1.Visible = visible;
-        adminHR2.Visible = visible;
+        btnSetDefaultSchema.Visible = visible;*/
         nav.Visible = visible;
+        navUsers.Visible = !visible;
     }
 
     #region ADD NEW (Attr & Fd)

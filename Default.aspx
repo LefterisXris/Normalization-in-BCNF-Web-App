@@ -42,19 +42,40 @@
         
         th, td {padding-left: 5px;}
         tbody tr:hover {background-color: #A1DCF2;}
-        .logout{float:right;}
         .btn, .alert{
             margin-left: 5px;
             margin-top: 5px;
         }
-        
-    </style>
+        .nav>li>a{display:inline-block !important; padding-left: 0 !important;}
+        .myGlyph{color:white;}
+        .hea{
+            margin-top:10px !important;
+        }
+        .navbar-nav>li>a{ padding:15px 15px !important;}
+        .icon {
+            height: 16px;
+            width: 16px;
+            display: inline-block;
+        }
+        .iconClosure{background-image: url('../Images/closure.ico')}
+        .iconKeys{background-image: url('../Images/key.ico')}
+        .iconDecompose{background-image: url('../Images/bcnf.ico')}
+        .iconStepsDecompose{background-image: url('../Images/steps.ico')}
+
+        .iconInfo{background-image: url('../Images/info.ico')}
+        .iconDiplomatic{background-image: url('../Images/diplomatic.ico')}
+        .iconContribute{background-image: url('../Images/git.ico')}
+
+        .fixed-top{position:fixed; right:0; left:0; z-index:1030;}
+        .page-header {margin: 100px 0 20px;}
+        </style>
 
 </head>
 
 <body>
     <form id="form1" runat="server">
-       <!-- Navigation menu fixed -->
+       
+        <!-- Navigation menu fixed for Admins-->
         <nav id="nav" class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top" runat="server">
 	        <div class="container-fluid">
 	        <div class="navbar-header">
@@ -63,26 +84,87 @@
 		        <span class="icon-bar"></span>
 		        <span class="icon-bar"></span>
 		        </button>
-		        <a class="navbar-brand" href="#">WebSiteName</a>
+		        <a class="navbar-brand" href="#" style="color:#669999;">Επιλογές Διαχειριστή</a>
 	        </div>
+
+            
 	        <div class="collapse navbar-collapse" id="myNavbar">
+
+                <!-- Admin Buttons -->
 		        <ul class="nav navbar-nav">
-		        <li class="active"><a href="#">Home</a></li>
-		        <li class="dropdown">
-			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1 <span class="caret"></span></a>
-			        <ul class="dropdown-menu">
-			        <li><a href="#">Page 1-1</a></li>
-			        <li><a href="#">Page 1-2</a></li>
-			        <li><a href="#">Page 1-3</a></li>
-			        </ul>
-		        </li>
-		        <li><a href="#">Page 2</a></li>
-		        <li><a href="#">Page 3</a></li>
+                    <li><a href="Default.aspx"><span class="glyphicon glyphicon-home"></span></a></li>
+		            <li><asp:Button ID="btnSaveSchema" class="btn btn-success btn-sm hea" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  /></li>
+		            <li><asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-sm hea showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" OnClick="btnSetDefaultSchemaSelect" /></li>
+		            <li><asp:Button class="btn btn-success btn-sm hea" ID="StatisticsHyperLink" runat="server" PostBackUrl="~/MemberPages/Statistics.aspx"  Text="Εμφάνιση στατιστικών"/></li>
+                    <li><asp:Button ID="AdminPageHyperLink" class="btn btn-success btn-sm hea" runat="server" Text="Admin Page" PostBackUrl="~/MemberPages/Admin.aspx" /></li>                
 		        </ul>
-		        <ul class="nav navbar-nav navbar-right">
-		        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-		        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+		        
+                <!-- Admin Login Status -->
+                <ul class="nav navbar-nav navbar-right">
+		            <li><a href="#"><span class="glyphicon glyphicon-user"></span>
+                        <asp:LoginName ID="LoginName1" runat="server" />
+                        </a>
+		            </li>
+		            <li id="lgout">
+                        <span class="glyphicon glyphicon-log-out" style="color:#9d9d9d"></span> 
+                        <asp:LoginStatus ID="LoginStatus1" runat="server"  />
+		            </li>
 		        </ul>
+
+	        </div>
+	        </div>
+        </nav>
+
+        <!-- Navigation menu for Users -->
+        <nav id="navUsers" class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top" runat="server">
+	        <div class="container-fluid">
+	        <div class="navbar-header">
+		        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbarUser">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        </button>
+		        <a class="navbar-brand" href="#" style="color:#669999;">Normalization BCNF</a>
+	        </div>
+
+            
+	        <div class="collapse navbar-collapse" id="myNavbarUser">
+
+                <!-- User Buttons -->
+		        <ul class="nav navbar-nav">
+                    <li><a href="Default.aspx"><span class="glyphicon glyphicon-home"></span></a></li>
+		            <li class="dropdown">
+			          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Κανονικοποίηση <span class="caret"></span></a>
+			          <ul class="dropdown-menu">
+				        <li><a href="#"><i class="icon iconClosure"></i> Εγλεισμός</a></li>
+				        <li><a href="#"><i class="icon iconKeys"></i> Κλειδιά</a></li>
+				        <li><a href="#"><i class="icon iconDecompose"></i> Διάσπαση</a></li>
+                        <li><a href="#"><i class="icon iconStepsDecompose"></i> Σταδιακή Διάσπαση</a></li>
+			          </ul>
+			        </li>
+		            <li class="dropdown">
+			          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Σχετικά <span class="caret"></span></a>
+			          <ul class="dropdown-menu">
+				        <li><a href="#"><i class="icon iconInfo"></i> Οδηγίες Χρήσης</a></li>
+				        <li><a href="#"><i class="icon iconDiplomatic"></i> Η εργασία</a></li>
+				        <li><a href="#"><i class="icon iconContribute"></i> Συνεισφορά</a></li>
+			          </ul>
+			        </li>
+		            <li><a href="#">Επικοινωνία</a></li>
+		        </ul>
+		        
+                <!-- Admin Login Status -->
+                <ul class="nav navbar-nav navbar-right">
+		            <li><a href="#"><span class="glyphicon glyphicon-user"></span>
+                        <asp:LoginName ID="LoginName2" runat="server" />
+                        </a>
+		            </li>
+		            <li id="lgoutUser">
+                        <span class="glyphicon glyphicon-log-out" style="color:#9d9d9d"></span> 
+                        <asp:LoginStatus ID="LoginStatus2" runat="server"  />
+		            </li>
+		        </ul>
+
 	        </div>
 	        </div>
         </nav>
@@ -564,40 +646,25 @@
 
             </div>
             
-            <h3 id="adminActionsH3" style="color:#669999;" runat="server"> Επιλογές διαχειριστή:</h3> 
-            
-            <hr id="adminHR1" style="height:3px; background-color:grey;" runat="server"/>
-
-                <asp:Button ID="btnSaveSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Αποθήκευση Σχήματος" OnClick="btnSaveSchema_Click"  />
-                <asp:Button ID="btnSetDefaultSchema" class="btn btn-success btn-lg showLoader" runat="server" Text="Επιλογή Προεπιλεγμένου" OnClick="btnSetDefaultSchemaSelect" />
-            
-                <asp:LoginStatus ID="LoginStatus1" runat="server" ForeColor="Red" CssClass="btn btn-danger btn-sm logout" />
-
-                <!-- Modal επιλογή προεπιλεγμένου σχήματος-->
-                <div class="modal fade" id="SetDefaultSchemaModal" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Επιλογή Προεπιλεγμένου σχήματος</h4>
-                            </div>
-                            <div class="modal-body">
-                                <p>Διαλέξτε ένα παράδειγμα για προεπιλεγμενο</p>
-                                <asp:DropDownList ID="SetSchemaDefaultDropDownList" runat="server"></asp:DropDownList>
-                            </div>
-                            <div class="modal-footer">
-                                <asp:Button runat="server" ID="btnSetSchema" Text="SET" class="btn btn-default showLoader" OnClick="btnSetDefaultSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
-                            </div>
+            <!-- Modal επιλογή προεπιλεγμένου σχήματος-->
+            <div class="modal fade" id="SetDefaultSchemaModal" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Επιλογή Προεπιλεγμένου σχήματος</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Διαλέξτε ένα παράδειγμα για προεπιλεγμενο</p>
+                            <asp:DropDownList ID="SetSchemaDefaultDropDownList" runat="server"></asp:DropDownList>
+                        </div>
+                        <div class="modal-footer">
+                            <asp:Button runat="server" ID="btnSetSchema" Text="SET" class="btn btn-default showLoader" OnClick="btnSetDefaultSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
                         </div>
                     </div>
                 </div>
-                <!-- Modal -->
-
-
-            <asp:HyperLink class="btn btn-success btn-lg" ID="StatisticsHyperLink" runat="server" NavigateUrl="~/MemberPages/Statistics.aspx" Visible="False">Εμφάνιση στατιστικών</asp:HyperLink>
-            <asp:HyperLink class="btn btn-success btn-lg" ID="AdminPageHyperLink" runat="server" NavigateUrl="~/MemberPages/Admin.aspx" Visible="False">Admin Page</asp:HyperLink>
-
-            <hr id="adminHR2" style="height:3px; background-color:grey;" runat="server"/>
+            </div>
+            <!-- Modal -->
 
         </div>
     </form>
@@ -789,6 +856,16 @@
                     checkbox.checked = true;
             }*/
 
+        });
+
+        // Χρωματισμός του glyphicon
+        $(".nav>#lgout>a").mouseover(function () {
+            $(".glyphicon-log-out").css("color", "white");
+        });
+
+        // Αναίρεση χρωματισμού του glyphicon
+        $(".nav>#lgout>a").mouseout(function () {
+            $(".glyphicon-log-out").css("color", "#9d9d9d"); //
         });
 
         </script>
