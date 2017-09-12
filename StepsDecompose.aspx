@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="Style/bcnfStyle.css"/>
-
     
+    <link rel="stylesheet" href="Style/bcnfStyle.css"/>
 </head>
 
 <body>
+
     <form id="form1" runat="server">
 
          <!-- Navigation menu fixed for Admins -->
@@ -114,6 +114,7 @@
 	        </div>
         </nav>
 
+        <!-- Περιεχόμενο Σελίδας -->
         <div class="container">
 
             <div class="loader hide-loader" id="loader"></div>
@@ -354,14 +355,14 @@
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     <h4 class="modal-title">Προεπισκόπηση διάσπασης σε BCNF</h4>
                                 </div>
-                                <div class="modal-body">
+                                <div class="modal-body myModalBody">
                                     <div class="form-horizontal"> 
-                                        <textarea runat="server" id="log" class="form-control" rows="15" style="min-width: 100%; min-height: 100%;" ></textarea>
+                                        <textarea runat="server" id="log" class="form-control myForm" rows="15" style="min-width: 100%; min-height: 100%;" ></textarea>
                                     </div>
                                     
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Κλείσιμο</button>
+                                    <button type="button" class="btn btn-default btn-success" data-dismiss="modal">Κλείσιμο</button>
                                 </div>
                             </div>
                         </div>
@@ -396,6 +397,8 @@
 
     </form>
 
+
+    <!-- Script με λειτουργίες της εφαρμογής -->
     <script>
         
         // Καλείται κατά την οποιαδήποτε αλλαγή σε οποιοδήποτε checkbox
@@ -575,6 +578,7 @@
 
     </script>
 
+    <!-- Script για Analytics -->
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

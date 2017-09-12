@@ -12,11 +12,12 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="Style/bcnfStyle.css"/>
     
+    <link rel="stylesheet" href="Style/bcnfStyle.css"/>
 </head>
 
 <body>
+
     <form id="form1" runat="server">
        
         <!-- Navigation menu fixed for Admins-->
@@ -146,7 +147,7 @@
                                 </div>
                                 <div class="modal-body">
 
-                                   <p>Επιλογή γνωρισμάτων</p>
+                                   <p><strong>Επιλογή γνωρισμάτων </strong></p>
                                    
                                     <div class="form-horizontal">
                                         <div class="col-md-10">
@@ -170,7 +171,7 @@
                                     <div class="row">
                                         <div class="col-md-10">
                                             <br />
-                                            Επιλέξτε τα γνωρίσματα που θέλετε για να υπολογιστεί ο εγκλεισμός τους.
+                                            <h6><strong>Επιλέξτε τα γνωρίσματα που θέλετε να υπολογιστεί ο εγκλεισμός τους.</strong></h6>
                                         </div>
                                     </div>
 
@@ -260,6 +261,7 @@
                                         </div>
                                     </div>
                                     <div>
+                                        <br />
                                         <h6>Για εισαγωγή πολλαπλών γνωρισμάτων χρησιμοποιείστε ώς διαχωριστικό το κόμμα (,) <br />
                                             Για παράδειγμα A, B, C
                                         </h6>
@@ -349,7 +351,7 @@
                                 </div>
                                 <div class="modal-body">
 
-                                   <p>Δομή συναρτησιακής εξάρτησης</p>
+                                   <p><strong>Δομή συναρτησιακής εξάρτησης</strong></p>
                                    
                                     <div class="form-horizontal">
                                         <div class="col-md-6">
@@ -389,7 +391,7 @@
                                     <div class="row">
                                         <div class="col-md-10">
                                             <br />
-                                            <p>Τελική μορφή συναρτησιακής εξάρτησης: </p>
+                                            <p><strong>Τελική μορφή συναρτησιακής εξάρτησης: </strong></p>
                                             <asp:Label ID="lblPreviewFDtoCreateLeft" runat="server" Text=""></asp:Label>
                                             <asp:Label ID="lblArrow" runat="server" Text=""></asp:Label>
                                             <asp:Label ID="lblPreviewFDtoCreateRight" runat="server" Text=""></asp:Label>
@@ -415,7 +417,7 @@
                                 </div>
                                 <div class="modal-body">
 
-                                   <p>Δομή συναρτησιακής εξάρτησης:</p>
+                                   <p><strong>Δομή συναρτησιακής εξάρτησης: </strong> </p>
                                    
                                     <div class="form-horizontal">
                                         <div class="col-md-6">
@@ -456,10 +458,10 @@
                                     <div class="row">
                                         <div class="col-md-10">
                                             <br />
-                                            <p>Τελική μορφή συναρτησιακής εξάρτησης:</p>
-                                            <asp:Label ID="lblPreviewFDtoEditLeft" runat="server" Text=""></asp:Label>
-                                            <asp:Label ID="lblArrow2" runat="server" Text=""></asp:Label>
-                                            <asp:Label ID="lblPreviewFDtoEditRight" runat="server" Text=""></asp:Label>
+                                            <p><strong>Τελική μορφή συναρτησιακής εξάρτησης: </strong></p>
+                                            <asp:Label ID="lblPreviewFDtoEditLeft" runat="server" CssClass="previewFD" Text=""></asp:Label>
+                                            <asp:Label ID="lblArrow2" runat="server" CssClass="previewFD" Text=""></asp:Label>
+                                            <asp:Label ID="lblPreviewFDtoEditRight" runat="server" CssClass="previewFD" Text=""></asp:Label>
                                         </div>
                                     </div>
 
@@ -599,7 +601,7 @@
                             <h4 class="modal-title">Επιλογή Προεπιλεγμένου σχήματος</h4>
                         </div>
                         <div class="modal-body">
-                            <p>Διαλέξτε ένα παράδειγμα για προεπιλεγμενο</p>
+                            <p><strong>Διαλέξτε ένα παράδειγμα για προεπιλεγμενο στην εφαρμογή:</strong></p>
                             <asp:DropDownList ID="SetSchemaDefaultDropDownList" runat="server"></asp:DropDownList>
                         </div>
                         <div class="modal-footer">
@@ -627,6 +629,8 @@
         
     </form>
 
+
+    <!-- Script με λειτουργίες της εφαρμογής -->
     <script>
         
         // Καλείται κατά την οποιαδήποτε αλλαγή σε οποιοδήποτε checkbox για την αναπαράσταση της FD
@@ -818,6 +822,8 @@
         });
 
         </script>
+
+    <!-- Script για Analytics -->
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
