@@ -80,9 +80,13 @@ tbody tr:hover {background-color: #A1DCF2;}
 /* Εικονίδιο Συνεισφοράς. */
 .iconContribute{background-image: url('../Images/git.ico')}
 
+/* Εικονίδιο Εμφάνισης πινάκων BCNF. */
 .iconShowBCNF{background-image: url('../Images/show.ico')}
+/* Εικονίδιο Προεπισκόπισης. */
 .iconPreview{background-image: url('../Images/preview.ico')}
+/* Εικονίδιο Καθαρισμού. */
 .iconClear{background-image: url('../Images/clear.ico')}
+/* Εικονίδιο Reset. */
 .iconReset{background-image: url('../Images/reset.ico')}
 
 
@@ -113,15 +117,23 @@ glyphicon-log-out{color:#9d9d9d;}
 .navDropDownbtn{margin: 0; width: 85%;}
 
 /* Για την μορφοποίηση του footer. */
-footer 
+.myFooter 
 {
 	background-color: #292c2f;
 	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
 	box-sizing: border-box;
 	width: 100%;
-	text-align: left;
+	text-align: center;
 	font: normal 16px sans-serif;
 
 	padding: 25px 50px;
 	margin-top: 50px;
 }
+
+.modal-header, .modal-footer { background-color: #FF7F50; }
+
+.modal-body { background-color: darkgray; }
+
+.myModalBody{ background-color: #6495ED; }
+
+.myForm{background-color: #eee;}

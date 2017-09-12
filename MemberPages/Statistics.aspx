@@ -97,6 +97,8 @@
                 
                 <div id="chartSpace">
                     <h3 id="protropiH3"><small>(Επιλέξτε από τις διαθέσιμες επιλογές, για δημιουργία γραφήματος)</small></h3>
+                    <label id="lblResult" for="myChart" style="color:#669999; visibility:hidden">Empty</label>
+                    
                     <canvas id="myChart" ></canvas>          
                 </div>
                      
@@ -106,6 +108,7 @@
                 <asp:DropDownList ID="SchemaNamesDropDownList" runat="server"></asp:DropDownList>
                 <asp:DropDownList ID="ActionsDropDownList" runat="server"></asp:DropDownList>
                 <asp:DropDownList ID="ChartTypeDropDownList" runat="server"></asp:DropDownList>
+
                 <button type="button" class="btn btn-info btn-lg" id="btnGenerateChart">Δημιουργία γραφήματος!</button>
 
             </div>
@@ -117,8 +120,9 @@
 
                 Επιλογή: <asp:DropDownList ID="SchemaNamesDropDownList2" runat="server"></asp:DropDownList>
                 <asp:DropDownList ID="ActionsDropDownList2" runat="server"></asp:DropDownList>
-                <asp:Label ID="Label1" runat="server" Text=""></asp:Label>
-                <asp:Button ID="btnClearData" class="btn btn-info btn-lg" runat="server" Text="Μηδενισμός" OnClick="btnClearData_Click" />
+                <asp:Label ID="Label1" runat="server" Text="Τιμή: "></asp:Label>
+                <input id="tbxValueToSet" onkeypress="return isNumberKey(event)" type="text" runat="server"/>
+                <asp:Button ID="btnUpdateData" class="btn btn-info btn-lg" runat="server" Text="Εκτέλεση" OnClick="btnUpdateData_Click" />
 			</div>
 
 		</div>
@@ -126,7 +130,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="text-center">
+    <footer class="text-center myFooter">
 
         <a class="up-arrow" href="#" data-toggle="tooltip" title="TO TOP">
 		<span class="glyphicon glyphicon-chevron-up"></span>
@@ -164,7 +168,7 @@
     // Δημιουργία γραφήματος.
 	$("#btnGenerateChart").click(function () {
 
-	    $("#protropiH3").hide();
+	    $("#protropiH3").css("visibility", "hidden");
 	    var dbData = new Array(); // Ο πίνακας στον οποίο θα αποθηκευτούν τα δεδομένα.
 	    var source = $("#SourceDropDownList option:selected").text(); // Η επιλογή για το είδος απεικόνισης.
 
@@ -198,23 +202,30 @@
 	    var names = []; // Τα δεδομένα για τον άξονα X.
 	    var values = []; // Τα δεδομένα για τον άξονα Y.
 	    var chartLabel;
+	    var resultForLabel = ""; // Η ετικέτα για την συνολική πληροφορία του γραφήματος.
+	    var sum = 0; // Η τιμή της παραπάνω ετικέτας.
 
 	    if (isAction) {
 	        for (i = 1; i < dbData.length; i++) {
 	            names.push(dbData[i]["name"]);
 	            values.push(dbData[i][action]);
+	            sum += parseInt(dbData[i][action]);
 	        }
 	        chartLabel = "Number of " + action;
+	        resultForLabel = "Συνολικά η ενέργεια " + action + " εκτελέστηκε " + sum + " φορές.";
 	    }
 	    else { // Όταν βρεθεί το σχήμα, πάρε τις τιμές που θέλεις.
 	        for (i = 1; i < dbData.length; i++) {
 	            if (dbData[i]["name"] == selectedSchemaName) {
 	                names = ["nLoad", "nClosure", "nFindKeys", "nDecompose", "nStepsDecompose"];
-	                for (j = 0; j < names.length; j++)
+	                for (j = 0; j < names.length; j++) {
 	                    values.push(dbData[i][names[j]]);
+	                    sum += parseInt(dbData[i][names[j]]);
+	                }
 	            }
 	        }
 	        chartLabel = "Schema " + selectedSchemaName + " metrics";
+	        resultForLabel = "Συνολικά για το σχήμα " + selectedSchemaName + " εκτελέστηκαν οι διάφορες ενέργειες " + sum + " φορές.";
 	    }
 	        
 	    var ctx = document.getElementById("myChart").getContext('2d'); // παίρνω τον καμβά που θα μπει το γράφημα.
@@ -276,7 +287,9 @@
 	        },
 	        options: {} 
 	    });
-	         
+	      
+	    $("#lblResult").text(resultForLabel);
+	    $("#lblResult").css("visibility", "visible");
 	});
 
     // Κατά την αλλαγή της επιλογής Per Action - Per Schema ενημερώνεται η ορατότητα των αντίστοιχων λιστών.
@@ -311,6 +324,12 @@
 	    $(".glyphicon-log-out").css("color", "#9d9d9d"); //
 	});
 
+	function isNumberKey(evt) {
+	    var charCode = (evt.which) ? evt.which : evt.keyCode;
+	    if (charCode > 31 && (charCode < 48 || charCode > 57))
+	        return false;
+	    return true;
+	}
 
 </script>
 

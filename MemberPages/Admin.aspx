@@ -96,7 +96,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="text-center">
+    <footer class="text-center myFooter">
 
         <a class="up-arrow" href="#" data-toggle="tooltip" title="TO TOP">
 		<span class="glyphicon glyphicon-chevron-up"></span>

@@ -113,12 +113,12 @@
 	        </div>
         </nav>
 
+        <!-- Περιεχόμενο σελίδας -->
         <div class="container">
 
             <div class="loader hide-loader" id="loader"></div>
 
             
-
             <%-- HEADER (τίτλο, όνομα κλπ) --%>
             <div class="page-header">
                 <h1>Σχήμα:
@@ -176,7 +176,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnClosureOK" Text="OK" class="btn btn-default showLoader" OnClick="btnCalculateClosureClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnClosureOK" Text="OK" class="btn btn-default btn-success showLoader" OnClick="btnCalculateClosureClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
@@ -267,7 +267,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <asp:Button runat="server" ID="btnSaveAttr" Text="OK" class="btn btn-default showLoader" OnClick="btnNewAttrOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                <asp:Button runat="server" ID="btnSaveAttr" Text="Αποθήκευση" class="btn btn-default btn-success showLoader" OnClick="btnNewAttrOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                             </div>
                         </div>
                     </div>
@@ -299,7 +299,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <asp:Button runat="server" ID="btnEditAttrOK" Text="Ενημέρωση" class="btn btn-default showLoader" OnClick="btnEditAttrΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                <asp:Button runat="server" ID="btnEditAttrOK" Text="Ενημέρωση" class="btn btn-default btn-success showLoader" OnClick="btnEditAttrΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
                             </div>
                         </div>
                     </div>
@@ -398,7 +398,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnNewFDOK" Text="OK" class="btn btn-default showLoader" OnClick="btnNewFDOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnNewFDOK" Text="Αποθήκευση" class="btn btn-default btn-success showLoader" OnClick="btnNewFDOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
@@ -465,7 +465,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <asp:Button runat="server" ID="btnEditFDOK" Text="Ενημέρωση" class="btn btn-default showLoader" OnClick="btnEditFDΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                    <asp:Button runat="server" ID="btnEditFDOK" Text="Ενημέρωση" class="btn btn-default btn-success showLoader" OnClick="btnEditFDΟΚClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                 </div>
                             </div>
                         </div>
@@ -506,16 +506,16 @@
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     <asp:Label class="modal-title" ID="resultTitle" runat="server" Text="Αποτελέσματα" Font-Size="16px"></asp:Label>
                                 </div>
-                                <div class="modal-body">
+                                <div class="modal-body myModalBody">
                                     <div class="form-horizontal">  
-                                        <textarea runat="server" id="log" class="form-control" rows="15" ></textarea>
+                                        <textarea runat="server" id="log" class="form-control myForm" rows="15" ></textarea>
                                         <asp:Label ID="lblAlter" runat="server" Text="Εναλλακτική" Visible="false" ForeColor="Blue" style="margin-top:10px;" Font-Bold="True" Font-Italic="True"></asp:Label>
-                                        <textarea runat="server" id="logAlter" class="form-control" rows="15" Visible="false" ></textarea>
+                                        <textarea runat="server" id="logAlter" class="form-control myForm" rows="15" Visible="false" ></textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <asp:Button runat="server" ID="btnDecomposeAlternative" Text="Εναλλακτική" class="btn btn-default showLoader" OnClick="btnDecomposeClick" UseSubmitBehavior="false" Visible="false" Style="float:left;" />
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                                    <button type="button" class="btn btn-default btn-success" data-dismiss="modal">ΟΚ</button>
                                 </div>
                             </div>
                         </div>
@@ -555,7 +555,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <asp:Button runat="server" ID="btnNewSchemaOK" Text="Δημιουργία" class="btn btn-default showLoader" OnClick="btnNewSchemaOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                        <asp:Button runat="server" ID="btnNewSchemaOK" Text="Δημιουργία" class="btn btn-default btn-success showLoader" OnClick="btnNewSchemaOKClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                     </div>
                                 </div>
                             </div>
@@ -577,7 +577,7 @@
                                         <asp:DropDownList ID="schemaLoadDropDownList" runat="server"></asp:DropDownList>
                                     </div>
                                     <div class="modal-footer">
-                                        <asp:Button runat="server" ID="btnLoadSchemaClick" Text="OK" class="btn btn-default showLoader" OnClick="btnLoadSelectedSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                                        <asp:Button runat="server" ID="btnLoadSchemaClick" Text="OK" class="btn btn-default btn-success showLoader" OnClick="btnLoadSelectedSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
                                     </div>
                                 </div>
                             </div>
@@ -603,7 +603,7 @@
                             <asp:DropDownList ID="SetSchemaDefaultDropDownList" runat="server"></asp:DropDownList>
                         </div>
                         <div class="modal-footer">
-                            <asp:Button runat="server" ID="btnSetSchema" Text="SET" class="btn btn-default showLoader" OnClick="btnSetDefaultSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
+                            <asp:Button runat="server" ID="btnSetSchema" Text="SET" class="btn btn-default btn-success showLoader" OnClick="btnSetDefaultSchemaClick" UseSubmitBehavior="false" data-dismiss="modal" />
                         </div>
                     </div>
                 </div>
@@ -614,7 +614,7 @@
         </div>
     
         <!-- Footer -->
-        <footer class="text-center fixed-bottom">
+        <footer class="text-center myFooter">
 
             <a class="up-arrow" href="#" data-toggle="tooltip" title="TO TOP">
 			<span class="glyphicon glyphicon-chevron-up"></span>
@@ -804,15 +804,6 @@
                 }
             }
 
-          /*  if (gridView == "gridViewLeftFD" || gridView == "gridViewRightFD" || gridView == "gridViewEditLeftFD" || gridView == "gridViewEditRightFD" || gridView == "gridViewFindClosure") {
-
-                var checkbox = $(this).find('input:checkbox')[0];
-                alert(checkbox);
-                if (checkbox.checked)
-                    checkbox.checked = false;
-                else
-                    checkbox.checked = true;
-            }*/
 
         });
 

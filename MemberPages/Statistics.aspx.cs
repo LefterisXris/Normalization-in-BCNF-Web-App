@@ -74,21 +74,22 @@ public partial class MemberPages_Statistics : System.Web.UI.Page
     }
 
 
-    protected void btnClearData_Click(object sender, EventArgs e)
+    protected void btnUpdateData_Click(object sender, EventArgs e)
     {
         string schema = SchemaNamesDropDownList2.SelectedValue;
         string action = ActionsDropDownList2.SelectedValue;
+        int val =  Int32.Parse(tbxValueToSet.Value);
 
 
         if(action.Equals("all"))
         {
             foreach (string s in actions)
             {
-                dbConnect.ResetStatistics(schema, s);
+                dbConnect.ResetStatistics(schema, s, val);
             }
         }
         else
-            dbConnect.ResetStatistics(schema, action);
+            dbConnect.ResetStatistics(schema, action, val);
 
     }
 }

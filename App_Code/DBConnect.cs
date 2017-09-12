@@ -566,15 +566,20 @@ namespace Normalization
             return res;
         }
 
-        
-        public void ResetStatistics(string schemaName, string action)
+        /// <summary>
+        /// Θέτει στο επιλεγμένο σχήμα ή σε όλα τα σχήματα μια τιμή για μια ενέργεια.
+        /// </summary>
+        /// <param name="schemaName">Όνομα σχήματος. Μπορεί να είναι all για όλα τα σχήματα.</param>
+        /// <param name="action">Ενέργεια</param>
+        /// <param name="val">Νέα τιμή</param>
+        public void ResetStatistics(string schemaName, string action, int val)
         {
             string query = "";
 
             if (schemaName.Equals("all"))
-                query = "UPDATE `lefterisxris`.`Schemas` SET `" + action + "` = 0";
+                query = "UPDATE `lefterisxris`.`Schemas` SET `" + action + "` = " + val + "";
             else 
-                query = "UPDATE `lefterisxris`.`Schemas` SET `" + action + "` = 0 WHERE `name` = '" + schemaName + "'";
+                query = "UPDATE `lefterisxris`.`Schemas` SET `" + action + "` = " + val + " WHERE `name` = '" + schemaName + "'";
 
             
             //Open connection
