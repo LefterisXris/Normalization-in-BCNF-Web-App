@@ -353,7 +353,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Προεπισκόπηση διάσπασης σε BCNF</h4>
+                                    <asp:Label class="modal-title" ID="resultTitle" runat="server" Text="Προεπισκόπηση διάσπασης σε BCNF" Font-Size="16px"></asp:Label>
                                 </div>
                                 <div class="modal-body myModalBody">
                                     <div class="form-horizontal"> 

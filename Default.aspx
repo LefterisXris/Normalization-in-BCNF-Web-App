@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head runat="server">
     <title>BCNF</title>
     <link runat="server" rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
@@ -836,4 +837,5 @@
     </script>
    
 </body>
+
 </html>

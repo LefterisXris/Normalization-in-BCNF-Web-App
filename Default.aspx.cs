@@ -824,7 +824,8 @@ public partial class _Default : System.Web.UI.Page
         string selectedSchema = schemaLoadDropDownList.SelectedValue;
 
         if (!LoadSelectedSchema(selectedSchema))
-            LoadSelectedSchema(dbConnect.getDefaultSchemaName());
+            if (!LoadSelectedSchema(selectedSchema+".txt"))
+                LoadSelectedSchema(dbConnect.getDefaultSchemaName());
         
     }
 
@@ -1170,7 +1171,8 @@ public partial class _Default : System.Web.UI.Page
 
         foreach (Attr attr in attrList)
         {
-            dataForFile += attr.Name + "\n\n"; // γνωρίσματα.
+            dataForFile += attr.Name + "\n"; // γνωρίσματα.
+            dataForFile += attr.Type + "\n"; // τύπος 
         }
 
         dataForFile += fdList.Count().ToString() + "\n"; // αριθμών συναρτησιακών εξαρτήσεων.
@@ -1250,17 +1252,11 @@ public partial class _Default : System.Web.UI.Page
     #endregion
 
 
-    // TODO: Βάλε έλεγχο εισαγωγής στα διάφορα inputs.
-    // TODO: Αναίρεση ή ενσωμάτωση enter. 
+
     // TODO: Διαγραφή περιτών κομματιών (κλάσεις, μεθόδους, μεταβλητές).
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
-    // TODO: Επεξεργασία με double click.
     // TODO: Change DBqueries with prepare.
-
-    // TODO: Μορφοποίηση login page
-    // TODO: Μορφοποίηση modal και όλα τα άλλα.
-    // TODO: Δυνατότητες διαχειριστή στο μενού.
-    // TODO: Fouter.
+    
 
     protected void btnGetSchemasClick(object sender, EventArgs e)
     {

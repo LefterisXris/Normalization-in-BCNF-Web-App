@@ -137,7 +137,8 @@ public partial class StepsDecompose : System.Web.UI.Page
             populateRelationGridView(relList);
             populateFdGridView(fdList);
         }
-        
+
+        resultTitle.Text = "Προεπισκόπηση Διάσπασης σε BCNF";
         ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
 
     }
@@ -159,6 +160,7 @@ public partial class StepsDecompose : System.Web.UI.Page
             populateFdGridView(fdList);
         }
 
+        resultTitle.Text = "Αποτέλεσμα Διάσπασης σε BCNF";
         ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
     }
 
@@ -420,6 +422,8 @@ public partial class StepsDecompose : System.Web.UI.Page
         }
         msg += "==============================\n\n";
         log.InnerText = msg;
+
+        resultTitle.Text = "Πίνακες σε BCNF";
 
         ClientScript.RegisterStartupScript(Page.GetType(), "modalPreview", "$('#modalPreview').modal();", true);
 
