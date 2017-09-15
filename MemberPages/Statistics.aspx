@@ -116,11 +116,11 @@
             <!-- Διαχείριση δεδομένων -->
 			<div id="Manage" class="tab-pane fade in">
 				<h3>Διαχείριση Δεδομένων</h3>
-                <h3><small>Επιλέξτε δεδομένα για μηδενισμό</small></h3>
+                <h3><small>Επιλέξτε δεδομένα για επεξεργασία</small></h3>
 
                 Επιλογή: <asp:DropDownList ID="SchemaNamesDropDownList2" runat="server"></asp:DropDownList>
                 <asp:DropDownList ID="ActionsDropDownList2" runat="server"></asp:DropDownList>
-                <asp:Label ID="Label1" runat="server" Text="Τιμή: "></asp:Label>
+                <asp:Label ID="Label1" runat="server" Text="Θέσε τιμή: "></asp:Label>
                 <input id="tbxValueToSet" onkeypress="return isNumberKey(event)" type="text" runat="server"/>
                 <asp:Button ID="btnUpdateData" class="btn btn-info btn-lg" runat="server" Text="Εκτέλεση" OnClick="btnUpdateData_Click" />
 			</div>
@@ -190,7 +190,7 @@
                 sc_nDecompose = $tds.eq(5).text(),
                 sc_nStepsDecompose = $tds.eq(6).text();
 	            
-            // Αποθηκεύω στον πίνακα, αντικείμενα με τρόπο key=value.
+            // Αποθηκεύω στον πίνακα, αντικείμενα με τρόπο key:value.
 	        dbData.push({ name: sc_name, nLoad: sc_nLoad, nClosure: sc_nClosure, nFindKeys: sc_nFindKeys, nDecompose: sc_nDecompose, nStepsDecompose: sc_nStepsDecompose });
 	           
 	    });

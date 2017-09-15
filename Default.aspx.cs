@@ -614,43 +614,7 @@ public partial class _Default : System.Web.UI.Page
     protected void btnDecomposeClick(object sender, EventArgs e)
     {
         dbConnect.TrackStat(lblSchemaName.Text, lblSchemaId.Text, "nDecompose");
-
-        /* bool isAlternative = false; // Αν πρόκειτε για εναλλακτική λύση τότε θα οριστεί σε αυτή τη μεταβλητή.
-         logAlter.Visible = false;
-         log.Attributes["class"] = "form-control alone";
-
-         Button btn = (Button)sender;
-
-         if (btn.ID.Equals("btnDecomposeAlternative"))
-         {
-             isAlternative = true;
-             log.Attributes["class"] = "form-control together";
-             logAlter.Visible = true;
-         }
-
-
-         var result = Global.Decompose(attrList, fdList, false);
-
-         msg = result.Item1; // Είναι το αποτέλεσμα της διάσπασης.
-         bool AlterExists = result.Item2; // Αν υπάρχει εναλλακτική.
-
-         log.InnerText = msg;
-         resultTitle.Text = "Διαδικασία Διάσπασης σε BCNF";
-
-         if (isAlternative)
-         {
-             var result2 = Global.Decompose(attrList, fdList, isAlternative);
-             logAlter.InnerText = result2.Item1;
-             AlterExists = result2.Item2;
-             resultTitle.Text = "Διαδικασία Διάσπασης σε BCNF (Αρχική - Εναλλακτική)";
-         }
-
-         // Εμφάνιση ή απόκρυψη πλήκτρου ενναλακτικής.
-         if (AlterExists)
-             btnDecomposeAlternative.Visible = true;
-         else
-             btnDecomposeAlternative.Visible = false;
-             */
+        
         btnDecomposeAlternative.Visible = false;
         bool isAlternative = false;
         Button btn = (Button)sender;

@@ -6,7 +6,7 @@ using System.Web;
 namespace Normalization
 {
     /// <summary>
-    /// Η κλάσση FD δημιουργεί συναρτησιακές εξαρτήσεις (functional dependency)
+    /// Η κλάση FD δημιουργεί συναρτησιακές εξαρτήσεις (functional dependency)
     /// </summary>
     [Serializable]
     public class FD : IEqualityComparer<FD>

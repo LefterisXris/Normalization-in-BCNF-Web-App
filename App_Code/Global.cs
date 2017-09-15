@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 namespace Normalization
 {
     /// <summary>
-    /// Summary description for Global
+    /// Static κλάση που περιέχει τις κύριες ενέργειες που επαναχρησιμοποιούνται σε πολλά σημεία.
     /// </summary>
     [Serializable]
     public static class Global

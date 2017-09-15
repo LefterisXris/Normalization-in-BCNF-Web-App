@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Normalization
 {
+    /// <summary>
+    /// Προς διαγραφή πλέον.
+    /// </summary>
     [Serializable]
     public class Closure
     {
