@@ -91,11 +91,11 @@
 			          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Σχετικά <span class="caret"></span></a>
 			          <ul class="dropdown-menu">
 				        <li><a href="#"><i class="icon iconInfo"></i> Οδηγίες Χρήσης</a></li>
-				        <li><a href="#"><i class="icon iconDiplomatic"></i> Η εργασία</a></li>
+				        <li><a href="https://drive.google.com/file/d/0B9113-m76t9ZSW5PTy1uNkVvdGc/view?usp=sharing"><i class="icon iconDiplomatic"></i> Η εργασία</a></li>
 				        <li><a href="https://github.com/LefterisXris/Normalization-in-BCNF-Web-App"><i class="icon iconContribute"></i> Συνεισφορά</a></li>
 			          </ul>
 			        </li>
-		            <li><a href="#">Επικοινωνία</a></li>
+		            <li><a id="contactLink" href="#">Επικοινωνία</a></li>
 		        </ul>
 		        
                 <!-- Admin Login Status -->
@@ -380,6 +380,28 @@
                     <asp:Button ID="btnCloseStepsDecompose" class="btn btn-danger btn-lg showLoader" runat="server" Text="Κλείσιμο" Style="width: 100%;" OnClick="btnCloseStepsDecompose_Click" />
                 </div>
 
+
+                <!-- Modal Επικοινωνία -->
+                <div class="modal fade" id="modalContact" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Επικοινωνία</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Για οποιαδήποτε απορία ή για αναφορά σφάλματος μπορείτε να επικοινωνήσετε στα παρακάτω email: </strong></p>
+                                <asp:Label ID="Label1" runat="server" Text="it1370@uom.edu.gr" Font-Bold="True" Font-Size="Medium"></asp:Label> 
+                                <br /> 
+                                <asp:Label ID="Label2" runat="server" Text="gkoloniari@uom.edu.gr" Font-Size="Medium" Font-Bold="True"></asp:Label>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default btn-success" data-dismiss="modal">ΟΚ</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal -->
             </div>
 
         </div>
@@ -576,6 +598,10 @@
             $("#loader").removeClass("hide-loader");
         });
 
+        //Εμφάνιση modal Επικοινωνίας
+        $("#contactLink").click(function () {
+            $('#modalContact').modal();
+        });
     </script>
 
     <!-- Script για Analytics -->
