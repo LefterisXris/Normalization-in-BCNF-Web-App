@@ -17,10 +17,10 @@ Note: the application is not always on. For now, only some hours per day is runn
 You can see the Document of Theseis [here](https://drive.google.com/file/d/0B9113-m76t9ZSW5PTy1uNkVvdGc/view).
 
 Below are provided some screenshots of the application.
-![Home Screen](Images/Screenshots/HOME.jpg)
-![Steps Decompose Screen](Images/Screenshots/StepsDecompose.jpg)
-![Edit fd Screen](Images/Screenshots/EditFd.jpg)
-![Decompose result Screen](Images/Screenshots/DecomposeResult.jpg)
-![Graph Bar Screen](Images/Screenshots/graph.jpg)
-![Graph Pie Screen](Images/Screenshots/graph2.jpg)
-![Responsive Design Screen](Images/Screenshots/resp.jpg)
+![Home Screen](Images/Screenshots/HOME.JPG)
+![Steps Decompose Screen](Images/Screenshots/StepsDecompose.JPG)
+![Edit fd Screen](Images/Screenshots/EditFd.JPG)
+![Decompose result Screen](Images/Screenshots/DecomposeResult.JPG)
+![Graph Bar Screen](Images/Screenshots/graph.JPG)
+![Graph Pie Screen](Images/Screenshots/graph2.JPG)
+![Responsive Design Screen](Images/Screenshots/resp.JPG)
