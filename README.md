@@ -1,4 +1,4 @@
-# NormToolBcnf
+# Educational Tool for Normalization in Bcnf
 ![Web-app Logo](Images/N.jpg)
 ### My graduation thesis
 
@@ -43,3 +43,5 @@ Below are provided some screenshots of the application.
 
 ### Class Diagram:
 ![Class Diagram pic](Images/ClassDiagram.png)
+
+#### Contact with me in my email, [lefterisxris@gmail.com](mailto:lefterisxris@gmail.com).
