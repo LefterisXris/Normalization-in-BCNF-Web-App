@@ -38,5 +38,8 @@ Below are provided some screenshots of the application.
 ### Or a Pie Chart: 
 ![Graph Pie Screen](Images/Screenshots/graph2.JPG)
 
-### Responsive Design
+### Made with Responsive Design:
 ![Responsive Design Screen](Images/Screenshots/resp.JPG)
+
+### Class Diagram:
+![Class Diagram pic](Images/ClassDiagram.png)
