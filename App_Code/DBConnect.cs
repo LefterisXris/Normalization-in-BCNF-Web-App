@@ -66,7 +66,7 @@ namespace Normalization
             server = "195.251.211.81"; 
             database = "lefterisxris";
             uid = "lefterisxris";
-            password = "";
+            password = "Lefteris@Ilu159"; // This code is private. For further information, please contact me: lefterisxris@gmail.com
 
             string connectionString = "Server=" + server + ";" +"Port=3306;" + "Database=" + database + ";" + "Uid=" + uid + ";" + "Pwd=" + password + ";" + "CharSet = greek;" ;
 
@@ -218,7 +218,7 @@ namespace Normalization
         /// <summary>
         /// Μέθοδος που θέτει την τρέχουσα ημερομηνία στο πεδίο lastEdit του αντίστοιχου σχήματος.
         /// </summary>
-        /// <param name="schemaName">Το όνομα του σχήματος.</param>
+        /// <param name="schemaId">Το id του σχήματος.</param>
         private void lastEditSet(string schemaId)
         {
             int id = Int32.Parse(schemaId);
@@ -236,7 +236,27 @@ namespace Normalization
                 Console.WriteLine("Exception :" + e.Message);
             }
         }
-        
+
+        /// <summary>
+        /// Μέθοδος που θέτει την τρέχουσα ημερομηνία στο πεδίο lastEdit του αντίστοιχου σχήματος.
+        /// </summary>
+        /// <param name="schemaId">Το id του σχήματος.</param>
+        private void lastEditSetAbout(string schemaId)
+        {
+            int id = Int32.Parse(schemaId);
+            string query = "UPDATE `About` SET `lastEdit`= now() WHERE `id`=" + id + "";
+
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine("Exception :" + e.Message);
+            }
+        }
+
         /// <summary>
         /// Μέθοδος η οποία παίρνει τα ονόματα των διαθέσιμων σχημάτων.
         /// </summary>
@@ -603,6 +623,34 @@ namespace Normalization
 
         }
 
+        /// <summary>
+        /// Μέθοδος που ενημερώνει το αντίστοιχο πεδίο στη βάση για αποθήκευση των Στατιστικών στο Σχετικά.
+        /// </summary>
+        /// <param name="action">Η επιλογή (Οδηγίες, εργασία, github</param>
+        public void TrackAbout(string action)
+        {
+            string query = "UPDATE `About` SET `" + action + "`= `" + action + "` + 1 WHERE `id`=1";
+
+            //Open connection
+            if (this.OpenConnection() == true)
+            {
+                try
+                {
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.ExecuteNonQuery();
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine("Exception :" + e.Message);
+                }
+
+                // Ενημέρωση ημερομηνίας.
+                lastEditSetAbout("1");
+
+                //close connection
+                this.CloseConnection();
+            }
+        }
 
         /* SELECT
         //Select statement

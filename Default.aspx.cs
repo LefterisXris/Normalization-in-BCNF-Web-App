@@ -1215,12 +1215,32 @@ public partial class _Default : System.Web.UI.Page
 
     #endregion
 
+    #region Track About
 
+    protected void btnAboutInstructions(object sender, EventArgs e)
+    {
+        dbConnect.TrackAbout("nInstructions");
+        Response.Redirect("https://drive.google.com/file/d/0B9113-m76t9ZZEhFZ2xXTXI1ekk/view?usp=sharing");
+    }
+
+    protected void btnAboutDiplomatic(object sender, EventArgs e)
+    {
+        dbConnect.TrackAbout("nDiplomatic");
+        Response.Redirect("https://drive.google.com/file/d/0B9113-m76t9ZSW5PTy1uNkVvdGc/view?usp=sharing");
+    }
+
+    protected void btnAboutGithub(object sender, EventArgs e)
+    {
+        dbConnect.TrackAbout("nGithub");
+        Response.Redirect("https://github.com/LefterisXris/Normalization-in-BCNF-Web-App");
+    }
+
+    #endregion
 
     // TODO: Διαγραφή περιτών κομματιών (κλάσεις, μεθόδους, μεταβλητές).
     // TODO: Πρόβλημα συντρέχοντος εκτέλεσης??
     // TODO: Change DBqueries with prepare.
-    
+
 
     protected void btnGetSchemasClick(object sender, EventArgs e)
     {
@@ -1250,5 +1270,5 @@ public partial class _Default : System.Web.UI.Page
 
         OpenResultsModal(false);
     }
-
+    
 }

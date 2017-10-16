@@ -91,9 +91,9 @@
 		            <li class="dropdown">
 			          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Σχετικά <span class="caret"></span></a>
 			          <ul class="dropdown-menu">
-				        <li><a href="#"><i class="icon iconInfo"></i> Οδηγίες Χρήσης</a></li>
-				        <li><a href="https://drive.google.com/file/d/0B9113-m76t9ZSW5PTy1uNkVvdGc/view?usp=sharing"><i class="icon iconDiplomatic"></i> Η εργασία</a></li>
-				        <li><a href="https://github.com/LefterisXris/Normalization-in-BCNF-Web-App"><i class="icon iconContribute"></i> Συνεισφορά</a></li>
+				        <li><a id="instructions" runat="server" onserverclick="btnAboutInstructions"><i class="icon iconInfo"></i> Οδηγίες Χρήσης</a></li>
+				        <li><a id="diplomatic" runat="server" onserverclick="btnAboutDiplomatic"><i class="icon iconDiplomatic"></i> Η εργασία</a></li>
+				        <li><a id="github" runat="server" onserverclick="btnAboutGithub"><i class="icon iconContribute"></i> Συνεισφορά</a></li>
 			          </ul>
 			        </li>
 		            <li><a id="contactLink" href="#">Επικοινωνία</a></li>
@@ -622,10 +622,10 @@
                             <h4 class="modal-title">Επικοινωνία</h4>
                         </div>
                         <div class="modal-body">
-                            <p><strong>Για οποιαδήποτε απορία ή για αναφορά σφάλματος μπορείτε να επικοινωνήσετε στα παρακάτω email: </strong></p>
-                            <asp:Label ID="Label1" runat="server" Text="it1370@uom.edu.gr" Font-Bold="True" Font-Size="Medium"></asp:Label> 
+                            <p><strong>Για οποιαδήποτε απορία ή για αναφορά σφάλματος ή για προτάσεις βελτίωσης, μπορείτε να επικοινωνήσετε στα παρακάτω email: </strong></p>
+                            <asp:Label ID="Label1" runat="server" Text="lefterisxris@gmail.com" Font-Bold="True"  ForeColor="Blue" Font-Size="Medium"></asp:Label> 
                             <br /> 
-                            <asp:Label ID="Label2" runat="server" Text="gkoloniari@uom.edu.gr" Font-Size="Medium" Font-Bold="True"></asp:Label>
+                            <asp:Label ID="Label2" runat="server" Text="gkoloniari@uom.edu.gr" Font-Size="Medium" Font-Bold="True" ForeColor="Blue"></asp:Label>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default btn-success" data-dismiss="modal">ΟΚ</button>

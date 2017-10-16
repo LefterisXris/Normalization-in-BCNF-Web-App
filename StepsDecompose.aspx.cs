@@ -14,6 +14,7 @@ public partial class StepsDecompose : System.Web.UI.Page
     private List<FD> fdList = new List<FD>(); // Λίστα με αντικείμενα FD, για τις συναρτησιακές εξαρτήσεις.
     private List<Key> keyList; // τα κλειδιά του πίνακα.
     private List<Relation> relList = new List<Relation>(); // λίστα με τους πίνακες Relation.
+    DBConnect dbConnect = new DBConnect();
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -820,6 +821,28 @@ public partial class StepsDecompose : System.Web.UI.Page
     }
 
     #endregion
+
+    #endregion
+
+    #region Track About
+
+    protected void btnAboutInstructions(object sender, EventArgs e)
+    {
+        dbConnect.TrackAbout("nInstructions");
+        Response.Redirect("https://drive.google.com/file/d/0B9113-m76t9ZZEhFZ2xXTXI1ekk/view?usp=sharing");
+    }
+
+    protected void btnAboutDiplomatic(object sender, EventArgs e)
+    {
+        dbConnect.TrackAbout("nDiplomatic");
+        Response.Redirect("https://drive.google.com/file/d/0B9113-m76t9ZSW5PTy1uNkVvdGc/view?usp=sharing");
+    }
+
+    protected void btnAboutGithub(object sender, EventArgs e)
+    {
+        dbConnect.TrackAbout("nGithub");
+        Response.Redirect("https://github.com/LefterisXris/Normalization-in-BCNF-Web-App");
+    }
 
     #endregion
 
